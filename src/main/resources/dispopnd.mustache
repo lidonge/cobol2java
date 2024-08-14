@@ -1,0 +1,5 @@
+{{#operands}}{{%
+    str=obj_getVar("operandValueStmt.literal.nonNumericLiteral");
+    delegate=name_toField(obj_getVar("operandValueStmt.call.delegate.delegate.name"));
+    delegate=name_delegateName(delegate);
+""}}{{#$str}}"{{%str}}"{{/str}}{{#$delegate}}{{%delegate)}}{{/$delegate}}{{^-last}},{{/-last}}{{/operands}}

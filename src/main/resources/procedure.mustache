@@ -1,0 +1,9 @@
+{{#procedureDivision}}
+{{#paragraphs}}
+{{#name}}
+    public void {{%name_toField(obj_getVar("name"))}}(){
+    {{>statements}}
+    }{{/name}}
+{{/paragraphs}}
+{{%needDefaultParagraph="yes";""}}{{>statements}}
+{{/procedureDivision}}

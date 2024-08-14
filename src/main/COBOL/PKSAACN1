@@ -1,0 +1,126 @@
+      ****************************************************************
+      *   KB NAME      : KSAACN1                                     *
+      *   KB FUNCTION  : 对私活期存款开户                            *
+      *   LENGTH       : 2130 BYTES                                  *
+      *   COPYBOOK     : PKSAACN1                                    *
+      *   REMARKS      : 用于活期一本通、保证金、个人外汇开户        *
+      ****************************************************************
+0001       02  I-CUST-NAME             PIC X(120).
+      *         客户名称
+0121       02  I-ACCT-CHAR             PIC X(4).
+      *         帐户性质
+0125       02  I-INTC-FLG              PIC X(1).
+      *         计息标志
+0126       02  I-CURR-COD              PIC X(3).
+      *         币别
+0129       02  I-CURR-IDEN             PIC X(1).
+      *         钞汇鉴别
+      *         0:钞;1:汇
+0130       02  I-SLCRD-NO              PIC X(16).
+      *         印鉴卡编号
+0146       02  I-MBSTMT-FLG            PIC X(1).
+      *         寄对帐单标志
+      *         Y=寄对帐单；N=不寄
+0147       02  I-ASTMT-ADDR-COD        PIC X(3).
+      *         对帐单地址代码
+0150       02  I-DRW-TYP               PIC X(4).
+      *         支取方式
+0154       02  I-INTND-STN             PIC X(1).
+      *         约定机构存取
+0155       02  I-ACCT-TYP              PIC X(4).
+      *         帐别
+0159       02  I-PSBK-PRT-NO1          PIC X(30).
+      *         存折印刷号１
+0189       02  I-PSBK-STS              PIC X(1).
+      *         存折状态
+0190       02  I-PSWD                  PIC X(32).
+      *         密码
+0222       02  I-CONNTR-NO             PIC X(12).
+      *         联系人编号
+0234       02  I-CERT-TYP              PIC X(4).
+      *         证件种类
+0238       02  I-CERT-ID               PIC X(60).
+      *         证件号码
+0298       02  I-CRD-FLG               PIC X(1).
+      *         卡折标志
+0299       02  I-CUST-NO               PIC X(20).
+      *         客户编号
+0319       02  I-MAX-MHD               PIC S9(16)V9(2) COMP-3.
+      *         最大透支额
+0329       02  I-CURR-TYP              PIC X(1).
+      *         钞汇属性
+0330       02  I-LESS-INTR-FLG         PIC X(1).
+      *         免执行小额利率标志
+      *         Y -免，N-不免
+0331       02  I-MEDIUM-TYPE           PIC X(4).
+      *         介质类型
+0335       02  I-ACCT-VALIDITY         PIC X(8).
+      *         账户有效期
+0343       02  I-MAFE-FLG              PIC X(1).
+      *         免收管理费的标志
+      *         Y -免，N -不免
+0344       02  I-DPDW-RANG             PIC X(1).
+      *         通兑范围
+0345       02  I-PD-CODE               PIC X(11).
+      *         产品代码
+0356       02  I-AGT-FLG               PIC X(1).
+      *         是否代理
+      *         1-代理开户 0-非代理开户
+0357       02  I-FX-ACCT-CHAR          PIC X(4).
+      *         外管账户性质
+0361       02  I-ACCT-KIND             PIC X(1).
+      *         账户种类
+0362       02  I-ACCT-INFO             PIC X(140).
+      *         辅助证件信息
+0502       02  I-OPAC-CHAL             PIC X(2).
+      *         开户渠道
+0504       02  I-ACCT-CHK              PIC X(1).
+      *         核身类型
+0505       02  I-LEGAL-PERSON-ID       PIC X(3).
+      *         法人号
+0508       02  I-OPUN-NO               PIC X(9).
+      *         开户机构号
+0517       02  I-SA-GUR-TYP            PIC X(2).
+      *         保证金种类
+0519       02  I-SA-GUR-SUB-TYP        PIC X(4).
+      *         保证金种类二级
+0523       02  I-INTR-COD              PIC X(2).
+      *         利率依据
+0525       02  I-FLTR-FVR-SIGN         PIC X(1).
+      *         浮动利率加减码符号
+0526       02  I-FLTR-FVR              PIC S9(3)V9(5) COMP-3.
+      *         浮动利率加减码
+0531       02  I-INTR                  PIC S9(3)V9(5) COMP-3.
+      *         利率
+0536       02  I-BUSN-LICE             PIC X(18).
+      *         工商登记执照
+0554       02  I-SFEA-APPR-NO          PIC X(28).
+      *         外管核准件编号
+0582       02  I-FC-LMT-TYPE           PIC X(2).
+      *         账户限额类型
+0584       02  I-FC-LMT-AMT            PIC S9(16)V9(2) COMP-3.
+      *         账户限额
+0594       02  IO-ACCT-NO              PIC X(32).
+      *         帐号
+0626       02  O-OPENACTDT             PIC X(8).
+      *         开户日
+0634       02  O-NEW-CUST-ID           PIC X(1).
+      *         新客户标志
+0635       02  O-PZZC0211.
+                                       COPY PZZC0211.
+1087       02  O-PZZC0221.
+                                       COPY PZZC0221.
+1398       02  O-PZZZ1120.
+                                       COPY PZZZ1120.
+2040       02  O-MZZC0212.
+                                       COPY MZZC0212.
+2126       02  O-RTRN-CODE.
+               05  O-MSG-TYPE          PIC X(1).
+                   88  NO-ERROR            VALUE SPACE.
+                   88  WITH-ERROR          VALUE 'E'.
+                   88  WITH-WARNING        VALUE 'W'.
+                   88  WITH-INFORMATION    VALUE 'I'.
+                   88  A-LEVEL-AUTH        VALUE 'A'.
+                   88  B-LEVEL-AUTH        VALUE 'B'.
+                   88  A-AND-B-LEVEL-AUTH  VALUE 'X'.
+               05  O-MSG-NO            PIC X(4).

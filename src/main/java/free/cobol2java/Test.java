@@ -1,0 +1,136 @@
+package free.cobol2java;
+
+import free.cobol2java.util.Func;
+import free.mustache.MustacheCompiler;
+import free.mustache.TestRecursion;
+import free.mustache.handler.DefaultEnvironment;
+import free.mustache.handler.IPartialFileHandler;
+import free.mustache.handler.MustacheListenerImpl;
+import free.mustache.handler.MustacheWriter;
+import free.mustache.model.BaseSection;
+import free.mustache.model.Template;
+import io.proleap.cobol.asg.metamodel.CompilationUnit;
+import io.proleap.cobol.asg.metamodel.Program;
+import io.proleap.cobol.asg.metamodel.ProgramUnit;
+import io.proleap.cobol.asg.params.CobolParserParams;
+import io.proleap.cobol.asg.runner.impl.CobolParserRunnerImpl;
+import io.proleap.cobol.preprocessor.CobolPreprocessor;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+
+/**
+ * @author lidong@date 2024-07-30@version 1.0
+ */
+public class Test {
+    static String cblDir = "/Users/lidong/gitspace/cobol2java/src/main/COBOL/";
+    static String cobolFile = cblDir + "Example.cbl";
+
+    static String acceptCbl = "/Users/lidong/gitspace/cobol2java/src/main/COBOL/accept.cbl";
+    static String initCbl = "/Users/lidong/gitspace/cobol2java/src/main/COBOL/init.cbl";
+    static String GSA01060Cbl = "/Users/lidong/gitspace/cobol2java/src/main/COBOL/GSA01060.cbl";
+    static String mustacheDataFile = "/Users/lidong/gitspace/cobol2java/src/main/resources/model.mustache";
+    static String mustacheProgramFile = "/Users/lidong/gitspace/cobol2java/src/main/resources/program.mustache";
+
+    public static void main(String[] args) throws IOException {
+//        new ObjectTreePrinter().printObjectTree(compilationUnit);
+        convertAll(cblDir + "Example.cbl", "EXAMPLE");
+        if (false) {
+            convertAll(cblDir + "Accept.cbl", "Accept");
+            convertAll(cblDir + "Init.cbl", "Init");
+            convertAll(cblDir + "Move.cbl", "Move");
+            convertAll(cblDir + "Add.cbl", "Add");
+            convertAll(cblDir + "Subtract.cbl", "Subtract");
+            convertAll(cblDir + "Example.cbl", "EXAMPLE");
+        }
+    }
+
+    private static void convertAll(String cblFile, String progName) throws IOException {
+        CompilationUnit compilationUnit = getProgram(cblFile, progName);
+//            new ObjectTreePrinter().printObjectTree(compilationUnit);
+        ProgramUnit programUnit = compilationUnit.getProgramUnit();
+        String prog = convertProgram(programUnit);
+        System.out.println(prog);
+    }
+
+    private static CompilationUnit getProgram(String cblFile, String compUnit) throws IOException {
+        File inputFile = new File(cblFile);
+
+        CobolPreprocessor.CobolSourceFormatEnum format = CobolPreprocessor.CobolSourceFormatEnum.TANDEM;
+        CobolParserRunnerImpl cobolParserRunner = new CobolParserRunnerImpl() {
+            public Program analyzeFile(final File cobolFile, final CobolPreprocessor.CobolSourceFormatEnum format) throws IOException {
+                final CobolParserParams params = createDefaultParams(format, cobolFile);
+//                params.setCharset(Charset.forName("GB2312"));
+                return analyzeFile(cobolFile, params);
+            }
+        };
+        Program program = cobolParserRunner.analyzeFile(inputFile, format);
+        CompilationUnit compilationUnit = program.getCompilationUnit(compUnit);
+        return compilationUnit;
+    }
+
+    static String convertProgram(ProgramUnit programUnit) throws IOException {
+        MustacheCompiler mustacheCompiler = new MustacheCompiler(new File(mustacheProgramFile));
+        MustacheListenerImpl impl = mustacheCompiler.compile();
+
+        MustacheWriter writer = getMustacheWriter();
+        StringBuffer sb = new StringBuffer();
+        writer.write(sb, new ArrayList<>(), programUnit, impl.getTemplate(), BaseSection.SectionType.Normal);
+
+        return CodeFormator.formatCode(sb.toString());
+    }
+
+    static String convertData(ProgramUnit root) throws IOException {
+        MustacheCompiler mustacheCompiler = new MustacheCompiler(new File(mustacheDataFile));
+        MustacheListenerImpl impl = mustacheCompiler.compile();
+
+        MustacheWriter writer = getMustacheWriter();
+        StringBuffer sb = new StringBuffer();
+        writer.write(sb, new ArrayList<>(), root, impl.getTemplate(), BaseSection.SectionType.Normal);
+        return CodeFormator.formatCode(sb.toString());
+    }
+
+    private static MustacheWriter getMustacheWriter() {
+        MustacheWriter writer = new MustacheWriter();
+        writer.getExprEvaluator().setEnvironment(new DefaultEnvironment() {
+            @Override
+            public void addDefault() {
+                super.addDefault();
+                Func func = (Func) getVar("__System_Function");
+                if(func == null){
+                    func = new Func();
+                    setVar("__System_Function", func);
+                }
+                addFunction("str_replace", args -> ((String) args[0]).replace((String) args[1], (String) args[2]));
+                addFunction("name_toField", args -> ((Func) getVar("__System_Function")).name_toField((String) args[0]));
+                addFunction("name_toClass", args -> ((Func) getVar("__System_Function")).name_toClass((String) args[0]));
+                addFunction("name_enterClass", args -> ((Func) getVar("__System_Function")).name_enterClass((String) args[0]));
+                addFunction("name_exitClass", args -> ((Func) getVar("__System_Function")).name_exitClass());
+                addFunction("name_putInnerField", args -> ((Func) getVar("__System_Function")).name_putInnerField((String) args[0]));
+                addFunction("name_delegateName", args -> ((Func) getVar("__System_Function")).name_delegateName((String) args[0]));
+            }
+        });
+        writer.getExprEvaluator().setVar("model_package", "free.test");
+        writer.setPartialFileHandler(new IPartialFileHandler() {
+            @Override
+            public Template compilePartialTemplate(String partialName) {
+                URL url = TestRecursion.class.getResource("/" + partialName + ".mustache");
+                try {
+                    MustacheCompiler mustacheCompiler = new MustacheCompiler(url);
+                    try {
+                        return mustacheCompiler.compile().getTemplate();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        return writer;
+    }
+}

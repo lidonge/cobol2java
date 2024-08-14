@@ -1,0 +1,32 @@
+{{%substractValue = "";""}}
+{{#subtrahends}}
+    {{#subtrahendValueStmt}}
+        {{#literal}}
+            {{%substractValue = obj_getVar("numericLiteral.value")+substractValue;""}}
+        {{/literal}}
+        {{#call}}
+            {{%
+                delegate = name_delegateName(name_toField(obj_getVar("delegate.delegate.name")));
+                substractValue = delegate+substractValue;
+            ""}}
+        {{/call}}
+        {{%substractValue = "-" + substractValue;""}}
+    {{/subtrahendValueStmt}}
+{{/subtrahends}}
+{{#minuends}}{{%
+setName=name_delegateName(name_toField(obj_getVar("minuendCall.delegate.delegate.name")));
+setValue=setName+substractValue;
+""}}{{/minuends}}
+{{#minuend}}{{%
+setName=name_delegateName(name_toField(obj_getVar("minuendCall.delegate.delegate.name")));
+setValue=substractValue;
+""}}{{/minuend}}
+{{#givings}}
+    {{%
+        setName=name_delegateName(name_toField(obj_getVar("givingCall.delegate.delegate.name")));
+    ""}}
+        {{%setName}}={{%setName}}{{%setValue}};
+{{/givings}}
+{{^givings}}
+        {{%setName}}={{%setValue}};
+{{/givings}}

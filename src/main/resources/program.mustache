@@ -1,0 +1,11 @@
+package {{% model_package}};
+
+public class {{compilationUnit.name}} {
+{{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
+{{%isInnerClass="no";""}}
+{{>properties}}
+{{%isInnerClass="yes";""}}
+{{>model}}
+{{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}
+{{>procedure}}
+}

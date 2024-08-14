@@ -1,0 +1,18 @@
+{{%statementType=obj_getVar("statementType");INITIALIZE = statementType == "INITIALIZE" ? "INITIALIZE" : null;""}}
+{{#$INITIALIZE}}
+    {{%byValue=null;""}}
+    {{#replacingPhrase.bys}}
+        {{%
+            byType=obj_getVar("byType");
+            byValue = byType == "NUMERIC" ?
+                        obj_getVar("valueStmt.literal.numericLiteral.value") :
+                        "\""+obj_getVar("valueStmt.call.delegate.delegate.name")+"\"";
+        ""}}
+    {{/replacingPhrase.bys}}
+    {{#dataItemCalls}}{{%
+        setName=name_toField(obj_getVar("delegate.name"));
+        setName=name_delegateName(setName);
+        setValue=byValue == null ? "Util.init("+setName + ");":byValue+";" ;
+    ""}}
+        {{%setName}}={{%setValue}}{{/dataItemCalls}}
+{{/INITIALIZE}}

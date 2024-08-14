@@ -1,0 +1,59 @@
+      ****************************************************************
+      *   DBD NAME     : BCMSAWM                                     *
+      *   SEGMENT NAME : 账户性质                                    *
+      *   LENGTH       : 188 BYTES                                   *
+      *   COPYBOOK     : CMMSCSAW                                    *
+      *   REMARKS      :                                             *
+      ****************************************************************
+0001       05  CMSAW-KEY.
+               10  CM-WORD-CLSFN       PIC X(3).
+      *             文字类别
+               10  CM-LEGAL-PERSON-ID  PIC X(3).
+      *             法人号
+               10  CM-WORD-COD-MSC-SAW.
+      *             文字代码SAW
+                   15  CM-FILLER-SAW   PIC X(4).
+      *                 填充DIF
+                   15  CM-SAW-COD      PIC X(4).
+      *                 外管账户性质编号
+0015       05  CM-DB-TIMESTAMP         PIC 9(15).
+      *         时间戳
+0030       05  CM-DB-PARTITION-ID      PIC X(9).
+      *         分区键
+0039       05  CM-APLY-DATA-DSCRP-SAW.
+      *         应用资料说明SAW
+               10  CM-SAW-NAME         PIC X(60).
+      *             外管账户性质名称
+               10  CM-SAW-M-FLG        PIC X(1).
+      *             是否资本项目
+      *             Y-是；N-否
+               10  CM-PER-RMB          PIC X(1).
+      *             支持币种
+      *             Y-为只支持人民币，N-为只支持外币，空-本外币都支持
+               10  CM-SAW-L-FLG        PIC X(1).
+      *             是否资本金账户性质
+      *             Y-是；N-否
+               10  CM-SUB-PER-FLG      PIC X(1).
+      *             对公对私标志
+      *             1-对公；2-对私；3-对公或对私
+               10  CM-CAA-FLG          PIC X(1).
+      *             是否一户通标志
+      *             Y-是；N-否
+               10  CM-TEMP-FLG         PIC X(1).
+      *             是否临时账户
+      *             Y-是；N-否
+               10  CM-GU-FLG           PIC X(1).
+      *             是否允许1027查询
+      *             Y-是；N-否
+               10  CM-INSRT-FLG        PIC X(1).
+      *             是否登记工商执照
+      *             Y-是；N-否
+               10  CM-HABIT-FLG        PIC X(1).
+      *             居民、非居民开户标志
+      *             1-只允许居民
+      *             2-只允许非居民
+               10  CM-OFFEN-CHAR-FLG   PIC X(1).
+      *             是否经常项目账户性质
+      *             Y-是；N-否
+0109       05  CM-FILLER               PIC X(80).
+      *         预留

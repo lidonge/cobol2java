@@ -1,0 +1,10 @@
+{{%statementType=obj_getVar("statementType");SUBTRACT = statementType == "SUBTRACT" ? "SUBTRACT" : null;""}}
+{{#$SUBTRACT}}
+    {{%substractValue = "";""}}
+    {{#subtractFromStatement}}
+        {{>substractends}}
+    {{/subtractFromStatement}}
+    {{#subtractFromGivingStatement}}
+        {{>substractends}}
+    {{/subtractFromGivingStatement}}
+{{/SUBTRACT}}

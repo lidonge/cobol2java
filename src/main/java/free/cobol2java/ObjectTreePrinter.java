@@ -1,0 +1,169 @@
+package free.cobol2java;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InaccessibleObjectException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public class ObjectTreePrinter {
+
+    private Set<Object> visited = new HashSet<>();
+    private Object root;
+
+    public static void main(String[] args) {
+        // Example usage
+        NestedClass nested = new NestedClass(42, "Nested");
+        ExampleClass example = new ExampleClass("Root", nested, List.of(1, 2, 3), Map.of("key1", "value1", "key2", nested));
+        ObjectTreePrinter printer = new ObjectTreePrinter();
+        printer.printObjectTree(example);
+    }
+
+    /**
+     * Prints the structure of the given object in a tree-like format.
+     *
+     * @param obj The object to print
+     */
+    public void printObjectTree(Object obj) {
+        visited.clear(); // Clear the visited set before starting the print
+        if (obj == null) {
+            System.out.println("null");
+            return;
+        }
+        root = obj;
+        printObjectTree(obj, "");
+    }
+
+    private void printObjectTree(Object obj, String indent) {
+        if (obj == null) {
+            System.out.println(indent + "null");
+            return;
+        }
+
+        if (visited.contains(obj)) {
+            System.out.println(indent + "[Circular Reference]");
+            return;
+        }
+
+        visited.add(obj);
+
+        Class<?> clazz = obj.getClass();
+
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            try {
+                if (java.lang.reflect.Modifier.isStatic(field.getModifiers()))
+                    continue;
+                field.setAccessible(true);
+                Object value = field.get(obj);
+                if(visited.contains(value))
+                    continue;
+
+                System.out.print(indent + "  " + field.getType().getSimpleName() +" "+field.getName() + " = ");
+                if (value == null) {
+                    System.out.println("null");
+                } else if (isPrimitiveOrWrapper(value)) {
+                    System.out.println(value);
+                } else if (value instanceof String) {
+                    System.out.println("\"" + value + "\"");
+                } else if (value instanceof List) {
+                    System.out.println(((List<?>) value).size());
+                    printList((List<?>) value, indent + "  ");
+                } else if (value instanceof Map) {
+                    System.out.println(((Map<?, ?>) value).size());
+                    printMap((Map<?, ?>) value, indent + "  ");
+                } else if (value.getClass().isArray()) {
+                    System.out.println(((Object[])value).length);
+                    printArray(value, indent + "  ");
+                } else {
+                    System.out.println("[Object]");
+                    printObjectTree(value, indent + "  ");
+                }
+            } catch (IllegalAccessException e) {
+                System.out.println(indent + "  Error accessing field: " + e.getMessage());
+            } catch (InaccessibleObjectException e){}
+        }
+    }
+
+    private boolean isPrimitiveOrWrapper(Object obj) {
+        return obj.getClass().isPrimitive() || obj instanceof Number || obj instanceof Boolean;
+    }
+
+    private void printArray(Object array, String indent) {
+        int length = java.lang.reflect.Array.getLength(array);
+        for (int i = 0; i < length; i++) {
+            Object element = java.lang.reflect.Array.get(array, i);
+            if(visited.contains(element))
+                continue;
+            System.out.print(indent + "[" + i + "] = ");
+            if (element == null) {
+                System.out.println("null");
+            } else if (isPrimitiveOrWrapper(element)) {
+                System.out.println(element);
+            } else {
+                System.out.println("[Object]");
+                printObjectTree(element, indent);
+            }
+        }
+    }
+
+    private void printList(List<?> list, String indent) {
+        for (int i = 0; i < list.size(); i++) {
+            Object element = list.get(i);
+            System.out.print(indent + "[" + i + "] = ");
+            if (element == null) {
+                System.out.println("null");
+            } else if (isPrimitiveOrWrapper(element)) {
+                System.out.println(element);
+            } else {
+//                System.out.println("[Object]");
+                printObjectTree(element, indent);
+            }
+        }
+    }
+
+    private void printMap(Map<?, ?> map, String indent) {
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            Object key = entry.getKey();
+            Object value = entry.getValue();
+            if(visited.contains(value))
+                continue;
+            System.out.print(indent + "[" + key + "] = ");
+            if (value == null) {
+                System.out.println("null");
+            } else if (isPrimitiveOrWrapper(value)) {
+                System.out.println(value);
+            } else {
+//                System.out.println("[Object]");
+                printObjectTree(value, indent);
+            }
+        }
+    }
+}
+
+// Example classes for demonstration
+class ExampleClass {
+    private String name;
+    private NestedClass nested;
+    private List<Integer> numbers;
+    private Map<String, Object> map;
+
+    public ExampleClass(String name, NestedClass nested, List<Integer> numbers, Map<String, Object> map) {
+        this.name = name;
+        this.nested = nested;
+        this.numbers = numbers;
+        this.map = map;
+    }
+}
+
+class NestedClass {
+    private int value;
+    private String description;
+
+    public NestedClass(int value, String description) {
+        this.value = value;
+        this.description = description;
+    }
+}

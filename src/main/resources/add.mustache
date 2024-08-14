@@ -1,0 +1,10 @@
+{{%statementType=obj_getVar("statementType");ADD = statementType == "ADD" ? "ADD" : null;""}}
+{{#$ADD}}
+    {{%addValue = "";""}}
+    {{#addToStatement}}
+        {{>addfroms}}
+    {{/addToStatement}}
+    {{#addToGivingStatement}}
+        {{>addfroms}}
+    {{/addToGivingStatement}}
+{{/ADD}}

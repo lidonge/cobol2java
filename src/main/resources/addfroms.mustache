@@ -1,0 +1,27 @@
+{{%addValue = "";""}}
+{{#froms}}
+    {{#fromValueStmt}}
+        {{#literal}}
+            {{%addValue = addValue + obj_getVar("numericLiteral.value");""}}
+        {{/literal}}
+        {{#call}}
+            {{%
+                delegate = name_delegateName(name_toField(obj_getVar("delegate.delegate.name")));
+                addValue = addValue + delegate;
+            ""}}
+        {{/call}}
+        {{%addValue = addValue+"+";""}}
+    {{/fromValueStmt}}
+{{/froms}}
+{{#tos}}
+    {{%
+        setName=name_delegateName(name_toField(obj_getVar("toCall.delegate.delegate.name")));
+        setValue=addValue;
+    ""}}
+{{/tos}}
+{{#givings}}
+    {{%
+        setName=name_delegateName(name_toField(obj_getVar("givingCall.delegate.delegate.name")));
+    ""}}
+{{/givings}}
+        {{%setName}}={{%setValue}}{{%setName}};

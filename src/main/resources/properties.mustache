@@ -1,0 +1,21 @@
+{{%
+    sType=obj_getVar("pictureClause.pictureString");
+    bString=str_indexOf(sType,"X(") != -1|| str_indexOf(sType,"A(") != -1;
+    propType=bString ? "String":"double";
+""}}
+    {{#pictureClause}}
+    {{%
+        theFieldName=name_toField(obj_getVar("name"));
+        theQlfName=name_putInnerField(theFieldName);
+    ""}}
+    {{%isInnerClass == "yes" ? "" :"private "}}{{%propType}} {{%theFieldName}};
+    {{/pictureClause}}
+    {{^pictureClause}}
+        {{%
+            innerCls = name_toClass(obj_getVar("name"));
+            filedName = name_toField(obj_getVar("name"));
+            name_enterClass(filedName);
+        ""}}
+    {{%isInnerClass == "yes" ? "" :"private "}}{{%innerCls)}} {{%filedName}};
+        {{%clsName=innerCls;isInnerClass="yes";""}}{{*dataDescriptionEntries}}{{%name_exitClass();""}}
+    {{/pictureClause}}

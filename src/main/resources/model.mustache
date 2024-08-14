@@ -1,0 +1,13 @@
+{{^pictureClause}}
+{{%
+    clsName=name_toClass(obj_getVar("name"));
+    name_enterClass(name_toField(obj_getVar("name")));
+""}}
+{{#dataDescriptionEntries}}
+{{#-first}}
+
+class {{%clsName}} { {{/-first}}
+{{>properties}}{{#-last}}
+}{{/-last}}
+{{/dataDescriptionEntries}}{{%name_exitClass();""}}
+{{/pictureClause}}
