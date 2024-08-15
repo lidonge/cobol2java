@@ -2,12 +2,12 @@
     PROGRAM-ID. ACCPT.
     DATA DIVISION.
        WORKING-STORAGE SECTION.
-       01 PSACONST.
-          COPY  PSACONST.
-       01 WS-STUDENT-NAME PIC X(25).
-       01 WS-DATE PIC X(10).
        01 SOME-PERSON.
           05 PERSON-NAME PIC X(20) VALUE "Grace Hopper".
+       01 DESC,
+          COPY  DESC.
+       01 WS-STUDENT-NAME PIC X(25).
+       01 WS-DATE PIC X(10).
     PROCEDURE DIVISION.
 * This is a comment
        ACCEPT WS-STUDENT-NAME.

@@ -106,14 +106,6 @@
       *         开户日
 0634       02  O-NEW-CUST-ID           PIC X(1).
       *         新客户标志
-0635       02  O-PZZC0211.
-                                       COPY PZZC0211.
-1087       02  O-PZZC0221.
-                                       COPY PZZC0221.
-1398       02  O-PZZZ1120.
-                                       COPY PZZZ1120.
-2040       02  O-MZZC0212.
-                                       COPY MZZC0212.
 2126       02  O-RTRN-CODE.
                05  O-MSG-TYPE          PIC X(1).
                    88  NO-ERROR            VALUE SPACE.

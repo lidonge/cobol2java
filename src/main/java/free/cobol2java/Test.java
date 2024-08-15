@@ -38,7 +38,7 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
 //        new ObjectTreePrinter().printObjectTree(compilationUnit);
-        convertAll(cblDir + "Example.cbl", "EXAMPLE");
+        convertAll(cblDir + "Accept.cbl", "Accept");
         if (false) {
             convertAll(cblDir + "Accept.cbl", "Accept");
             convertAll(cblDir + "Init.cbl", "Init");
@@ -46,25 +46,31 @@ public class Test {
             convertAll(cblDir + "Add.cbl", "Add");
             convertAll(cblDir + "Subtract.cbl", "Subtract");
             convertAll(cblDir + "Example.cbl", "EXAMPLE");
+            convertAll(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312");
         }
     }
 
     private static void convertAll(String cblFile, String progName) throws IOException {
-        CompilationUnit compilationUnit = getProgram(cblFile, progName);
+        CobolPreprocessor.CobolSourceFormatEnum format = CobolPreprocessor.CobolSourceFormatEnum.TANDEM;
+        convertAll(cblFile, progName, format,null);
+    }
+
+    private static void convertAll(String cblFile, String progName, CobolPreprocessor.CobolSourceFormatEnum format, String encoding) throws IOException {
+        CompilationUnit compilationUnit = getProgram(cblFile, progName, format, encoding);
 //            new ObjectTreePrinter().printObjectTree(compilationUnit);
         ProgramUnit programUnit = compilationUnit.getProgramUnit();
         String prog = convertProgram(programUnit);
         System.out.println(prog);
     }
 
-    private static CompilationUnit getProgram(String cblFile, String compUnit) throws IOException {
+    private static CompilationUnit getProgram(String cblFile, String compUnit, CobolPreprocessor.CobolSourceFormatEnum format, String encoding) throws IOException {
         File inputFile = new File(cblFile);
 
-        CobolPreprocessor.CobolSourceFormatEnum format = CobolPreprocessor.CobolSourceFormatEnum.TANDEM;
         CobolParserRunnerImpl cobolParserRunner = new CobolParserRunnerImpl() {
             public Program analyzeFile(final File cobolFile, final CobolPreprocessor.CobolSourceFormatEnum format) throws IOException {
                 final CobolParserParams params = createDefaultParams(format, cobolFile);
-//                params.setCharset(Charset.forName("GB2312"));
+                if(encoding != null)
+                    params.setCharset(Charset.forName(encoding));
                 return analyzeFile(cobolFile, params);
             }
         };

@@ -1,11 +1,20 @@
 package {{% model_package}};
+{{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
+    {{%isInnerClass="yes";""}}
+    {{>model}}
+{{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}
 
 public class {{compilationUnit.name}} {
 {{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
 {{%isInnerClass="no";""}}
 {{>properties}}
-{{%isInnerClass="yes";""}}
-{{>model}}
+{{^pictureClause}}
+    {{%
+        innerCls = name_toClass(obj_getVar("name"));
+        filedName = name_toField(obj_getVar("name"));
+    ""}}
+    private {{%innerCls)}} {{%filedName}};
+{{/pictureClause}}
 {{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}
 {{>procedure}}
 }

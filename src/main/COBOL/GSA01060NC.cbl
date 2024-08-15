@@ -38,74 +38,11 @@
       ****************************************************************
        01  FILLER                      PIC X(24)
                                        VALUE '/// WK-AREA GSA01060///'.
-       01  PSACONST.
-           COPY                        PSACONST.
-       01  PCMCONST.
-           COPY                        PCMCONST.
-       01  PCICONST.
-           COPY                        PCICONST.
-       01  PECCONST.
-           COPY                        PECCONST.           
       ****************************************************************
       * EXTERNAL KB/CF INTERFACE AREA                                *
       ****************************************************************
        01  PKSAACN1.
            COPY                        PKSAACN1.           
-       01  PCECCSA8.
-           COPY                        PCECCSA8.
-       01  PCCICIF1.
-           COPY                        PCCICIF1.
-       01  PCSAPME0.
-           COPY                        PCSAPME0. 
-       01  PCSARMA0.
-           COPY                        PCSARMA0.
-       01  PCCMENC3.
-           COPY                        PCCMENC3.
-       01  PCCMLST1.
-           COPY                        PCCMLST1.
-       01  PCCMMSC2.
-           COPY                        PCCMMSC2.
-       01  PCCICLTA.
-           COPY                        PCCICLTA.
-       01  PCCIRAA0.
-           COPY                        PCCIRAA0.
-       01  PCECAGT0.
-           COPY                        PCECAGT0.
-       01  PCCMAUH1.
-           COPY                        PCCMAUH1.
-       01  PCECCII1.
-           COPY                        PCECCII1. 
-       01  PCECACNC.
-           COPY                        PCECACNC.
-       01  PCECACND.
-           COPY                        PCECACND.    
-       01  PCCMDAT1.
-           COPY                        PCCMDAT1.   
-       01  PCCMCHK1.
-           COPY                        PCCMCHK1.  
-       01  PCECCII7.
-           COPY                        PCECCII7. 
-       01  PCCBAPAT.
-           COPY                        PCCBAPAT.
-      ****************************************************************
-      * APPLICATION SERVER INTERFACE AREA                            *
-      ****************************************************************
- 
-      ****************************************************************
-      * DBI PARAMETER AREA                                           *
-      ****************************************************************
-       01  PDBIMAIN.
-           COPY                        PDBIMAIN.
-       01  DBI-FTCALL.
-           COPY                        FTCALL.
-       01  DBI-RTRN.
-           COPY                        FTRTRN.
-      
-      ****************************************************************
-      * DB SEGMENT AND FILE DEFINITION AREA                          *
-      ****************************************************************
-       01  CMMSCSAW.
-           COPY                        CMMSCSAW.           
       ****************************************************************
       * WORK VARIABLE DEFINITION AREA                                *
       ****************************************************************
@@ -117,8 +54,6 @@
            05  WK-EOF-FLAG             PIC X(1).  
            05  WK-CMDATE-END-DATE      PIC X(8). 
            05  WK-AGT-BIRDT            PIC X(8).                                                              
-       01  WK-PCECCII1.
-           COPY                        PCECCII1.
       * 1030外汇开户用子交易码为01
        01  WK-SUB-TX-CODE.
            05  WK-SUB-TX-CODE-1060     PIC X(02) VALUE '00'.
@@ -150,43 +85,7 @@
       * 贷方流入限额           
       ****************************************************************
        LINKAGE SECTION.
-      ****************************************************************
-      * APPLICATION INTERFACE AREA                                   *
-      ****************************************************************
-           COPY                        APPAREAT.     
-      ****************************************************************
-      * PFP AREA                                                     *
-      ****************************************************************
-           COPY                        PFPAREA.
-       01  CBIBAARE.
-           COPY                        CBIBAARE.
-    
-      ****************************************************************
-      * COMMON TRANSACTION FIELD                                     *
-      ****************************************************************
-       01  TFT-AREA.
-           COPY                        CTFTSA0.
-       01  INM-AREA.
-           COPY                        CBINMMSG.      
-      ****************************************************************
-      * OUTPUT FORM AREA                                             *
-      ****************************************************************
-       01  FRM-AREA.
-           05  SSA10600.
-               COPY                    SSA10600.
-           05  PZZC0211.
-               COPY                    PZZC0211.
-           05  MZZC0212.
-               COPY                    MZZC0212.
-           05  PZZZ1120.
-               COPY                    PZZZ1120.
-           05  PSA10300.
-               COPY                    PSA10300.
-           05  FLAST.
-               COPY                    FFFFFFFF.
-      
-      ****************************************************************
-      ****************************************************************
+     ****************************************************************
        PROCEDURE DIVISION USING APA-AREA.
       ****************************************************************
        0000-MAIN-PROCESS-RTN.
@@ -205,8 +104,6 @@
            GOBACK.
       
        1000-TXN-INIT-RTN.
-           COPY                        SETAREAT.
-           COPY                        SETPFP.
            SET ADDRESS OF CBIBAARE     TO APA-IBA-ADDR.
            SET ADDRESS OF INM-AREA     TO APA-INM-ADDR.
            CALL 'GSYSMOTR' USING AIF-AREA
@@ -1755,6 +1652,4 @@
              MOVE 'FN026'              TO AIF-MSG-CODE
              PERFORM 9999-MESSAGE-HANDLE-RTN
            END-IF.
-           
-       9999-MESSAGE-HANDLE-RTN.
-           COPY                        GSYSEHRT.
+

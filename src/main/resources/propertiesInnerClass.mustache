@@ -1,0 +1,10 @@
+{{>properties}}
+    {{^pictureClause}}
+        {{%
+            innerCls = name_toClass(obj_getVar("name"));
+            filedName = name_toField(obj_getVar("name"));
+            name_enterClass(filedName);
+        ""}}
+    {{%isInnerClass == "yes" ? "" :"private "}}{{%innerCls)}} {{%filedName}};
+        {{%clsName=innerCls;isInnerClass="yes";""}}{{*dataDescriptionEntries}}{{%name_exitClass();""}}
+    {{/pictureClause}}
