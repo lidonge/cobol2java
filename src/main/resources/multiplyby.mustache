@@ -1,0 +1,18 @@
+{{#byOperands}}
+    {{#operandCall}}
+        {{%
+            delegate = name_delegateName(name_toField(obj_getVar("delegate.delegate.name")));
+        ""}}
+        {{%delegate}} = {{%delegate}} * {{%sendValue}};
+    {{/operandCall}}
+{{/byOperands}}
+{{#givingOperand}}
+    {{%multiplyValue = sendValue;""}}
+    {{#operandValueStmt}}{{>call1}}{{>literal1}}{{/operandValueStmt}}
+    {{#results}}
+        {{%
+            delegate = name_delegateName(name_toField(obj_getVar("resultCall.delegate.delegate.name")));
+        ""}}
+        {{%delegate}} = {{%sendValue}} * {{%multiplyValue}};
+    {{/results}}
+{{/givingOperand}}

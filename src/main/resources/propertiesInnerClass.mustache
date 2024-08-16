@@ -6,5 +6,7 @@
             name_enterClass(filedName);
         ""}}
     {{%isInnerClass == "yes" ? "" :"private "}}{{%innerCls)}} {{%filedName}};
-        {{%clsName=innerCls;isInnerClass="yes";""}}{{*dataDescriptionEntries}}{{%name_exitClass();""}}
+        {{%
+            clsName=innerCls;isInnerClass="yes";
+        ""}}{{*dataDescriptionEntries}}{{%name_exitClass();""}}
     {{/pictureClause}}

@@ -38,13 +38,17 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
 //        new ObjectTreePrinter().printObjectTree(compilationUnit);
-        convertAll(cblDir + "Accept.cbl", "Accept");
+        convertAll(cblDir + "Example.cbl", "EXAMPLE");
         if (false) {
+            convertAll(cblDir + "Data.cbl", "Data");
             convertAll(cblDir + "Accept.cbl", "Accept");
             convertAll(cblDir + "Init.cbl", "Init");
             convertAll(cblDir + "Move.cbl", "Move");
             convertAll(cblDir + "Add.cbl", "Add");
             convertAll(cblDir + "Subtract.cbl", "Subtract");
+            convertAll(cblDir + "Multiply.cbl", "Multiply");
+            convertAll(cblDir + "Divide.cbl", "Divide");
+            convertAll(cblDir + "Compute.cbl", "Compute");
             convertAll(cblDir + "Example.cbl", "EXAMPLE");
             convertAll(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312");
         }
@@ -118,6 +122,9 @@ public class Test {
                 addFunction("name_exitClass", args -> ((Func) getVar("__System_Function")).name_exitClass());
                 addFunction("name_putInnerField", args -> ((Func) getVar("__System_Function")).name_putInnerField((String) args[0]));
                 addFunction("name_delegateName", args -> ((Func) getVar("__System_Function")).name_delegateName((String) args[0]));
+                addFunction("expr_convertExpr", args -> ((Func) getVar("__System_Function")).expr_convertExpr((String) args[0]));
+                addFunction("array_initString", args -> ((Func) getVar("__System_Function")).array_initString(args[0].toString(), args[1].toString()));
+                addFunction("type_getType", args -> ((Func) getVar("__System_Function")).type_getType((String) args[0]));
             }
         });
         writer.getExprEvaluator().setVar("model_package", "free.test");

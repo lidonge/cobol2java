@@ -1,0 +1,6 @@
+{{%statementType=obj_getVar("statementType");MULTIPLY = statementType == "MULTIPLY" ? "MULTIPLY" : null;""}}
+{{#$MULTIPLY}}
+    {{#operandValueStmt}}{{>call1}}{{>literal1}}{{/operandValueStmt}}
+    {{#byPhrase}}{{>multiplyby}}{{/byPhrase}}
+    {{#givingPhrase}}{{>multiplyby}}{{/givingPhrase}}
+{{/MULTIPLY}}

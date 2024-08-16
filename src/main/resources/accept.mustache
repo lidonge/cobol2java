@@ -1,6 +1,6 @@
+{{#literal}}{{>literal}}{{/literal}}
+{{#acceptCall}}{{>call}}{{/acceptCall}}
+{{%accpName=operand;""}}
 {{#acceptCall.delegate.delegate}}
-        {{%
-            delegate = name_toField(obj_getVar("name"));
-            delegate=name_delegateName(delegate);
-        }} = {{%sType = obj_getVar("acceptType");sType == "DATE" ? "Util.now();" : "Util.Input()"}}
+        {{%accpName}} = {{%sType = obj_getVar("acceptType");sType == "DATE" ? "Util.now();" : "Util.Input()"}}
 {{/acceptCall.delegate.delegate}}

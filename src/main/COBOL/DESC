@@ -1,4 +1,3 @@
-    01 WS-DESCRIPTION.
        05 WS-NUM.
           10 WS-NUM1 PIC 9(2) VALUE 20.
           10 WS-NUM2 PIC 9(2) VALUE 56.

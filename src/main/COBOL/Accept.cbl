@@ -4,7 +4,7 @@
        WORKING-STORAGE SECTION.
        01 SOME-PERSON.
           05 PERSON-NAME PIC X(20) VALUE "Grace Hopper".
-       01 DESC,
+       01 DESC.
           COPY  DESC.
        01 WS-STUDENT-NAME PIC X(25).
        01 WS-DATE PIC X(10).

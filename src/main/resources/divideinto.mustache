@@ -1,0 +1,24 @@
+{{#intos}}
+    {{#givingCall}}
+        {{%rounded = (obj_getVar("rounded") +"") == "true" ? "yes":null;""}}
+        {{%
+            delegate = name_toField(obj_getVar("delegate.delegate.name"));
+            delegate = name_delegateName(delegate);
+            intoValue = delegate;
+        "")}}
+        {{%delegate}} = {{#$rounded}}Math.round({{/rounded}}{{%intoValue}} / {{%divideOpand}}{{#$rounded}}){{/rounded}};
+        {{#$remainder}}{{%remainder}}={{%intoValue}} % {{%divideOpand}};{{/remainder}}
+    {{/givingCall}}
+{{/intos}}
+{{#byValueStmt}}{{>call1}}{{>literal1}}{{%intoValue=divideOpand;divideOpand=sendValue;""}}{{/byValueStmt}}
+{{#intoValueStmt}}{{>call1}}{{>literal1}}{{%intoValue=sendValue;""}}{{/intoValueStmt}}
+{{#givingPhrase}}
+    {{#givings}}
+        {{%rounded = (obj_getVar("rounded") +"") == "true" ? "yes":null;""}}
+        {{%
+            delegate = name_delegateName(name_toField(obj_getVar("givingCall.delegate.delegate.name")));
+        ""}}
+        {{%delegate}} = {{#$rounded}}Math.round({{/rounded}}{{%intoValue}} / {{%divideOpand}}{{#$rounded}}){{/rounded}};
+        {{#$remainder}}{{%remainder}}={{%intoValue}} % {{%divideOpand}};{{/remainder}}
+    {{/givings}}
+{{/givingPhrase}}
