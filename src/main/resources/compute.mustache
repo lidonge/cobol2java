@@ -2,9 +2,8 @@
 {{#$COMPUTE}}
     {{#arithmeticExpression}}{{%arithmeticExpression=expr_convertExpr(obj_getVar("ctx.text"));""}}{{/arithmeticExpression}}
     {{#stores}}
+        {{#storeCall}}{{>call}}{{%storeName=operand;""}}{{/storeCall}}
         {{%
-            storeName=name_toField(obj_getVar("storeCall.delegate.delegate.name"));
-            storeName=name_delegateName(storeName);
             rounded=obj_getVar("rounded") ? "yes":null;
         ""}}
         {{%storeName}}={{#$rounded}}Math.round({{/rounded}}{{%arithmeticExpression}}{{#$rounded}}){{/rounded}};

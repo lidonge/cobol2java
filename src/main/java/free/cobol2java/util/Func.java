@@ -9,7 +9,43 @@ import java.util.regex.Pattern;
  */
 public class Func {
     private Map<String,String> fieldToQualifiedName = new HashMap<>();
+    private Map<String,String> qualifiedNameToDimLevel = new HashMap<>();
     private Stack<String> clsLevel = new Stack<>();
+    private Stack<Integer> curDims = new Stack<>();
+    public int dim_push(Number dim){
+        return curDims.push(dim.intValue());
+    }
+    public int dim_pop(){
+        return curDims.pop();
+    }
+
+    public int dim_peek(){
+        return curDims.peek();
+    }
+    public int dim_size(){
+        return curDims.size();
+    }
+
+    public String dim_putQlfLevel(String qlfName, String dimLevelStr){
+        if(qlfName == null || "null".equals(qlfName))
+            return null;
+        qualifiedNameToDimLevel.put(qlfName,dimLevelStr);
+        String realQlfName = dimLevelStr.lastIndexOf(",0") != -1 ? qlfName.substring(0, qlfName.lastIndexOf('.')) : qlfName;
+        return qualifiedNameToDimLevel.put(realQlfName,dimLevelStr);
+    }
+
+    public String dim_getQlfLevel(String qlfName){
+        return qualifiedNameToDimLevel.get(qlfName);
+    }
+    public String dim_value(){
+        String ret = "";
+        for(int i = 0;i<curDims.size();i++){
+            if(i !=0)
+                ret += ",";
+            ret += curDims.get(i);
+        }
+        return ret;
+    }
     public String name_toClass(String cblName){
         String[] parts = cblName.split("-");
         String ret = "";
@@ -52,11 +88,43 @@ public class Func {
             fieldToQualifiedName.put(fieldName,qualifiedName);
         return qualifiedName;
     }
-
-    public String name_delegateName(String fieldName){
+    public String name_delegateName(String fieldName) {
         String ret = fieldToQualifiedName.get(fieldName);
-        if(ret == null)
+        if( ret == null)
             ret = fieldName;
+        return name_delegateName1(ret,null);
+    }
+    public String name_delegateName1(String fieldName, String dimStr){
+        String ret = fieldName;
+        if(dimStr != null) {
+            String dimLevelStr = dim_getQlfLevel(fieldName);
+            String[] dims = dimStr.split(",");
+            String[] names = ret.split("\\.");
+            String[] level = dimLevelStr.split(",");
+            if(level.length == names.length){
+                String[] lv = new String[names.length-1];
+                System.arraycopy(level,0,lv,0,lv.length);
+                level = lv;
+            }
+            ret = "";
+            int usedDim = 0;
+            for(int i = 0;i<level.length;i++){
+                String node;
+                if(level[level.length-1-i].equals("0")) {
+                    node = names[names.length-1-i];
+                }else{
+                    node = names[names.length-1-i] +"["+dims[dims.length-1-usedDim]+"]";
+                    usedDim++;
+                }
+                if(i != 0){
+                    node += ".";
+                }
+                ret = node +ret;
+            }
+            for(int i= level.length;i<names.length;i++){
+                ret = names[names.length-i-1]+"." +ret;
+            }
+        }
         return ret;
     }
     private String createQualifedName(String fieldName) {
@@ -84,9 +152,31 @@ public class Func {
         }
         String ret = expression;
         for(String id:variables){
-            ret = ret.replace(id,name_delegateName(name_toField(id)));
+            String fieldName = name_toField(id);
+            String[] dims = getDimStringOfVar(cobolExpr,id);
+            String dimStr = dims[1];
+            if(dimStr == null) {
+                ret = ret.replace(id, name_delegateName(fieldName));
+            }else{
+                String qlfNameWithDims = name_delegateName1(name_delegateName(fieldName),dimStr);
+                ret = dims[0] + qlfNameWithDims+dims[2];
+            }
         }
         return ret.indexOf('^') != -1 ? ExprUtil.convertExpression(ret):ret;
+    }
+    private String[] getDimStringOfVar(String cobolExpr, String var){
+        String [] ret = new String[3];
+        int index = cobolExpr.indexOf(var);
+        String sub = cobolExpr.substring(index + var.length()).trim();
+        ret[0] = cobolExpr.substring(0,index);
+        ret[2] = sub;
+        if(sub.length() !=0 && sub.charAt(0) == '('){
+            int leftIndex = sub.indexOf(')');
+            String dimString = sub.substring(1,leftIndex);
+            ret[1] = dimString;
+            ret[2] = sub.substring(leftIndex+1);
+        }
+        return ret;
     }
 
     public String array_initString(String dims, String val) {

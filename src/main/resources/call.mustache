@@ -3,9 +3,8 @@
     isTable = obj_getVar("delegate.callType") == "TABLE_CALL";
     delegate= isTable? name_toField(obj_getVar("delegate.name")) :
         name_toField(obj_getVar("delegate.delegate.name"));
-    delegate= name_delegateName(delegate);
-    operand = delegate;
+    operand = name_delegateName(delegate);
 ""}}{{#delegate.subscripts}}{{%
     dimString = isTable ? obj_getVar("ctx.text"):null;
-    operand = operand + (dimString == null ? "": "["+dimString+"]");
+    operand = str_indexOf(dimString,":") !=-1 ? "Util.subvalue("+operand+",\""+dimString+"\")" : name_delegateName1(operand, dimString);
 ""}}{{/delegate.subscripts}}

@@ -1,11 +1,10 @@
-{{%
-    sType=obj_getVar("pictureClause.pictureString");
-    propType=type_getType(sType);
-""}}
-    {{#pictureClause}}
+{{#pictureClause}}
     {{%
+        sType=obj_getVar("pictureString");
+        propType=type_getType(sType);
         theFieldName=name_toField(obj_getVar("name"));
         theQlfName=name_putInnerField(theFieldName);
+        dim_putQlfLevel(theQlfName,dim_value());
     ""}}
     {{%isInnerClass == "yes" ? "" :"private "}}{{%propType}}{{%
     ""}}{{#$dimStr}}[]{{/dimStr}} {{%theFieldName}}{{^valueClause}}{{%
@@ -13,4 +12,4 @@
     ""}}{{#valueIntervals}}{{#fromValueStmt}}{{%
     ""}}{{>call}}{{#literal}}{{>literal}}{{/literal}} = {{#$dimStr}}new {{%propType}}[{{%dimStr}}] {{/dimStr}}{{%
     ""}}{{#$dimStr}}{{%array_initString(dimStr,operand)}}{{/dimStr}}{{%
-    ""}}{{^$dimStr}}{{%operand}}{{/dimStr}}{{/fromValueStmt}}{{/valueIntervals}};{{/valueClause}}
+    ""}}{{^$dimStr}}{{%operand}}{{/dimStr}}{{/fromValueStmt}}{{/valueIntervals}};{{/valueClause}}{{#pictureClause}}{{%isInnerClass=="yes" ?dim_pop():null;""}}{{/pictureClause}}

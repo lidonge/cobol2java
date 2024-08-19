@@ -19,14 +19,25 @@
        01  LargeResult   PIC 9(7).
        01  WS-A             PIC 9(4)    VALUE 1000.
        01  WS-B             PIC 9(4)    VALUE 1000.
-
+       01  WS-Cls.
+           05 WS-C             PIC 9(4)    VALUE 1000.
+       01 WS-ARRAYS.
+           05 WS-NUMBER-ARRAY.
+               10 WS-NUMBER-ITEM OCCURS 10 TIMES PIC 9(3) VALUE 0.
+       01 WS-TABLE1.
+          05 WS-A1 OCCURS 10 TIMES.
+             10 WS-B1 PIC A(10).
+             10 WS-C1 OCCURS 5 TIMES.
+                15 WS-D1 PIC X(6).
        PROCEDURE DIVISION.
 
+           COMPUTE Total1 = 3+WS-NUMBER-ITEM(4) * Quantity1 - 6.
            COMPUTE Total1 = 3+Price1 * Quantity1 - 6.
            COMPUTE Average = (Score1 + Score2 + Score3) / 3.
            COMPUTE Total1 WS-Score1 = 3 +(5 - Price1) ** 6 + 3**6.
            COMPUTE RoundedTotal ROUNDED = Total1 * TaxRate .
-           COMPUTE LargeResult = WS-A * WS-B ON SIZE ERROR DISPLAY "Error: Size exceeded".
+           COMPUTE Total1 = 3+WS-D1(2,1).
+           COMPUTE LargeResult = WS-A * WS-C ON SIZE ERROR DISPLAY "Error: Size exceeded".
 *           COMPUTE Total1 = Price1 * Quantity1, Total2 = Price2 * Quantity2.
 
            STOP RUN.

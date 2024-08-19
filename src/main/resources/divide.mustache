@@ -1,8 +1,9 @@
 {{%statementType=obj_getVar("statementType");DIVIDE = statementType == "DIVIDE" ? "DIVIDE" : null;""}}
 {{#$DIVIDE}}
     {{%divideOpand=null;remainder=null;""}}
-    {{#operandValueStmt}}{{>call1}}{{>literal1}}{{%divideOpand=sendValue;""}}{{/operandValueStmt}}
-    {{#remainder}}{{%remainder=name_delegateName(name_toField(obj_getVar("remainderCall.delegate.delegate.name")));""}}{{/remainder}}
+    {{#operandValueStmt}}{{#literal}}{{>literal}}{{/literal}}
+    {{#call}}{{>call}}{{/call}}{{%divideOpand = operand;""}}{{/operandValueStmt}}
+    {{#remainder}}{{#remainderCall}}{{>call}}{{%remainder=operand;""}}{{/remainderCall}}{{/remainder}}
     {{#divideIntoStatement}}{{>divideinto}}{{/divideIntoStatement}}
     {{#divideIntoGivingStatement}}{{>divideinto}}{{/divideIntoGivingStatement}}
     {{#divideByGivingStatement}}{{>divideinto}}{{/divideByGivingStatement}}

@@ -38,7 +38,7 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
 //        new ObjectTreePrinter().printObjectTree(compilationUnit);
-        convertAll(cblDir + "Example.cbl", "EXAMPLE");
+        convertAll(cblDir + "Compute.cbl", "Compute");
         if (false) {
             convertAll(cblDir + "Data.cbl", "Data");
             convertAll(cblDir + "Accept.cbl", "Accept");
@@ -49,6 +49,7 @@ public class Test {
             convertAll(cblDir + "Multiply.cbl", "Multiply");
             convertAll(cblDir + "Divide.cbl", "Divide");
             convertAll(cblDir + "Compute.cbl", "Compute");
+            convertAll(cblDir + "Table.cbl", "Table");
             convertAll(cblDir + "Example.cbl", "EXAMPLE");
             convertAll(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312");
         }
@@ -115,6 +116,13 @@ public class Test {
                     func = new Func();
                     setVar("__System_Function", func);
                 }
+                addFunction("dim_push", args -> ((Func) getVar("__System_Function")).dim_push((Number) args[0]));
+                addFunction("dim_pop", args -> ((Func) getVar("__System_Function")).dim_pop());
+                addFunction("dim_peek", args -> ((Func) getVar("__System_Function")).dim_peek());
+                addFunction("dim_size", args -> ((Func) getVar("__System_Function")).dim_size());
+                addFunction("dim_value", args -> ((Func) getVar("__System_Function")).dim_value());
+                addFunction("dim_putQlfLevel", args -> ((Func) getVar("__System_Function")).dim_putQlfLevel((String) args[0], (String) args[1]));
+                addFunction("dim_getQlfLevel", args -> ((Func) getVar("__System_Function")).dim_getQlfLevel((String) args[0]));
                 addFunction("str_replace", args -> ((String) args[0]).replace((String) args[1], (String) args[2]));
                 addFunction("name_toField", args -> ((Func) getVar("__System_Function")).name_toField((String) args[0]));
                 addFunction("name_toClass", args -> ((Func) getVar("__System_Function")).name_toClass((String) args[0]));
@@ -122,6 +130,7 @@ public class Test {
                 addFunction("name_exitClass", args -> ((Func) getVar("__System_Function")).name_exitClass());
                 addFunction("name_putInnerField", args -> ((Func) getVar("__System_Function")).name_putInnerField((String) args[0]));
                 addFunction("name_delegateName", args -> ((Func) getVar("__System_Function")).name_delegateName((String) args[0]));
+                addFunction("name_delegateName1", args -> ((Func) getVar("__System_Function")).name_delegateName1((String) args[0], (String) args[1]));
                 addFunction("expr_convertExpr", args -> ((Func) getVar("__System_Function")).expr_convertExpr((String) args[0]));
                 addFunction("array_initString", args -> ((Func) getVar("__System_Function")).array_initString(args[0].toString(), args[1].toString()));
                 addFunction("type_getType", args -> ((Func) getVar("__System_Function")).type_getType((String) args[0]));
