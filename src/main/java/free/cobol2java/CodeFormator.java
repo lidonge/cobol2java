@@ -10,21 +10,54 @@ import java.io.StringReader;
 public class CodeFormator {
 
     public static String formatCode(String code) {
-        BufferedReader reader = new BufferedReader(new StringReader(code));
-        StringBuffer sb = new StringBuffer();
-        String line;
-        try {
-            while ((line = reader.readLine()) != null) {
-                if (line.trim().length() == 0) {
+        StringBuilder formattedCode = new StringBuilder();
+        String[] lines = code.split("\n");
+        int indentLevel = 0;
+        boolean inMultilineComment = false;
 
-                } else {
-                    sb.append(line).append("\n");
-                }
+        for (String line : lines) {
+            line = line.trim();
+
+            // Skip empty lines
+            if (line.isEmpty()) {
+                continue;
             }
-        }catch (IOException e){
-            e.printStackTrace();
+
+            // Handle multiline comments
+            if (line.startsWith("/*")) {
+                inMultilineComment = true;
+            }
+
+            if (inMultilineComment) {
+                formattedCode.append(line).append("\n");
+                if (line.endsWith("*/")) {
+                    inMultilineComment = false;
+                }
+                continue;
+            }
+
+            // Adjust indent level for closing braces
+            if (line.endsWith("}") || line.startsWith("}")) {
+                indentLevel--;
+            }
+
+            // Add the line with the current indent level
+            addIndentedLine(formattedCode, line, indentLevel);
+
+            // Adjust indent level for opening braces
+            if (line.endsWith("{")) {
+                indentLevel++;
+            }
         }
-        return sb.toString();
+
+        return formattedCode.toString();
+    }
+
+    private static void addIndentedLine(StringBuilder formattedCode, String line, int indentLevel) {
+        for (int i = 0; i < indentLevel; i++) {
+            formattedCode.append("    "); // Each indent level equals 4 spaces
+        }
+        formattedCode.append(line).append("\n");
     }
 
 }

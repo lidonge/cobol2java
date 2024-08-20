@@ -1,0 +1,12 @@
+{{#varyingPhrase}}
+    {{#fromPhrase}}
+        {{#fromValueStmt.literal}}{{>literal}}{{%fromValue=operand;""}}{{/fromValueStmt.literal}}
+    {{/fromPhrase}}
+    {{#byPhrase}}
+        {{#byValueStmt.literal}}{{>literal}}{{%stepValue=operand;""}}{{/byValueStmt.literal}}
+    {{/byPhrase}}
+    {{#until}}{{>until}}{{/until}}
+    {{#varyingValueStmt}}
+        {{#call}}{{%varValue=name_toField(obj_getVar("delegate.delegate.name"));""}}{{/call}}
+    {{/varyingValueStmt}}
+{{/varyingPhrase}}

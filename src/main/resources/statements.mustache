@@ -1,5 +1,5 @@
 {{#statements}}
-    {{#-first}}{{#$needDefaultParagraph}}public void execute(){ {{/needDefaultParagraph}}{{/-first}}
+    {{#-first}}{{#$needDefaultParagraph}}public void procedure(){ {{/needDefaultParagraph}}{{/-first}}
     {{>accept}}
     {{>display}}
     {{>init}}
@@ -9,6 +9,8 @@
     {{>multiply}}
     {{>divide}}
     {{>compute}}
+    {{>perform}}
+    {{>goto}}
     {{#-last}}{{#$needDefaultParagraph}}
     }{{/needDefaultParagraph}}{{/-last}}
 {{/statements}}

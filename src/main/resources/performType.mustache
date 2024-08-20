@@ -1,0 +1,10 @@
+{{%times=null;testClause==null;varying=null;""}}
+{{#performType}}
+    {{%performType = "yes";""}}
+    {{>times}}
+    {{#until}}{{>until}}{{/until}}
+    {{#varying}}{{%varying="yes";""}}
+        {{#varyingClause}}{{>varyingClause}}{{/varyingClause}}
+        {{#testClause}}{{>testClause}}{{/testClause}}
+    {{/varying}}
+{{/performType}}

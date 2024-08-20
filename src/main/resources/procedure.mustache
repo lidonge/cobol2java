@@ -1,4 +1,11 @@
-{{#procedureDivision}}
+{{#procedureDivision}}{{%isContinue="yes";""}}
+    {{#paragraphs}}
+    {{#-first}}public void procedure(){ {{/-first}}
+        {{#$isContinue}}{{name}}();{{/isContinue}}
+    {{#statements}}{{%statementType=obj_getVar("statementType");isContinue = statementType == "STOP" ? null : isContinue;""}}{{/statements}}
+    {{#-last}}
+    }{{/-last}}
+    {{/paragraphs}}
 {{#paragraphs}}
 {{#name}}
     public void {{%name_toField(obj_getVar("name"))}}(){

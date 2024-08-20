@@ -1,8 +1,0 @@
-{{#call}}{{%
-        sendValue = name_toField(obj_getVar("delegate.delegate.name"));
-        isTableCall = sendValue == null;
-        sendValue = isTableCall ? name_toField(obj_getVar("delegate.name")) : sendValue;
-        sendValue = name_delegateName(sendValue);
-        valueRange = isTableCall ? obj_getVar("delegate.ctx.text"):null;
-        sendValue = isTableCall ? "Util.subvalue("+sendValue+",\""+valueRange+"\")":sendValue;
-    ""}}{{/call}}

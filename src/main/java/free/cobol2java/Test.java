@@ -38,7 +38,7 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
 //        new ObjectTreePrinter().printObjectTree(compilationUnit);
-        convertAll(cblDir + "Compute.cbl", "Compute");
+        convertAll(cblDir + "Perform.cbl", "Perform");
         if (false) {
             convertAll(cblDir + "Data.cbl", "Data");
             convertAll(cblDir + "Accept.cbl", "Accept");
@@ -50,6 +50,7 @@ public class Test {
             convertAll(cblDir + "Divide.cbl", "Divide");
             convertAll(cblDir + "Compute.cbl", "Compute");
             convertAll(cblDir + "Table.cbl", "Table");
+            convertAll(cblDir + "Perform.cbl", "Perform");
             convertAll(cblDir + "Example.cbl", "EXAMPLE");
             convertAll(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312");
         }
@@ -148,7 +149,7 @@ public class Test {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                } catch (URISyntaxException e) {
+                } catch (Throwable e) {
                     throw new RuntimeException(e);
                 }
             }

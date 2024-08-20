@@ -1,0 +1,32 @@
+{{%performType = null;""}}
+{{#performInlineStatement}}{{>performType}}{{/performInlineStatement}}
+{{#performProcedureStatement}}{{>performType}}{{/performProcedureStatement}}
+{{#$times}}
+        for(int i = 0;i<{{%times}};i++){
+{{/times}}
+{{^$varying}}{{#$condition}}
+        {{#$before}}while({{%condition}}){ {{/before}}
+        {{#$after}}do{ {{/after}}
+{{/condition}}{{/varying}}
+{{#$varying}}
+        for(int {{%varValue}}={{%fromValue}};{{%condition}};{{%varValue}} += {{%stepValue}}){
+{{/varying}}
+{{#performProcedureStatement.performType.varying.varyingClause.afters}}{{>varyingClause}}
+            for(int {{%varValue}}={{%fromValue}};{{%condition}};{{%varValue}} += {{%stepValue}}){
+{{/performProcedureStatement.performType.varying.varyingClause.afters}}
+{{#performInlineStatement}}{{>statements}}{{/performInlineStatement}}
+{{#performProcedureStatement}}{{#calls}}{{>procedureName}}
+{{%procedureName}}();
+{{/calls}}{{/performProcedureStatement}}
+    {{^$varying}}{{^$after}}{{#$performType}}
+        }
+    {{/performType}}{{/after}}
+    {{#$after}}
+        }while({{%condition}});
+    {{/after}}{{/varying}}
+{{#performProcedureStatement.performType.varying.varyingClause.afters}}
+        }
+{{/performProcedureStatement.performType.varying.varyingClause.afters}}
+{{#$varying}}
+    }
+{{/varying}}
