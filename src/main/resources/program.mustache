@@ -1,13 +1,13 @@
 package {{% model_package}};
 {{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
     {{%isInnerClass="yes";""}}
-    {{>model}}
+    {{>model.model}}
 {{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}
 
 public class {{compilationUnit.name}} {
 {{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
 {{%isInnerClass="no";""}}
-{{>properties}}
+{{>model.properties}}
 {{^pictureClause}}
     {{%
         innerCls = name_toClass(obj_getVar("name"));

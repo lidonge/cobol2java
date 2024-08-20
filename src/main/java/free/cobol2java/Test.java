@@ -38,8 +38,8 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
 //        new ObjectTreePrinter().printObjectTree(compilationUnit);
-        convertAll(cblDir + "Perform.cbl", "Perform");
-        if (false) {
+        convertAll(cblDir + "Table.cbl", "Table");
+        if (true) {
             convertAll(cblDir + "Data.cbl", "Data");
             convertAll(cblDir + "Accept.cbl", "Accept");
             convertAll(cblDir + "Init.cbl", "Init");
@@ -52,7 +52,7 @@ public class Test {
             convertAll(cblDir + "Table.cbl", "Table");
             convertAll(cblDir + "Perform.cbl", "Perform");
             convertAll(cblDir + "Example.cbl", "EXAMPLE");
-            convertAll(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312");
+//            convertAll(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312");
         }
     }
 
@@ -141,7 +141,7 @@ public class Test {
         writer.setPartialFileHandler(new IPartialFileHandler() {
             @Override
             public Template compilePartialTemplate(String partialName) {
-                URL url = TestRecursion.class.getResource("/" + partialName + ".mustache");
+                URL url = TestRecursion.class.getResource(File.separator + partialName.replace(".",File.separator) + ".mustache");
                 try {
                     MustacheCompiler mustacheCompiler = new MustacheCompiler(url);
                     try {

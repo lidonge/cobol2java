@@ -4,7 +4,7 @@
     {{#operandValueStmt}}{{#literal}}{{>literal}}{{/literal}}
     {{#call}}{{>call}}{{/call}}{{%divideOpand = operand;""}}{{/operandValueStmt}}
     {{#remainder}}{{#remainderCall}}{{>call}}{{%remainder=operand;""}}{{/remainderCall}}{{/remainder}}
-    {{#divideIntoStatement}}{{>divideinto}}{{/divideIntoStatement}}
-    {{#divideIntoGivingStatement}}{{>divideinto}}{{/divideIntoGivingStatement}}
-    {{#divideByGivingStatement}}{{>divideinto}}{{/divideByGivingStatement}}
+    {{#divideIntoStatement}}{{>baseActions.divideinto}}{{/divideIntoStatement}}
+    {{#divideIntoGivingStatement}}{{>baseActions.divideinto}}{{/divideIntoGivingStatement}}
+    {{#divideByGivingStatement}}{{>baseActions.divideinto}}{{/divideByGivingStatement}}
 {{/DIVIDE}}

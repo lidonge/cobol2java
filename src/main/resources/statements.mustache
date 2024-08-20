@@ -1,16 +1,16 @@
 {{#statements}}
     {{#-first}}{{#$needDefaultParagraph}}public void procedure(){ {{/needDefaultParagraph}}{{/-first}}
-    {{>accept}}
-    {{>display}}
-    {{>init}}
-    {{>move}}
-    {{>add}}
-    {{>substract}}
-    {{>multiply}}
-    {{>divide}}
-    {{>compute}}
-    {{>perform}}
-    {{>goto}}
+    {{>baseActions.accept}}
+    {{>baseActions.display}}
+    {{>baseActions.init}}
+    {{>baseActions.move}}
+    {{>baseActions.add}}
+    {{>baseActions.substract}}
+    {{>baseActions.multiply}}
+    {{>baseActions.divide}}
+    {{>baseActions.compute}}
+    {{>loop.perform}}
+    {{>loop.goto}}
     {{#-last}}{{#$needDefaultParagraph}}
     }{{/needDefaultParagraph}}{{/-last}}
 {{/statements}}

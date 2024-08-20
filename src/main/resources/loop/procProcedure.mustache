@@ -1,6 +1,6 @@
 {{%performType = null;""}}
-{{#performInlineStatement}}{{>performType}}{{/performInlineStatement}}
-{{#performProcedureStatement}}{{>performType}}{{/performProcedureStatement}}
+{{#performInlineStatement}}{{>loop.performType}}{{/performInlineStatement}}
+{{#performProcedureStatement}}{{>loop.performType}}{{/performProcedureStatement}}
 {{#$times}}
         for(int i = 0;i<{{%times}};i++){
 {{/times}}
@@ -11,11 +11,11 @@
 {{#$varying}}
         for(int {{%varValue}}={{%fromValue}};{{%condition}};{{%varValue}} += {{%stepValue}}){
 {{/varying}}
-{{#performProcedureStatement.performType.varying.varyingClause.afters}}{{>varyingClause}}
+{{#performProcedureStatement.performType.varying.varyingClause.afters}}{{>loop.varyingClause}}
             for(int {{%varValue}}={{%fromValue}};{{%condition}};{{%varValue}} += {{%stepValue}}){
 {{/performProcedureStatement.performType.varying.varyingClause.afters}}
 {{#performInlineStatement}}{{>statements}}{{/performInlineStatement}}
-{{#performProcedureStatement}}{{#calls}}{{>procedureName}}
+{{#performProcedureStatement}}{{#calls}}{{>loop.procedureName}}
 {{%procedureName}}();
 {{/calls}}{{/performProcedureStatement}}
     {{^$varying}}{{^$after}}{{#$performType}}

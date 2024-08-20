@@ -2,6 +2,6 @@
 {{#$MULTIPLY}}
     {{#operandValueStmt}}{{#literal}}{{>literal}}{{/literal}}
     {{#call}}{{>call}}{{/call}}{{%multiplyValue = operand;""}}{{/operandValueStmt}}
-    {{#byPhrase}}{{>multiplyby}}{{/byPhrase}}
-    {{#givingPhrase}}{{>multiplyby}}{{/givingPhrase}}
+    {{#byPhrase}}{{>baseActions.multiplyby}}{{/byPhrase}}
+    {{#givingPhrase}}{{>baseActions.multiplyby}}{{/givingPhrase}}
 {{/MULTIPLY}}

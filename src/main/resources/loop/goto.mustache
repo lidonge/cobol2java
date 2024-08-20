@@ -1,14 +1,14 @@
 {{%statementType=obj_getVar("statementType");GO_TO = statementType == "GO_TO" ? "GO_TO" : null;""}}
 {{#$GO_TO}}
     {{#simple}}{{#procedureCall}}
-        {{>procedureName}}{{%procedureName}}();
+        {{>loop.procedureName}}{{%procedureName}}();
     {{/procedureCall}}{{/simple}}
     {{#dependingOnPhrase}}
         {{#dependingOnCall}}{{>call}}{{/dependingOnCall}}
         switch({{%operand}}{
         {{#procedureCalls}}
             case {{-index}}:{
-                {{>procedureName}}{{%procedureName}}();
+                {{>loop.procedureName}}{{%procedureName}}();
                 break;
             }
         {{/procedureCalls}}

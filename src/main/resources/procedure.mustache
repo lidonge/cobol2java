@@ -1,7 +1,7 @@
 {{#procedureDivision}}{{%isContinue="yes";""}}
     {{#paragraphs}}
     {{#-first}}public void procedure(){ {{/-first}}
-        {{#$isContinue}}{{name}}();{{/isContinue}}
+        {{#$isContinue}}{{#name}}{{name}}();{{/name}}{{/isContinue}}
     {{#statements}}{{%statementType=obj_getVar("statementType");isContinue = statementType == "STOP" ? null : isContinue;""}}{{/statements}}
     {{#-last}}
     }{{/-last}}

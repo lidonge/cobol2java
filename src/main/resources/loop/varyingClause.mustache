@@ -5,7 +5,7 @@
     {{#byPhrase}}
         {{#byValueStmt.literal}}{{>literal}}{{%stepValue=operand;""}}{{/byValueStmt.literal}}
     {{/byPhrase}}
-    {{#until}}{{>until}}{{/until}}
+    {{#until}}{{>loop.until}}{{/until}}
     {{#varyingValueStmt}}
         {{#call}}{{%varValue=name_toField(obj_getVar("delegate.delegate.name"));""}}{{/call}}
     {{/varyingValueStmt}}
