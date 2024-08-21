@@ -1,14 +1,15 @@
 {{^pictureClause}}
-{{%
-    clsName=name_toClass(obj_getVar("name"));
-    name_enterClass(name_toField(obj_getVar("name")));
-""}}
-{{#dataDescriptionEntries}}
-{{>dimstr}}
-{{#-first}}
-class {{%clsName}} { {{/-first}}
-{{>model.properties}}
-{{>model.propertiesInnerClass}}{{#-last}}
-}{{/-last}}
-{{/dataDescriptionEntries}}{{%name_exitClass();""}}
+    {{%
+        clsName=name_toClass(obj_getVar("name"));
+        name_enterClass(name_toField(obj_getVar("name")));
+    ""}}
+    {{#dataDescriptionEntries}}{{>dimstr}}
+        {{#-first}}
+        class {{%clsName}} {
+        {{/-first}}
+                {{>model.properties}}
+                {{>model.propertiesInnerClass}}
+        {{#-last}}
+        }{{/-last}}
+    {{/dataDescriptionEntries}}{{%name_exitClass();""}}
 {{/pictureClause}}

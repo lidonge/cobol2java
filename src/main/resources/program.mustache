@@ -3,18 +3,15 @@ package {{% model_package}};
     {{%isInnerClass="yes";""}}
     {{>model.model}}
 {{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}
+{{#dataDivision.linkageSection.rootDataDescriptionEntries}}
+    {{%isInnerClass="yes";""}}
+    {{>model.model}}
+    {{>model.picture}}
+{{/dataDivision.linkageSection.rootDataDescriptionEntries}}
 
 public class {{compilationUnit.name}} {
 {{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
-{{%isInnerClass="no";""}}
-{{>model.properties}}
-{{^pictureClause}}
-    {{%
-        innerCls = name_toClass(obj_getVar("name"));
-        filedName = name_toField(obj_getVar("name"));
-    ""}}
-    private {{%innerCls)}} {{%filedName}};
-{{/pictureClause}}
+{{>progProperties}}
 {{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}
 {{>procedure}}
 }

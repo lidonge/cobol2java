@@ -1,0 +1,10 @@
+{{%isInnerClass="no";""}}
+{{>model.properties}}
+{{^pictureClause}}
+    {{%
+    innerCls = name_toClass(obj_getVar("name"));
+    fieldName = name_toField(obj_getVar("name"));
+    name_setFieldType(fieldName,innerCls);
+    ""}}
+    private {{%innerCls)}} {{%fieldName}};
+{{/pictureClause}}

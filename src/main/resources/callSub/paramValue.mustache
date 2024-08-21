@@ -1,0 +1,7 @@
+{{#valueStmt.call}}{{>call}}{{/valueStmt.call}}{{#referenceCall}}{{>call}}{{/referenceCall}}{{%
+""}}{{#$subparameters}}{{>callSub.linkageParam}}{{/subparameters}}{{%
+    param = subparameters != null ? operandType + " "+operand : operand;
+    param = subparameters == null && paramType== "byContents" ? "Util.clone("+param+")":param;
+    param = subparameters == null && paramType== "byReferences" ? "new "+name_getFieldType(operand)+"[]{"+param+"}":param;
+    parameters = parameters == null ?  param: parameters + "," + param;
+""}}

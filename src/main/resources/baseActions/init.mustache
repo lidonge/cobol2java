@@ -7,7 +7,7 @@
     {{#dataItemCalls}}
     {{>call}}{{%
         setName=operand;
-        setValue=byValue == null ? "Util.init("+setName + ");":byValue+";" ;
+        setValue=byValue == null ? "Util.init(\""+name_getFieldType(setName) + "\");":byValue+";" ;
     ""}}
         {{%setName}}={{%setValue}}{{/dataItemCalls}}
 {{/INITIALIZE}}

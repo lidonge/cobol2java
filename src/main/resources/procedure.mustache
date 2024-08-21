@@ -1,15 +1,21 @@
 {{#procedureDivision}}{{%isContinue="yes";""}}
-    {{#paragraphs}}
-    {{#-first}}public void procedure(){ {{/-first}}
-        {{#$isContinue}}{{#name}}{{name}}();{{/name}}{{/isContinue}}
+    {{^usingClause}}{{#paragraphs}}
+        {{#-first}}public void procedure(){ {{/-first}}
+        {{#$isContinue}}{{#name}}{{%name_toField(obj_getVar("name"))}}();{{/name}}{{/isContinue}}
     {{#statements}}{{%statementType=obj_getVar("statementType");isContinue = statementType == "STOP" ? null : isContinue;""}}{{/statements}}
     {{#-last}}
     }{{/-last}}
-    {{/paragraphs}}
+    {{/paragraphs}}{{/usingClause}}
 {{#paragraphs}}
-{{#name}}
-    public void {{%name_toField(obj_getVar("name"))}}(){
+{{#name}}{{%retType=null;retName=null;""}}
+    {{#givingClause}}{{#givingCall}}{{%
+        operand = name_toField(obj_getVar("name"));
+        retName=operand;retType=name_getFieldType(operand);""}}{{/givingCall}}{{/givingClause}}
+    public {{#$retType}}{{%retType}}{{/retType}}{{^$retType}}void{{/retType}} {{%name_toField(obj_getVar("name"))}}({{>callSub.subparameters}}){
+    {{#$retName}}{{%retType}} {{%retName}};{{/retName}}
     {{>statements}}
+    //TODO parameter transfer
+    {{#$retName}}return {{%retName}}{{/retName}}
     }{{/name}}
 {{/paragraphs}}
 {{%needDefaultParagraph="yes";""}}{{>statements}}

@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
  * @author lidong@date 2024-08-12@version 1.0
  */
 public class Func {
+    private Map<String,String> fieldToType = new HashMap<>();
+    private Map<String,String> fieldToClassType = new HashMap<>();
     private Map<String,String> fieldToQualifiedName = new HashMap<>();
     private Map<String,String> qualifiedNameToDimLevel = new HashMap<>();
     private Stack<String> clsLevel = new Stack<>();
@@ -66,6 +68,19 @@ public class Func {
         return ret;
     }
 
+    public String name_getFieldType(String fieldName){
+        String ret = fieldToType.get(fieldName);
+        return ret == null ? name_getFieldClsType(fieldName) : ret;
+    }
+    public String name_getFieldClsType(String fieldName){
+        return fieldToClassType.get(fieldName);
+    }
+    public String name_setFieldType(String fieldName, String type){
+        return fieldToType.put(fieldName, type);
+    }
+    public String name_setFieldClsType(String fieldName, String type){
+        return fieldToClassType.put(fieldName, type);
+    }
     public String type_getType(String cblType){
         boolean bString=cblType.indexOf("X(") != -1|| cblType.indexOf("A(") != -1;
         if(bString)

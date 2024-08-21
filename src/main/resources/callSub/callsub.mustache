@@ -1,0 +1,20 @@
+{{%statementType=obj_getVar("statementType");CALL = statementType == "CALL" ? "CALL" : null;""}}
+{{#$CALL}}
+    {{%givingName = null;""}}
+    {{#givingPhrase}}
+        {{#givings}}
+            {{#givingCall}}{{>call}}{{%givingName = operand;""}}{{/givingCall}}
+        {{/givings}}
+    {{/givingPhrase}}
+    {{#onOverflowPhrase}}{{%onOverflowPhrase="onOverflowPhrase";""}}{{/onOverflowPhrase}}
+    {{#programValueStmt.literal}}{{>literal}}{{%calleeClass = name_toClass(str_replace(operand,"\"",""));""}}{{/programValueStmt.literal}}
+    {{#onExceptionClause}}try{ {{/onExceptionClause}}
+        {{#$givingName}}{{%givingName}} = {{/givingName}}new {{%calleeClass}}().subLogic({{%
+    ""}}{{%parameters = null;
+    ""}}{{#usingPhrase.usingParameters}}{{>callSub.parameter}}{{/usingPhrase.usingParameters}}{{%
+        parameters == null ? "":parameters}});
+        {{#notOnExceptionClause}}{{>statements}}{{/notOnExceptionClause}}
+    {{#onExceptionClause}} }catch(Exception e){
+        {{>statements}}
+    }{{/onExceptionClause}}
+{{/CALL}}

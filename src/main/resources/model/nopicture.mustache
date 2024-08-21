@@ -1,0 +1,7 @@
+{{%
+    innerCls = name_toClass(obj_getVar("name"));
+    filedName = name_toField(obj_getVar("name"));
+    theQlfName=name_putInnerField(filedName);
+    name_setFieldType(theQlfName == null ? filedName : theQlfName,innerCls);
+    name_enterClass(filedName);
+""}}

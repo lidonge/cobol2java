@@ -1,11 +1,4 @@
-{{#pictureClause}}
-    {{%
-        sType=obj_getVar("pictureString");
-        propType=type_getType(sType);
-        theFieldName=name_toField(obj_getVar("name"));
-        theQlfName=name_putInnerField(theFieldName);
-        dim_putQlfLevel(theQlfName,dim_value());
-    ""}}
+{{#pictureClause}}{{>model.picture}}
     {{%isInnerClass == "yes" ? "" :"private "}}{{%propType}}{{%
     ""}}{{#$dimStr}}[]{{/dimStr}} {{%theFieldName}}{{^valueClause}}{{%
     ""}}{{#$dimStr}} = new {{%propType}}[{{%dimStr}}]{{/dimStr}};{{/valueClause}}{{/pictureClause}}{{#valueClause}}{{%

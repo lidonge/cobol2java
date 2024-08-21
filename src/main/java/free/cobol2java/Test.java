@@ -38,8 +38,9 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
 //        new ObjectTreePrinter().printObjectTree(compilationUnit);
-        convertAll(cblDir + "Table.cbl", "Table");
-        if (true) {
+        convertAll(cblDir + "SubProg.cbl", "SubProg");
+        convertAll(cblDir + "CallSub.cbl", "CallSub");
+        if (false) {
             convertAll(cblDir + "Data.cbl", "Data");
             convertAll(cblDir + "Accept.cbl", "Accept");
             convertAll(cblDir + "Init.cbl", "Init");
@@ -51,8 +52,10 @@ public class Test {
             convertAll(cblDir + "Compute.cbl", "Compute");
             convertAll(cblDir + "Table.cbl", "Table");
             convertAll(cblDir + "Perform.cbl", "Perform");
+            convertAll(cblDir + "CallSub.cbl", "CallSub");
+            convertAll(cblDir + "SubProg.cbl", "SubProg");
             convertAll(cblDir + "Example.cbl", "EXAMPLE");
-//            convertAll(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312");
+            convertAll(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312");
         }
     }
 
@@ -132,6 +135,10 @@ public class Test {
                 addFunction("name_putInnerField", args -> ((Func) getVar("__System_Function")).name_putInnerField((String) args[0]));
                 addFunction("name_delegateName", args -> ((Func) getVar("__System_Function")).name_delegateName((String) args[0]));
                 addFunction("name_delegateName1", args -> ((Func) getVar("__System_Function")).name_delegateName1((String) args[0], (String) args[1]));
+                addFunction("name_getFieldType", args -> ((Func) getVar("__System_Function")).name_getFieldType((String) args[0]));
+                addFunction("name_setFieldType", args -> ((Func) getVar("__System_Function")).name_setFieldType((String) args[0], (String) args[1]));
+                addFunction("name_getFieldClsType", args -> ((Func) getVar("__System_Function")).name_getFieldClsType((String) args[0]));
+                addFunction("name_setFieldClsType", args -> ((Func) getVar("__System_Function")).name_setFieldClsType((String) args[0], (String) args[1]));
                 addFunction("expr_convertExpr", args -> ((Func) getVar("__System_Function")).expr_convertExpr((String) args[0]));
                 addFunction("array_initString", args -> ((Func) getVar("__System_Function")).array_initString(args[0].toString(), args[1].toString()));
                 addFunction("type_getType", args -> ((Func) getVar("__System_Function")).type_getType((String) args[0]));

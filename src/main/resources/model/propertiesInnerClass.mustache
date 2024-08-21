@@ -1,10 +1,4 @@
-    {{^pictureClause}}
-        {{%
-            innerCls = name_toClass(obj_getVar("name"));
-            filedName = name_toField(obj_getVar("name"));
-            theQlfName=name_putInnerField(filedName);
-            name_enterClass(filedName);
-        ""}}
+    {{^pictureClause}}{{>model.nopicture}}
     {{%isInnerClass == "yes" ? "" :"private "}}{{%innerCls)}}{{#$dimStr}}[]{{/dimStr}} {{%filedName}}{{#$dimStr}} = new {{%innerCls}}[{{%dimStr}}]{{/dimStr}};
         {{%
             dimStr = null;
