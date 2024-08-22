@@ -1,0 +1,6 @@
+{{%
+    startLine = obj_getVar("ctx.start.line");
+    ctxLine = obj_getVar("ctx.text");
+    comment = startLine != null ? cbl_getComment(startLine, ctxLine, obj_getVar("compilationUnit.lines")) : null;
+    comment == null ? "" : comment
+}}

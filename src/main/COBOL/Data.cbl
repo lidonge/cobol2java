@@ -26,7 +26,6 @@
            05 WS-MATRIX.
                10 WS-MATRIX-ROW OCCURS 5 TIMES.
                    15 WS-MATRIX-CELL OCCURS 4 TIMES PIC 9(3) VALUE 0.
-
        PROCEDURE DIVISION.
            DISPLAY 'Number: ' WS-NUMBER
            DISPLAY 'Text: ' WS-TEXT

@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lidong@date 2024-07-30@version 1.0
@@ -38,7 +39,7 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
 //        new ObjectTreePrinter().printObjectTree(compilationUnit);
-        convertAll(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312");
+        convertAll(cblDir + "Data.cbl", "Data");
         if (false) {
             convertAll(cblDir + "Data.cbl", "Data");
             convertAll(cblDir + "Accept.cbl", "Accept");
@@ -143,6 +144,7 @@ public class Test {
                 addFunction("rel_getOper", args -> ((Func) getVar("__System_Function")).rel_getOper(args[0]+"", (String) args[1], (String) args[2]));
                 addFunction("array_initString", args -> ((Func) getVar("__System_Function")).array_initString(args[0].toString(), args[1].toString()));
                 addFunction("type_getType", args -> ((Func) getVar("__System_Function")).type_getType((String) args[0]));
+                addFunction("cbl_getComment", args -> ((Func) getVar("__System_Function")).cbl_getComment((Integer) args[0], (String) args[1], (List<String>) args[2]));
             }
         });
         writer.getExprEvaluator().setVar("model_package", "free.test");

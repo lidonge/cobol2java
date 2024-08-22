@@ -260,6 +260,22 @@ public class Func {
         }
         return str;
     }
+
+    public String cbl_getComment(int start, String ctxLine, List<String> lines){
+        String ret = null;
+        for(int i = start -2;i>=0;i--){
+            String line = lines.get(i);
+            String trim = line.trim();
+            if(trim.startsWith("*>")){
+                if(ret == null)
+                    ret = "//"+ trim.substring(2);
+                else
+                    ret += "\n//" + trim.substring(2);
+            }else if(trim.length() != 0)
+                break;
+        }
+        return ret;
+    }
     private String _initString(String num, String str) {
         int n = Integer.parseInt(num);
         // Check for invalid input
