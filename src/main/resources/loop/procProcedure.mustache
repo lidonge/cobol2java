@@ -16,7 +16,7 @@
 {{/performProcedureStatement.performType.varying.varyingClause.afters}}
 {{#performInlineStatement}}{{>statements}}{{/performInlineStatement}}
 {{#performProcedureStatement}}{{#calls}}{{>loop.procedureName}}
-{{%procedureName}}();
+{{%procedureCall}};
 {{/calls}}{{/performProcedureStatement}}
     {{^$varying}}{{^$after}}{{#$performType}}
         }

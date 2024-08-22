@@ -38,8 +38,7 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
 //        new ObjectTreePrinter().printObjectTree(compilationUnit);
-        convertAll(cblDir + "SubProg.cbl", "SubProg");
-        convertAll(cblDir + "CallSub.cbl", "CallSub");
+        convertAll(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312");
         if (false) {
             convertAll(cblDir + "Data.cbl", "Data");
             convertAll(cblDir + "Accept.cbl", "Accept");
@@ -54,6 +53,7 @@ public class Test {
             convertAll(cblDir + "Perform.cbl", "Perform");
             convertAll(cblDir + "CallSub.cbl", "CallSub");
             convertAll(cblDir + "SubProg.cbl", "SubProg");
+            convertAll(cblDir + "IfClause.cbl", "IfClause");
             convertAll(cblDir + "Example.cbl", "EXAMPLE");
             convertAll(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312");
         }
@@ -140,6 +140,7 @@ public class Test {
                 addFunction("name_getFieldClsType", args -> ((Func) getVar("__System_Function")).name_getFieldClsType((String) args[0]));
                 addFunction("name_setFieldClsType", args -> ((Func) getVar("__System_Function")).name_setFieldClsType((String) args[0], (String) args[1]));
                 addFunction("expr_convertExpr", args -> ((Func) getVar("__System_Function")).expr_convertExpr((String) args[0]));
+                addFunction("rel_getOper", args -> ((Func) getVar("__System_Function")).rel_getOper(args[0]+"", (String) args[1], (String) args[2]));
                 addFunction("array_initString", args -> ((Func) getVar("__System_Function")).array_initString(args[0].toString(), args[1].toString()));
                 addFunction("type_getType", args -> ((Func) getVar("__System_Function")).type_getType((String) args[0]));
             }

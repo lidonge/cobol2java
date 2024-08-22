@@ -1,0 +1,21 @@
+{{#simpleCondition}}
+    {{%curCondition = obj_getCurVar("condition");""}}
+    {{#$curCondition}}{{>ifelse.condition}}{{/curCondition}}
+    {{#classCondition}}TODO classCondition{{/classCondition}}
+    {{#conditionNameReference}}TODO conditionNameReference{{/conditionNameReference}}
+    {{#relationCondition}}
+        {{#signCondition}}TODO signCondition{{/signCondition}}
+        {{#arithmeticComparison}}
+            {{#arithmeticExpressionLeft}}{{>arithmetic}}{{%left=arithmeticExpression;""}}{{/arithmeticExpressionLeft}}
+            {{#arithmeticExpressionRight}}{{>arithmetic}}{{%right=arithmeticExpression;""}}{{/arithmeticExpressionRight}}
+            {{>ifelse.reloper}}
+            {{%condition=relOperStr;""}}
+        {{/arithmeticComparison}}
+        {{#combinedComparison}}TODO combinedComparison
+        {{#arithmeticExpressionLeft}}{{/arithmeticExpressionLeft}}
+        {{#operator}}{{%relationalOperatorType=obj_getVar("relationalOperatorType");""}}{{/operator}}
+        {{#combinedCondition}}TODO combinedCondition{{/combinedCondition}}
+        {{/combinedComparison}}
+    {{/relationCondition}}
+{{/simpleCondition}}
+{{>ifelse.not}}

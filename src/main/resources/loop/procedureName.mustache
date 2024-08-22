@@ -1,1 +1,4 @@
-{{%procedureName=obj_getVar("name");""}}
+{{%
+    procedureName=name_toField(obj_getVar("name"));
+    procedureCall=procedureName+"(" +func_parametersWithoutType+")";
+""}}

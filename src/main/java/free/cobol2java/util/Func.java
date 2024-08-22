@@ -65,7 +65,13 @@ public class Func {
             ret += capitalizeFirstLetter(sp);
         }
 
-        return ret;
+        return digitalStart(ret);
+    }
+
+    private String digitalStart(String name){
+        if(name != null && name.length() > 0 && name.charAt(0) >='0' && name.charAt(0) <='9')
+            return "m_"+name;
+        return name;
     }
 
     public String name_getFieldType(String fieldName){
@@ -154,6 +160,49 @@ public class Func {
         return fieldToQualifiedName.get(fieldName);
     }
 
+    public String rel_getOper(String cobolOper, String left, String right){
+        String ret = null;
+        RelationalOperator oper = RelationalOperator.valueOf(cobolOper);
+        switch (oper){
+            case GREATER:
+                ret=left + ">" +right;
+                break;
+            case GREATER_OR_EQUAL:
+                ret=left + ">=" +right;
+                break;
+            case LESS:
+                ret = left + "<" + right;
+                break;
+            case LESS_OR_EQUAL:
+                ret = left + "<=" + right;
+                break;
+            case EQUAL:
+                ret = left + "==" +right;
+                break;
+            case NOT_EQUAL:
+                ret = left + "!=" +right;
+                break;
+            case EQUALCHAR:
+                ret = "Util.compare("+left+","+right+") == 0";
+                break;
+            case LESSTHANCHAR:
+                ret = "Util.compare("+left+","+right+") < 0";
+                break;
+            case MORETHANCHAR:
+                ret = "Util.compare("+left+","+right+") > 0";
+                break;
+            case NOTEQUALCHAR:
+                ret = "Util.compare("+left+","+right+") != 0";
+                break;
+            case LESSTHANOREQUAL:
+                ret = left + "<=" +right;
+                break;
+            case MORETHANOREQUAL:
+                ret = left + ">=" +right;
+                break;
+        }
+        return ret;
+    }
     public String expr_convertExpr(String cobolExpr){
         String expression = cobolExpr.replace("**","^");
         // Regular expression to match variables of the form identifier(-identifier)*
@@ -173,8 +222,16 @@ public class Func {
             if(dimStr == null) {
                 ret = ret.replace(id, name_delegateName(fieldName));
             }else{
-                String qlfNameWithDims = name_delegateName1(name_delegateName(fieldName),dimStr);
-                ret = dims[0] + qlfNameWithDims+dims[2];
+                int index = cobolExpr.indexOf(":");
+                if(index != -1){
+                    int right = cobolExpr.indexOf(')',index);
+                    int left = cobolExpr.lastIndexOf('(',index);
+                    String range = cobolExpr.substring(left+1,right);
+                    ret = "Util.subvalue("+fieldName+",\""+range+"\")";
+                }else {
+                    String qlfNameWithDims = name_delegateName1(name_delegateName(fieldName), dimStr);
+                    ret = dims[0] + qlfNameWithDims + dims[2];
+                }
             }
         }
         return ret.indexOf('^') != -1 ? ExprUtil.convertExpression(ret):ret;

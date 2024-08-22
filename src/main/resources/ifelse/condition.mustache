@@ -1,0 +1,39 @@
+{{!--%condition=obj_getVar("ctx.text");""--}}
+{{!--
+condition
+   : combinableCondition andOrCondition*
+   ;
+--}}
+{{%condition = null;""}}
+{{#combinableCondition}}
+    {{>ifelse.combinable}}
+{{/combinableCondition}}
+{{%retCond=condition;""}}
+{{#andOrConditions}}
+{{!--
+andOrCondition
+   : (AND | OR) (combinableCondition | abbreviation+)
+   ;
+--}}
+    {{>ifelse.andor}}
+    {{%curCombinableCondition = obj_getCurVar("combinableCondition");""}}
+    {{#$curCombinableCondition}}
+        {{>ifelse.combinable}}
+        {{%
+            retCond=retCond+ andorOper + condition;
+        ""}}
+    {{/curCombinableCondition}}
+    {{#abbreviations}}
+        {{%right=null;""}}
+        {{#arithmeticExpression}}{{>arithmetic}}{{%right=arithmeticExpression;""}}{{/arithmeticExpression}}
+        {{#$right}}
+            {{>ifelse.not}}
+            {{>ifelse.reloper}}
+            {{%
+                retCond=retCond+ andorOper + relOperStr;
+            ""}}
+        {{/right}}
+        {{#abbreviation}}TODO abbreviation.abbreviation{{/abbreviation}}
+    {{/abbreviations}}
+{{/andOrConditions}}
+{{%condition=retCond;""}}

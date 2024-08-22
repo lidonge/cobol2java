@@ -1,6 +1,6 @@
 {{%statementType=obj_getVar("statementType");COMPUTE = statementType == "COMPUTE" ? "COMPUTE" : null;""}}
 {{#$COMPUTE}}
-    {{#arithmeticExpression}}{{%arithmeticExpression=expr_convertExpr(obj_getVar("ctx.text"));""}}{{/arithmeticExpression}}
+    {{#arithmeticExpression}}{{>arithmetic}}{{/arithmeticExpression}}
     {{#stores}}
         {{#storeCall}}{{>call}}{{%storeName=operand;""}}{{/storeCall}}
         {{%

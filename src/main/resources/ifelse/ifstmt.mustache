@@ -1,0 +1,15 @@
+{{%statementType=obj_getVar("statementType");IF = statementType == "IF" ? "IF" : null;""}}
+{{#$IF}}
+    {{#condition}}{{>ifelse.condition}}{{/condition}}
+    {{#then}}
+        if ({{%condition}}){
+            {{>statements}}
+        }
+    {{/then}}
+    {{%ifElseClause = obj_getCurVar("ifElse");""}}
+    {{#$ifElseClause}}
+        else {
+            {{>statements}}
+        }
+    {{/ifElseClause}}
+{{/IF}}

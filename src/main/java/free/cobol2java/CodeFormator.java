@@ -1,8 +1,6 @@
 package free.cobol2java;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
 
 /**
  * @author lidong@date 2023-11-23@version 1.0
@@ -60,4 +58,9 @@ public class CodeFormator {
         formattedCode.append(line).append("\n");
     }
 
+    public static void main(String[] args) throws IOException {
+        FileInputStream fin = new FileInputStream("/Users/lidong/gitspace/cobol2java/src/main/java/abc.j");
+        String s = formatCode(new String(fin.readAllBytes()));
+        System.out.println(s);
+    }
 }
