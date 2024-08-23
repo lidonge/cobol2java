@@ -2,11 +2,7 @@ package free.cobol2java;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InaccessibleObjectException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ObjectTreePrinter {
 
@@ -43,7 +39,7 @@ public class ObjectTreePrinter {
         }
 
         if (visited.contains(obj)) {
-            System.out.println(indent + "[Circular Reference]");
+//            System.out.println(indent + "[Circular Reference]");
             return;
         }
 
@@ -51,7 +47,7 @@ public class ObjectTreePrinter {
 
         Class<?> clazz = obj.getClass();
 
-        Field[] fields = clazz.getDeclaredFields();
+        List<Field> fields = getAllFields(clazz);
         for (Field field : fields) {
             try {
                 if (java.lang.reflect.Modifier.isStatic(field.getModifiers()))
@@ -61,23 +57,42 @@ public class ObjectTreePrinter {
                 if(visited.contains(value))
                     continue;
 
-                System.out.print(indent + "  " + field.getType().getSimpleName() +" "+field.getName() + " = ");
-                if (value == null) {
-                    System.out.println("null");
-                } else if (isPrimitiveOrWrapper(value)) {
+                if(value == null)
+                    continue;
+                String fieldName = field.getName();
+                if("ctx".equals(fieldName)
+                        || "lines".equals(fieldName)
+                        || "_listeners".equals(fieldName)
+                        || "compilationUnit".equals(fieldName)
+                        || "asgElementRegistry".equals(fieldName)
+                        || "program".equals(fieldName)
+                        || "subValueStmts".equals(fieldName)
+                        || fieldName.indexOf("Container") != -1
+                        || fieldName.indexOf("Successor") != -1
+                        || fieldName.indexOf("SymbolTable") != -1
+                        || fieldName.startsWith("_"))
+                    continue;
+                String typeName = field.getType().getSimpleName();
+                if(typeName.indexOf("[]") != -1)
+                    continue;
+                System.out.print(indent + "  " + typeName +" "+ fieldName + " = ");
+                if (isPrimitiveOrWrapper(value)) {
                     System.out.println(value);
                 } else if (value instanceof String) {
                     System.out.println("\"" + value + "\"");
-                } else if (value instanceof List) {
+                } else if (value instanceof List && ((List<?>) value).size() != 0) {
                     System.out.println(((List<?>) value).size());
                     printList((List<?>) value, indent + "  ");
-                } else if (value instanceof Map) {
-                    System.out.println(((Map<?, ?>) value).size());
-                    printMap((Map<?, ?>) value, indent + "  ");
-                } else if (value.getClass().isArray()) {
-                    System.out.println(((Object[])value).length);
-                    printArray(value, indent + "  ");
-                } else {
+                }
+//                else if (value instanceof Map && ((Map<?, ?>) value).size() != 0) {
+//                    System.out.println(((Map<?, ?>) value).size());
+//                    printMap((Map<?, ?>) value, indent + "  ");
+//                }
+//                else if (value.getClass().isArray() && ((Object[])value).length != 0) {
+//                    System.out.println(((Object[])value).length);
+//                    printArray(value, indent + "  ");
+//                }
+                else {
                     System.out.println("[Object]");
                     printObjectTree(value, indent + "  ");
                 }
@@ -87,6 +102,16 @@ public class ObjectTreePrinter {
         }
     }
 
+    private List<Field> getAllFields(Class clazz){
+        List<Field> fields = new ArrayList<>();
+        do{
+            Field[] theFields = clazz.getDeclaredFields();
+            for(Field field:theFields)
+                fields.add(field);
+            clazz = clazz.getSuperclass();
+        }while(!clazz.isInstance(Object.class));
+        return fields;
+    }
     private boolean isPrimitiveOrWrapper(Object obj) {
         return obj.getClass().isPrimitive() || obj instanceof Number || obj instanceof Boolean;
     }

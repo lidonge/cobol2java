@@ -10,8 +10,8 @@ package {{% model_package}};
     {{>model.model}}
     {{>model.picture}}
 {{/dataDivision.linkageSection.rootDataDescriptionEntries}}
-
-public class {{compilationUnit.name}} {
+{{%mainClassName=name_toClass(obj_getVar("identificationDivision.programIdParagraph.name"));""}}
+public class {{%mainClassName}} {
 {{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
 {{>progProperties}}
 {{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}

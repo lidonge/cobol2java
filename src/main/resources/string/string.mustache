@@ -1,0 +1,13 @@
+{{%statementType=obj_getVar("statementType");STRING = statementType == "STRING" ? "STRING" : null;""}}
+{{#$STRING}}
+    {{#intoPhrase}}{{#intoCall}}{{>call}}{{%intoName=operand;""}}{{/intoCall}}{{/intoPhrase}}
+    {{#sendings}}{{%
+    ""}}{{#delimitedByPhrase}}{{#charactersValueStmt}}{{#literal}}{{>literal}}{{/literal}}{{%
+            delimitedBy=operand;""}}{{/charactersValueStmt}}{{/delimitedByPhrase}}{{%
+    ""}}{{#-first}}{{%intoName}} = {{/-first}}{{%
+        ""}}{{#sendingValueStmts}}{{#call}}{{>call}}{{/call}}{{%operand}}{{^-last}} + {{%delimitedBy}} + {{/-last}}{{/sendingValueStmts}}{{%
+        ""}}{{#sendingForPhrase}}{{/sendingForPhrase}}{{%
+        ""}}{{^-last}} + {{%delimitedBy}} + {{/-last}}{{#-last}};{{/-last}}{{/sendings}}
+    {{#onOverflowPhrase}}TODO onOverflowPhrase{{/onOverflowPhrase}}
+    {{#notOnOverflowPhrase}}TODO notOnOverflowPhrase{{/notOnOverflowPhrase}}
+{{/STRING}}

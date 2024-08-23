@@ -3,12 +3,14 @@
     {{#condition}}{{>ifelse.condition}}{{/condition}}
     {{#then}}
         if ({{%condition}}){
+            {{%needDefaultParagraph=null;""}}
             {{>statements}}
         }
     {{/then}}
     {{%ifElseClause = obj_getCurVar("ifElse");""}}
     {{#$ifElseClause}}
         else {
+            {{%needDefaultParagraph=null;""}}
             {{>statements}}
         }
     {{/ifElseClause}}
