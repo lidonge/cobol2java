@@ -62,6 +62,7 @@ public class Test {
             testCost("String",() -> convertAll(cblDir + "String.cbl", "String"));
             testCost("Sql",() -> convertAll(cblDir + "Sql.cbl", "Sql"));
             testCost("EXAMPLE",() -> convertAll(cblDir + "Example.cbl", "EXAMPLE"));
+            testCost("ALL",() -> convertAll(cblDir + "All.cbl", "All"));
             testCost("GSA01060NC",() -> convertAll(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
         }
     }

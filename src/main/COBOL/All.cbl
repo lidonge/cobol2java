@@ -10,6 +10,7 @@
        01 WS-DECIMAL-NUMBER  PIC 9(4)V9(2) VALUE 123.45.
        01 WS-CHARACTER       PIC X(10) VALUE 'HELLO'.
        01 WS-RESULT          PIC 9(6).
+       01 WS-RETURN-CODE     PIC 9(4).
 
 * 定义一维数组
        01 WS-ARRAY-1         PIC 9(4) OCCURS 5 TIMES.
@@ -23,6 +24,10 @@
        01 WS-STRING          PIC X(20) VALUE 'COBOL EXAMPLE'.
 
        PROCEDURE DIVISION.
+* 初始化
+       INITIALIZE WS-RESULT, WS-STRING.
+       INITIALIZE WS-NUMBER-1 REPLACING NUMERIC DATA BY 12345.
+       INITIALIZE WS-CHARACTER REPLACING ALPHABETIC DATA BY 'USA'.
 
 * 执行加法
        ADD WS-NUMBER-1 TO WS-NUMBER-2 GIVING WS-RESULT.
@@ -82,5 +87,13 @@
               INTO WS-STRING
        END-STRING.
        DISPLAY 'FINAL STRING: ' WS-STRING.
-
+* 调用子程序
+       CALL 'SUB-PROG' USING BY VALUE WS-NUMBER-1, BY CONTENT WS-NUMBER-2, BY REFERENCE WS-RESULT GIVING WS-RETURN-CODE
+           ON EXCEPTION
+               DISPLAY "Subprogram not found or error occurred during execution"
+               MOVE 1 TO WS-RETURN-CODE
+           NOT ON EXCEPTION
+               DISPLAY "Subprogram executed successfully"
+               MOVE 0 TO WS-RETURN-CODE
+       END-CALL.
        STOP RUN.

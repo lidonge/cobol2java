@@ -160,9 +160,12 @@ public class Func {
                 }
                 ret = node +ret;
             }
-            for(int i= level.length;i<names.length;i++){
-                ret = names[names.length-i-1]+"." +ret;
-            }
+                for (int i = level.length; i < names.length; i++) {
+                    if(ret.length() == 0)
+                        ret = names[names.length - i - 1];
+                    else
+                        ret = names[names.length - i - 1] + "." + ret;
+                }
         }
         return ret;
     }
