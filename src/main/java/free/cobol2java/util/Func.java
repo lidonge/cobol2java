@@ -11,6 +11,7 @@ public class Func {
     private Map<String,String> fieldToType = new HashMap<>();
     private Map<String,String> fieldToClassType = new HashMap<>();
     private Map<String,String> fieldToQualifiedName = new HashMap<>();
+    private Map<String,String> dimFieldToQualifiedName = new HashMap<>();
     private Map<String,String> qualifiedNameToDimLevel = new HashMap<>();
     private Stack<String> clsLevel = new Stack<>();
     private Stack<Integer> curDims = new Stack<>();
@@ -28,12 +29,24 @@ public class Func {
         return curDims.size();
     }
 
-    public String dim_putQlfLevel(String qlfName, String dimLevelStr){
-        if(qlfName == null || "null".equals(qlfName))
-            return null;
+    public String dim_putQlfLevel(String fieldName, String dimLevelStr){
+        String qlfName = fieldToQualifiedName.get(fieldName);
+        if(qlfName == null || "null".equals(qlfName)) {
+            String[] dims = dimLevelStr.split(",");
+            if(dims[dims.length -1].equals("0"))
+                return null;
+        }
         qualifiedNameToDimLevel.put(qlfName,dimLevelStr);
-        String realQlfName = dimLevelStr.lastIndexOf(",0") != -1 ? qlfName.substring(0, qlfName.lastIndexOf('.')) : qlfName;
+        String realQlfName = dimLevelStr.lastIndexOf(",0") != -1  ?
+                qlfName.substring(0, qlfName.lastIndexOf('.')) : (qlfName != null  ? qlfName :fieldName);
         return qualifiedNameToDimLevel.put(realQlfName,dimLevelStr);
+    }
+
+    private void makeQlfNameAllLevel(String qlfName){
+        String[] names = qlfName.split("\\.");
+        for(String name:names){
+            dimFieldToQualifiedName.put(name,qlfName);
+        }
     }
 
     public String dim_getQlfLevel(String qlfName){
@@ -105,8 +118,11 @@ public class Func {
     }
     public String name_putInnerField(String fieldName){
         String qualifiedName = clsLevel.size() == 0 ? null : createQualifedName(fieldName);
-        if(qualifiedName != null)
-            fieldToQualifiedName.put(fieldName,qualifiedName);
+        if(qualifiedName != null) {
+            fieldToQualifiedName.put(fieldName, qualifiedName);
+            makeQlfNameAllLevel(qualifiedName);
+
+        }
         return qualifiedName;
     }
     public String name_delegateName(String fieldName) {
@@ -118,7 +134,9 @@ public class Func {
     public String name_delegateName1(String fieldName, String dimStr){
         String ret = fieldName;
         if(dimStr != null) {
-            String dimLevelStr = dim_getQlfLevel(fieldName);
+            String qlfName = dimFieldToQualifiedName.get(ret);
+            ret = qlfName != null ? qlfName : ret;
+            String dimLevelStr = dim_getQlfLevel(ret);
             String[] dims = dimStr.split(",");
             String[] names = ret.split("\\.");
             String[] level = dimLevelStr.split(",");
@@ -216,7 +234,7 @@ public class Func {
         }
         String ret = expression;
         for(String id:variables){
-            String fieldName = name_toField(id);
+            String fieldName = CobolConstant.isConstant(id) ? "CobolConstant."+id :name_toField(id);
             String[] dims = getDimStringOfVar(cobolExpr,id);
             String dimStr = dims[1];
             if(dimStr == null) {

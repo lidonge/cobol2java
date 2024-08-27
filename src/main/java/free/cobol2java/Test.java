@@ -42,7 +42,7 @@ public class Test {
         System.out.println("Execute " +name +" Cost:" + (System.currentTimeMillis() - curTime)/1000.0);
     }
     public static void main(String[] args) throws IOException {
-        testCost("Data",() -> convertAll(cblDir + "Data.cbl", "Data"));
+        testCost("ALL",() -> convertAll(cblDir + "All.cbl", "All"));
 
         if (false) {
             testCost("Data",() -> convertAll(cblDir + "Data.cbl", "Data"));

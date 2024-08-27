@@ -3,6 +3,6 @@
     propType=type_getType(sType);
     theFieldName=name_toField(obj_getVar("name"));
     theQlfName=name_putInnerField(theFieldName);
-    dim_putQlfLevel(theQlfName,dim_value());
+    dim_putQlfLevel(theFieldName,dim_value());
     name_setFieldType(theQlfName == null ? theFieldName : theQlfName,propType);
 ""}}

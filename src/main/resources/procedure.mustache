@@ -1,11 +1,26 @@
 {{#procedureDivision}}{{%isContinue="yes";""}}
+    {{%needDefaultParagraph=null;""}}{{#statements}}{{%needDefaultParagraph="$needDefaultParagraph";""}}{{/statements}}
+    {{#$needDefaultParagraph}}
+        public void procedure(){
+    {{/needDefaultParagraph}}
+    {{>statements}}
     {{^usingClause}}{{#paragraphs}}
-        {{#-first}}public void procedure(){ {{/-first}}
+        {{#-first}}
+            {{^$needDefaultParagraph}}
+                public void procedure(){
+            {{/needDefaultParagraph}}
+        {{/-first}}
         {{#$isContinue}}{{#name}}{{%name_toField(obj_getVar("name"))}}();{{/name}}{{/isContinue}}
     {{#statements}}{{%statementType=obj_getVar("statementType");isContinue = statementType == "STOP" ? null : isContinue;""}}{{/statements}}
     {{#-last}}
-    }{{/-last}}
+        {{^$needDefaultParagraph}}
+            }
+        {{/needDefaultParagraph}}
+    {{/-last}}
     {{/paragraphs}}{{/usingClause}}
+{{#$needDefaultParagraph}}
+    }
+{{/needDefaultParagraph}}
 {{#paragraphs}}{{>callSub.subparameters}}{{%
     func_parameters=parameters == null ? "":parameters;
     func_parametersWithoutType=parametersWithoutType == null ? "":parametersWithoutType;
@@ -21,5 +36,4 @@
     {{#$retName}}return {{%retName}}{{/retName}}
     }{{/name}}
 {{/paragraphs}}
-{{%needDefaultParagraph="yes";""}}{{>statements}}
 {{/procedureDivision}}

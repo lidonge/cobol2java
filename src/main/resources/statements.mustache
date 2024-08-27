@@ -1,5 +1,4 @@
 {{#statements}}
-    {{#-first}}{{#$needDefaultParagraph}}public void procedure(){ {{/needDefaultParagraph}}{{/-first}}
     {{>comment}}
     {{>baseActions.accept}}
     {{>baseActions.display}}
@@ -17,6 +16,4 @@
     {{>string.string}}
     {{>string.unstring}}
     {{>string.inspect}}
-    {{#-last}}{{#$needDefaultParagraph}}
-    }{{/needDefaultParagraph}}{{/-last}}
 {{/statements}}

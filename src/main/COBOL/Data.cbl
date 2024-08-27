@@ -28,7 +28,7 @@
                    15 WS-MATRIX-CELL OCCURS 4 TIMES PIC 9(3) VALUE 0.
        PROCEDURE DIVISION.
            DISPLAY 'Number: ' WS-NUMBER
-           DISPLAY 'Text: ' WS-TEXT
+           DISPLAY 'Text: ' WS-TEXT OF WS-VARIABLES
            DISPLAY 'Counter: ' WS-COUNTER
            DISPLAY 'Flag: ' WS-FLAG
            DISPLAY 'Result: ' WS-RESULT
