@@ -86,6 +86,19 @@
       ****************************************************************
        LINKAGE SECTION.
      ****************************************************************
+       01  FRM-AREA.
+           05  SSA10600.
+               COPY                    SSA10600.
+           05  PZZC0211.
+               COPY                    PZZC0211.
+           05  MZZC0212.
+               COPY                    MZZC0212.
+           05  PZZZ1120.
+               COPY                    PZZZ1120.
+           05  PSA10300.
+               COPY                    PSA10300.
+           05  FLAST.
+               COPY                    FFFFFFFF.
        PROCEDURE DIVISION USING APA-AREA.
       ****************************************************************
        0000-MAIN-PROCESS-RTN.

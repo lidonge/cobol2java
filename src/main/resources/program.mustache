@@ -1,19 +1,47 @@
 package {{% model_package}};
-{{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
-    {{%isInnerClass="yes";""}}
-    {{>comment}}
-    {{>model.model}}
-{{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}
-{{#dataDivision.linkageSection.rootDataDescriptionEntries}}
-    {{%isInnerClass="yes";""}}
-    {{>comment}}
-    {{>model.model}}
-    {{>model.picture}}
-{{/dataDivision.linkageSection.rootDataDescriptionEntries}}
+{{#environmentDivision}}//TODO environmentDivision{{/environmentDivision}}
+{{#identificationDivision}}
+    {{#authorParagraph}}//TODO authorParagraph{{/authorParagraph}}
+    {{#dateCompiledParagraph}}//TODO dateCompiledParagraph{{/dateCompiledParagraph}}
+    {{#installationParagraph}}//TODO installationParagraph{{/installationParagraph}}
+    {{#securityParagraph}}//TODO securityParagraph{{/securityParagraph}}
+    {{#dateWrittenParagraph}}//TODO dateWrittenParagraph{{/dateWrittenParagraph}}
+    {{#remarksParagraph}}//TODO remarksParagraph{{/remarksParagraph}}
+{{/identificationDivision}}
+{{#dataDivision}}
+    {{%innerMap = obj_newMap();""}}
+    {{#communicationSection}}//TODO communicationSection{{/communicationSection}}
+    {{#dataBaseSection}}//TODO dataBaseSection{{/dataBaseSection}}
+    {{#fileSection}}//TODO fileSection{{/fileSection}}
+    {{#localStorageSection}}//TODO localStorageSection{{/localStorageSection}}
+    {{#programLibrarySection}}//TODO programLibrarySection{{/programLibrarySection}}
+    {{#reportSection}}//TODO reportSection{{/reportSection}}
+    {{#screenSection}}//TODO screenSection{{/screenSection}}
+    {{#workingStorageSection}}
+        //workingStorageSection
+        {{#rootDataDescriptionEntries}}
+            {{%isInnerClass="yes";innerClsLevel = 0;""}}
+            {{>comment}}
+            {{>model.model}}
+            {{>model.unused}}
+        {{/rootDataDescriptionEntries}}
+    {{/workingStorageSection}}
+{{/dataDivision}}
+{{#dataDivision}}
+    {{#linkageSection.rootDataDescriptionEntries}}
+        {{#-first}}//linkageSection{{/-first}}
+        {{%isInnerClass="yes";innerClsLevel = 0;""}}
+        {{>comment}}
+        {{>model.model}}
+        {{>model.picture}}
+        {{>model.unused}}
+    {{/linkageSection.rootDataDescriptionEntries}}
+    {{@$innerMap}}{{#value}}{{value}}{{/value}}{{/innerMap}}
+{{/dataDivision}}
 {{%mainClassName=name_toClass(obj_getVar("identificationDivision.programIdParagraph.name"));""}}
 public class {{%mainClassName}} {
 {{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
-{{>progProperties}}
+    {{>progProperties}}
 {{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}
 {{>procedure}}
 }

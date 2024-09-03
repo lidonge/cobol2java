@@ -31,9 +31,12 @@
         retName=operand;retType=name_getFieldType(operand);""}}{{/givingCall}}{{/givingClause}}
     public {{#$retType}}{{%retType}}{{/retType}}{{^$retType}}void{{/retType}} {{%name_toField(obj_getVar("name"))}}({{%func_parameters}}){
     {{#$retName}}{{%retType}} {{%retName}};{{/retName}}
-    TODO parameter transfer
+    //TODO parameter transfer
+    {{#section}}//TODO section{{/section}}
     {{>statements}}
     {{#$retName}}return {{%retName}}{{/retName}}
     }{{/name}}
 {{/paragraphs}}
+{{#declaratives}}//TODO declaratives{{/declaratives}}
+{{#sections}}{{#-first}}//TODO sections{{/-first}}{{/sections}}
 {{/procedureDivision}}

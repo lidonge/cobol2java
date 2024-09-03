@@ -4,15 +4,15 @@
         name_enterClass(name_toField(obj_getVar("name")));
     ""}}
     {{#dataDescriptionEntries}}{{>dimstr}}
-        {{%innerMap = obj_newMap();""}}
         {{#-first}}
         class {{%clsName}} {
+        {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel+1;""}}
         {{/-first}}
                 {{>comment}}
                 {{>model.properties}}
                 {{>model.propertiesInnerClass}}
         {{#-last}}
+            {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel - 1;""}}
         }{{/-last}}
-        {{@$innerMap}}{{#value}}{{value}}{{/value}}{{/innerMap}}
     {{/dataDescriptionEntries}}{{%name_exitClass();""}}
 {{/pictureClause}}

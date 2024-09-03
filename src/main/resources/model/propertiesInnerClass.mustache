@@ -1,7 +1,18 @@
     {{^pictureClause}}{{>model.nopicture}}
-    {{%isInnerClass == "yes" ? "" :"private "}}{{%innerCls)}}{{#$dimStr}}[]{{/dimStr}} {{%filedName}}{{#$dimStr}} = new {{%innerCls}}[{{%dimStr}}]{{/dimStr}};
+    {{%ignoreProp = innerClsLevel == 0 ? "ignoreProp" : null;isInnerClass == "yes" ? "" :"private "}}
+    {{^$ignoreProp}}
+        {{%innerCls)}}{{#$dimStr}}[]{{/dimStr}} {{%filedName}}{{#$dimStr}} = new {{%innerCls}}[{{%dimStr}}]{{/dimStr}};
+    {{/ignoreProp}}
         {{%
             dimStr = null;
-            clsName=innerCls;isInnerClass="yes";
-        ""}}{{%must_saveBuff();""}}{{*dataDescriptionEntries}}{{%name_exitClass();clsContent = must_popBuff();obj_addToMap(innerMap,clsName, clsContent);isInnerClass=="yes" ?dim_pop():null;""}}
+            clsName=innerCls;
+            isInnerClass="yes";
+        ""}}{{%must_saveBuff();""}}
+    {{*dataDescriptionEntries}}
+    {{%
+        name_exitClass();
+        clsContent = must_popBuff();
+        obj_addToMap(innerMap,clsName, clsContent);
+        isInnerClass=="yes" ?dim_pop():null;
+    ""}}
     {{/pictureClause}}

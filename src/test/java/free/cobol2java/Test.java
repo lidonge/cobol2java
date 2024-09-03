@@ -31,7 +31,7 @@ public class Test {
         System.out.println(prog);
     }
     public static void main(String[] args) throws IOException {
-        testCost("ALL",() -> convert(cblDir + "All.cbl", "All"));
+        testCost("GSA01060",() -> convert(cblDir + "GSA01060.cbl", "GSA01060",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
 
         if (false) {
             testCost("Data",() -> convert(cblDir + "Data.cbl", "Data"));
@@ -53,6 +53,8 @@ public class Test {
             testCost("EXAMPLE",() -> convert(cblDir + "Example.cbl", "EXAMPLE"));
             testCost("ALL",() -> convert(cblDir + "All.cbl", "All"));
             testCost("GSA01060NC",() -> convert(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
+            testCost("GSA01060",() -> convert(cblDir + "GSA01060.cbl", "GSA01060",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
+            testCost("SAACNACN",() -> convert(cblDir + "sql/SAACNACN.sqb", "SAACNACN",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
         }
     }
 }
