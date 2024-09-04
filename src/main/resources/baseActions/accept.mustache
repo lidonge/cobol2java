@@ -3,7 +3,7 @@
     {{#literal}}{{>literal}}{{/literal}}
     {{#acceptCall}}{{>call}}{{/acceptCall}}
     {{%accpName=operand;""}}
-    {{%accpName}} = {{%sType = obj_getVar("acceptType");sType == "DATE" ? "Util.now();" : "Util.Input()"}}
+    {{%accpName}} = {{%sType = obj_getVar("acceptType");sType == "DATE" ? "Util.now();" : "Util.Input();"}}
     {{#acceptFromDateStatement}}//TODO acceptFromDateStatement{{/acceptFromDateStatement}}
     {{#acceptFromEscapeKeyStatement}}//TODO acceptFromEscapeKeyStatement{{/acceptFromEscapeKeyStatement}}
     {{#acceptFromMnemonicStatement}}//TODO acceptFromMnemonicStatement{{/acceptFromMnemonicStatement}}

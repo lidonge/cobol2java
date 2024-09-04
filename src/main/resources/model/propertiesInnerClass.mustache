@@ -7,12 +7,15 @@
             dimStr = null;
             clsName=innerCls;
             isInnerClass="yes";
-        ""}}{{%must_saveBuff();""}}
+        ""}}
+    {{%
+        //must_saveBuff();
+    ""}}
     {{*dataDescriptionEntries}}
     {{%
         name_exitClass();
-        clsContent = must_popBuff();
-        obj_addToMap(innerMap,clsName, clsContent);
+        //clsContent = must_popBuff();
+        //obj_addToMap(innerMap,clsName, clsContent);
         isInnerClass=="yes" ?dim_pop():null;
     ""}}
     {{/pictureClause}}

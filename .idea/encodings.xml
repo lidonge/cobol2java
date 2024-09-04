@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/src/main/COBOL/CMMSCSAW" charset="GB2312" />
-    <file url="file://$PROJECT_DIR$/src/main/COBOL/GSA01060.cbl" charset="GB2312" />
-    <file url="file://$PROJECT_DIR$/src/main/COBOL/GSA01060NC.cbl" charset="GB2312" />
-    <file url="file://$PROJECT_DIR$/src/main/COBOL/KSADEP0.cbl" charset="GB2312" />
-    <file url="file://$PROJECT_DIR$/src/main/COBOL/PKSAACN1" charset="GB2312" />
-    <file url="file://$PROJECT_DIR$/src/main/COBOL/PSACONST" charset="GB2312" />
-    <file url="file://$PROJECT_DIR$/src/main/COBOL/sql/GDBI4RDB.cbl" charset="GB2312" />
-    <file url="file://$PROJECT_DIR$/src/main/COBOL/sql/GDBIMAIN.cbl" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/COBOL/bank/GSA01060.cbl" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/COBOL/bank/GSA01060.cbl" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/COBOL/bank/GSA01060NC.cbl" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/COBOL/bank/GSA01060NC.cbl" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/COBOL/bank/KSADEP0.cbl" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/COBOL/bank/KSADEP0.cbl" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/COBOL/bank/PKSAACN1" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/COBOL/bank/PKSAACN1" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/COBOL/bank/PSACONST" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/COBOL/bank/PSACONST" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/COBOL/bank/sql/GDBI4RDB.cbl" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/COBOL/bank/sql/GDBIMAIN.cbl" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/COBOL/demo/CMMSCSAW" charset="GB2312" />
+    <file url="file://$PROJECT_DIR$/src/main/COBOL/demo/CMMSCSAW" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>

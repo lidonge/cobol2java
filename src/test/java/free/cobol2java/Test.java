@@ -31,31 +31,32 @@ public class Test {
         System.out.println(prog);
     }
     public static void main(String[] args) throws IOException {
-        testCost("File",() -> convert(cblDir + "File.cbl", "File"));
+        testCost("GDBI4RDB",() -> convert(cblDir + "bank/sql/GDBI4RDB.cbl", "GDBI4RDB",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
 
         if (false) {
-            testCost("Data",() -> convert(cblDir + "Data.cbl", "Data"));
-            testCost("Accept",() -> convert(cblDir + "Accept.cbl", "Accept"));
-            testCost("Init",() -> convert(cblDir + "Init.cbl", "Init"));
-            testCost("Move",() -> convert(cblDir + "Move.cbl", "Move"));
-            testCost("Add",() -> convert(cblDir + "Add.cbl", "Add"));
-            testCost("Subtract",() -> convert(cblDir + "Subtract.cbl", "Subtract"));
-            testCost("Multiply",() -> convert(cblDir + "Multiply.cbl", "Multiply"));
-            testCost("Divide",() -> convert(cblDir + "Divide.cbl", "Divide"));
-            testCost("Compute",() -> convert(cblDir + "Compute.cbl", "Compute"));
-            testCost("Table",() -> convert(cblDir + "Table.cbl", "Table"));
-            testCost("Perform",() -> convert(cblDir + "Perform.cbl", "Perform"));
-            testCost("CallSub",() -> convert(cblDir + "CallSub.cbl", "CallSub"));
-            testCost("SubProg",() -> convert(cblDir + "SubProg.cbl", "SubProg"));
-            testCost("IfClause",() -> convert(cblDir + "IfClause.cbl", "IfClause"));
-            testCost("String",() -> convert(cblDir + "String.cbl", "String"));
-            testCost("Sql",() -> convert(cblDir + "Sql.cbl", "Sql"));
-            testCost("File",() -> convert(cblDir + "File.cbl", "File"));
-            testCost("EXAMPLE",() -> convert(cblDir + "Example.cbl", "EXAMPLE"));
-            testCost("ALL",() -> convert(cblDir + "All.cbl", "All"));
-            testCost("GSA01060NC",() -> convert(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
-            testCost("GSA01060",() -> convert(cblDir + "GSA01060.cbl", "GSA01060",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
-            testCost("SAACNACN",() -> convert(cblDir + "sql/SAACNACN.sqb", "SAACNACN",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
+            testCost("TestData",() -> convert(cblDir + "demo/TestData.cbl", "TestData"));
+            testCost("TestAccept",() -> convert(cblDir + "demo/TestAccept.cbl", "TestAccept"));
+            testCost("Init",() -> convert(cblDir + "demo/Init.cbl", "Init"));
+            testCost("TestMove",() -> convert(cblDir + "demo/TestMove.cbl", "TestMove"));
+            testCost("TestAdd",() -> convert(cblDir + "demo/TestAdd.cbl", "TestAdd"));
+            testCost("TestSubtract",() -> convert(cblDir + "demo/TestSubtract.cbl", "TestSubtract"));
+            testCost("TestMultiply",() -> convert(cblDir + "demo/TestMultiply.cbl", "TestMultiply"));
+            testCost("TestDivide",() -> convert(cblDir + "demo/TestDivide.cbl", "TestDivide"));
+            testCost("TestCompute",() -> convert(cblDir + "demo/TestCompute.cbl", "TestCompute"));
+            testCost("TestTable",() -> convert(cblDir + "demo/TestTable.cbl", "TestTable"));
+            testCost("TestPerform",() -> convert(cblDir + "demo/TestPerform.cbl", "TestPerform"));
+            testCost("CallSub",() -> convert(cblDir + "demo/CallSub.cbl", "CallSub"));
+            testCost("SubProg",() -> convert(cblDir + "demo/SubProg.cbl", "SubProg"));
+            testCost("IfClause",() -> convert(cblDir + "demo/IfClause.cbl", "IfClause"));
+            testCost("TestString",() -> convert(cblDir + "demo/TestString.cbl", "TestString"));
+            testCost("TestSql",() -> convert(cblDir + "demo/TestSql.cbl", "TestSql"));
+            testCost("TestFile",() -> convert(cblDir + "demo/TestFile.cbl", "TestFile"));
+            testCost("EXAMPLE",() -> convert(cblDir + "demo/Example.cbl", "EXAMPLE"));
+            testCost("TestAll",() -> convert(cblDir + "demo/TestAll.cbl", "TestAll"));
+            testCost("GSA01060NC",() -> convert(cblDir + "bank/GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
+            testCost("GSA01060",() -> convert(cblDir + "bank/GSA01060.cbl", "GSA01060",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
+            testCost("SAACNACN",() -> convert(cblDir + "bank/sql/SAACNACN.sqb", "SAACNACN",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
+            testCost("GDBI4RDB",() -> convert(cblDir + "bank/sql/GDBI4RDB.cbl", "GDBI4RDB",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
         }
     }
 }

@@ -1,5 +1,5 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. WorkingStorageExample.
+       PROGRAM-ID. TEST-DATA.
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
