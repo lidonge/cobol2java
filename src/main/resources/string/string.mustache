@@ -6,8 +6,9 @@
             delimitedBy=operand;""}}{{/charactersValueStmt}}{{/delimitedByPhrase}}{{%
     ""}}{{#-first}}{{%intoName}} = {{/-first}}{{%
         ""}}{{#sendingValueStmts}}{{#call}}{{>call}}{{/call}}{{%operand}}{{^-last}} + {{%delimitedBy}} + {{/-last}}{{/sendingValueStmts}}{{%
-        ""}}{{#sendingForPhrase}}{{/sendingForPhrase}}{{%
+        ""}}{{#sendingForPhrase}}//TODO sendingForPhrase{{/sendingForPhrase}}{{%
         ""}}{{^-last}} + {{%delimitedBy}} + {{/-last}}{{#-last}};{{/-last}}{{/sendings}}
     {{#onOverflowPhrase}}//TODO onOverflowPhrase{{/onOverflowPhrase}}
     {{#notOnOverflowPhrase}}//TODO notOnOverflowPhrase{{/notOnOverflowPhrase}}
+    {{#withPointerPhrase}}//TODO withPointerPhrase{{/withPointerPhrase}}
 {{/STRING}}

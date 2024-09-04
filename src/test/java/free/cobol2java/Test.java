@@ -31,7 +31,7 @@ public class Test {
         System.out.println(prog);
     }
     public static void main(String[] args) throws IOException {
-        testCost("GSA01060",() -> convert(cblDir + "GSA01060.cbl", "GSA01060",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
+        testCost("String",() -> convert(cblDir + "String.cbl", "String"));
 
         if (false) {
             testCost("Data",() -> convert(cblDir + "Data.cbl", "Data"));

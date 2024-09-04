@@ -3,6 +3,8 @@
     {{#condition}}{{>ifelse.condition}}{{/condition}}
     {{#then}}
         if ({{%condition}}){
+        {{%nextSentence=obj_getVar("nextSentence") ? "nextSentence":null;""}}
+        {{#$nextSentence}}//TODO nextSentence{{/nextSentence}}
             {{%needDefaultParagraph=null;""}}
             {{>statements}}
         }
@@ -10,6 +12,8 @@
     {{%ifElseClause = obj_getCurVar("ifElse");""}}
     {{#$ifElseClause}}
         else {
+            {{%nextSentence=obj_getVar("nextSentence") ? "nextSentence":null;""}}
+            {{#$nextSentence}}//TODO nextSentence{{/nextSentence}}
             {{%needDefaultParagraph=null;""}}
             {{>statements}}
         }

@@ -12,8 +12,14 @@
         {{%substractValue = "-" + substractValue;""}}
     {{/subtrahendValueStmt}}
 {{/subtrahends}}
-{{#minuends}}{{#minuendCall}}{{>call}}{{/minuendCall}}{{%setName=operand;setValue=operand+substractValue;""}}
-        {{%setName}}={{%setValue}};
+{{#minuends}}
+    {{#minuendCall}}
+        {{>call}}
+        {{%rounded= obj_getVar("rounded")? "rounded":null;""}}
+        {{#$rounded}}//TODO SUBSTRACT rounded{{/rounded}}
+    {{/minuendCall}}
+    {{%setName=operand;setValue=operand+substractValue;""}}
+    {{%setName}}={{%setValue}};
 {{/minuends}}
 {{#minuend}}{{#minuendValueStmt.call}}{{>call}}{{/minuendValueStmt.call}}{{%setName=operand;setValue=substractValue;""}}{{/minuend}}
 {{#givings}}{{#givingCall}}{{>call}}{{/givingCall}}{{%lastValue=setName;setName=operand;""}}

@@ -3,6 +3,8 @@
         {{>call}}
         {{%operand}} = {{%operand}} * {{%multiplyValue}};
     {{/operandCall}}
+    {{%rounded= obj_getVar("rounded")? "rounded":null;""}}
+    {{#$rounded}}//TODO MULTIPLY rounded{{/rounded}}
 {{/byOperands}}
 {{#givingOperand}}
     {{#operandValueStmt}}{{#literal}}{{>literal}}{{/literal}}

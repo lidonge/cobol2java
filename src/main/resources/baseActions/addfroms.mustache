@@ -7,16 +7,18 @@
     {{/fromValueStmt}}
 {{/froms}}
 {{#tos}}
-    {{^givings}}
-        {{#literal}}{{>literal}}{{/literal}}
-        {{#toCall}}{{>call}}{{/toCall}}{{%setValue = addValue;setName=operand;""}}
-        {{%setName}}={{%setValue}}{{%setName}};
-    {{/givings}}
-    {{#givings}}
-        {{#literal}}{{>literal}}{{/literal}}
-        {{#toValueStmt.call}}{{>call}}{{/toValueStmt.call}}{{%setValue = addValue;setName=operand;""}}
-        {{%setValue = addValue + operand+"+";""}}
-    {{/givings}}
+        {{#toCall}}
+            {{>call}}
+            {{%setValue = addValue;setName=operand;""}}
+            {{%setName}}={{%setValue}}{{%setName}};
+            {{%rounded= obj_getVar("rounded")? "rounded":null;""}}
+            {{#$rounded}}//TODO add rounded{{/rounded}}
+        {{/toCall}}
+        {{#toValueStmt.call}}
+            {{>call}}
+            {{%setValue = addValue;setName=operand;""}}
+            {{%setValue = addValue + operand+"+";""}}
+        {{/toValueStmt.call}}
 {{/tos}}
 {{#givings}}
     {{#literal}}{{>literal}}{{/literal}}

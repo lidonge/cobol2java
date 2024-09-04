@@ -21,14 +21,17 @@
 {{#$needDefaultParagraph}}
     }
 {{/needDefaultParagraph}}
-{{#paragraphs}}{{>callSub.subparameters}}{{%
+{{>callSub.subparameters}}{{%
     func_parameters=parameters == null ? "":parameters;
     func_parametersWithoutType=parametersWithoutType == null ? "":parametersWithoutType;
 ""}}
-{{#name}}{{%retType=null;retName=null;""}}
-    {{#givingClause}}{{#givingCall}}{{%
-        operand = name_toField(obj_getVar("name"));
-        retName=operand;retType=name_getFieldType(operand);""}}{{/givingCall}}{{/givingClause}}
+{{%retType=null;retName=null;""}}
+{{#givingClause}}{{#givingCall}}{{%
+    operand = name_toField(obj_getVar("name"));
+    retName=operand;retType=name_getFieldType(operand);""}}{{/givingCall}}
+{{/givingClause}}
+{{#paragraphs}}
+{{#name}}
     public {{#$retType}}{{%retType}}{{/retType}}{{^$retType}}void{{/retType}} {{%name_toField(obj_getVar("name"))}}({{%func_parameters}}){
     {{#$retName}}{{%retType}} {{%retName}};{{/retName}}
     //TODO parameter transfer

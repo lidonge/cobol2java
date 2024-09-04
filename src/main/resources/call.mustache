@@ -1,9 +1,13 @@
 {{%
     dimString = null;
-    isTable = obj_getVar("delegate.callType") == "TABLE_CALL";
+    callType = obj_getVar("delegate.callType");
+    isTable = callType == "TABLE_CALL";
+    isFunction = callType == "FUNCTION_CALL";
     delegate= isTable? name_toField(obj_getVar("delegate.name")) :
         name_toField(obj_getVar("delegate.delegate.name"));
     operand = name_delegateName(delegate);
+    operand= (callType != "DATA_DESCRIPTION_ENTRY_CALL" && !isTable) ? "//TODO " + obj_getVar("delegate.ctx.text"):
+        operand;
 ""}}{{#delegate}}{{#subscripts}}{{%
     temp = obj_getVar("ctx.text");dimString = dimString == null ? temp:dimString + temp;
 ""}}{{^-last}}{{%

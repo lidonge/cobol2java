@@ -6,10 +6,16 @@
         {{#$remainder}}{{%remainder}}={{%intoValue}} % {{%divideOpand}};{{/remainder}}
     {{/givingCall}}
 {{/intos}}
-{{#byValueStmt}}{{#literal}}{{>literal}}{{/literal}}
-{{#call}}{{>call}}{{/call}}{{%intoValue=divideOpand;divideOpand=operand;""}}{{/byValueStmt}}
-{{#intoValueStmt}}{{#literal}}{{>literal}}{{/literal}}
-{{#call}}{{>call}}{{/call}}{{%intoValue=operand;""}}{{/intoValueStmt}}
+{{#byValueStmt}}
+    {{#literal}}{{>literal}}{{/literal}}
+    {{#call}}{{>call}}{{/call}}
+    {{%intoValue=divideOpand;divideOpand=operand;""}}
+{{/byValueStmt}}
+{{#intoValueStmt}}
+    {{#literal}}{{>literal}}{{/literal}}
+    {{#call}}{{>call}}{{/call}}
+    {{%intoValue=operand;""}}
+{{/intoValueStmt}}
 {{#givingPhrase}}
     {{#givings}}
         {{%rounded = (obj_getVar("rounded") +"") == "true" ? "yes":null;""}}

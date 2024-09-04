@@ -1,6 +1,13 @@
-{{#literal}}{{>literal}}{{/literal}}
-{{#acceptCall}}{{>call}}{{/acceptCall}}
-{{%accpName=operand;""}}
-{{#acceptCall.delegate.delegate}}
-        {{%accpName}} = {{%sType = obj_getVar("acceptType");sType == "DATE" ? "Util.now();" : "Util.Input()"}}
-{{/acceptCall.delegate.delegate}}
+{{%statementType=obj_getVar("statementType");ACCEPT = statementType == "ACCEPT" ? "ACCEPT" : null;""}}
+{{#$ACCEPT}}
+    {{#literal}}{{>literal}}{{/literal}}
+    {{#acceptCall}}{{>call}}{{/acceptCall}}
+    {{%accpName=operand;""}}
+    {{%accpName}} = {{%sType = obj_getVar("acceptType");sType == "DATE" ? "Util.now();" : "Util.Input()"}}
+    {{#acceptFromDateStatement}}//TODO acceptFromDateStatement{{/acceptFromDateStatement}}
+    {{#acceptFromEscapeKeyStatement}}//TODO acceptFromEscapeKeyStatement{{/acceptFromEscapeKeyStatement}}
+    {{#acceptFromMnemonicStatement}}//TODO acceptFromMnemonicStatement{{/acceptFromMnemonicStatement}}
+    {{#acceptMessageCountStatement}}//TODO acceptMessageCountStatement{{/acceptMessageCountStatement}}
+    {{#notOnExceptionClause}}//TODO ACCEPT notOnExceptionClause{{/notOnExceptionClause}}
+    {{#onExceptionClause}}//TODO ACCEPT onExceptionClause{{/onExceptionClause}}
+{{/ACCEPT}}

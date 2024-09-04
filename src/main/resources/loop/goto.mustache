@@ -5,6 +5,7 @@
     {{/procedureCall}}{{/simple}}
     {{#dependingOnPhrase}}
         {{#dependingOnCall}}{{>call}}{{/dependingOnCall}}
+        {{#moreLabels}}//TODO: moreLabels{{/moreLabels}}
         switch({{%operand}}){
         {{#procedureCalls}}
             case {{-index}}:{
