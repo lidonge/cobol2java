@@ -31,7 +31,7 @@ public class Test {
         System.out.println(prog);
     }
     public static void main(String[] args) throws IOException {
-        testCost("String",() -> convert(cblDir + "String.cbl", "String"));
+        testCost("File",() -> convert(cblDir + "File.cbl", "File"));
 
         if (false) {
             testCost("Data",() -> convert(cblDir + "Data.cbl", "Data"));
@@ -50,6 +50,7 @@ public class Test {
             testCost("IfClause",() -> convert(cblDir + "IfClause.cbl", "IfClause"));
             testCost("String",() -> convert(cblDir + "String.cbl", "String"));
             testCost("Sql",() -> convert(cblDir + "Sql.cbl", "Sql"));
+            testCost("File",() -> convert(cblDir + "File.cbl", "File"));
             testCost("EXAMPLE",() -> convert(cblDir + "Example.cbl", "EXAMPLE"));
             testCost("ALL",() -> convert(cblDir + "All.cbl", "All"));
             testCost("GSA01060NC",() -> convert(cblDir + "GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));

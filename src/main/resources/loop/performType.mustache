@@ -1,9 +1,13 @@
-{{%times=null;testClause==null;varying=null;""}}
+{{%times=null;testClause==null;varying=null;until=null;""}}
 {{#performType}}
-    {{%performType = "yes";""}}
+    {{%performType = "performType";""}}
     {{>loop.times}}
-    {{#until}}{{>loop.until}}{{/until}}
-    {{#varying}}{{%varying="yes";""}}
+    {{#until}}
+        {{%until="until";""}}
+        {{>loop.until}}
+    {{/until}}
+    {{#varying}}
+        {{%varying="varying";""}}
         {{#varyingClause}}{{>loop.varyingClause}}{{/varyingClause}}
         {{#testClause}}{{>loop.testClause}}{{/testClause}}
     {{/varying}}

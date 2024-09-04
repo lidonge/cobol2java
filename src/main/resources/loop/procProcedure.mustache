@@ -4,29 +4,38 @@
 {{#$times}}
         for(int i = 0;i<{{%times}};i++){
 {{/times}}
-{{^$varying}}{{#$condition}}
-        {{#$before}}while({{%condition}}){ {{/before}}
+{{#$until}}
+    {{#$condition}}
+        {{#$before}}while(!({{%condition}})){ {{/before}}
         {{#$after}}do{ {{/after}}
-{{/condition}}{{/varying}}
+        {{^$before}}{{^$after}}
+            while(!({{%condition}})){
+        {{/after}}{{/before}}
+    {{/condition}}
+{{/until}}
 {{#$varying}}
         for(int {{%varValue}}={{%fromValue}};{{%condition}};{{%varValue}} += {{%stepValue}}){
 {{/varying}}
-{{#performProcedureStatement.performType.varying.varyingClause.afters}}{{>loop.varyingClause}}
-            for(int {{%varValue}}={{%fromValue}};{{%condition}};{{%varValue}} += {{%stepValue}}){
-{{/performProcedureStatement.performType.varying.varyingClause.afters}}
 {{#performInlineStatement}}{{>statements}}{{/performInlineStatement}}
 {{#performProcedureStatement}}{{#calls}}{{>loop.procedureName}}
 {{%procedureCall}};
 {{/calls}}{{/performProcedureStatement}}
-    {{^$varying}}{{^$after}}{{#$performType}}
-        }
-    {{/performType}}{{/after}}
-    {{#$after}}
-        }while({{%condition}});
-    {{/after}}{{/varying}}
-{{#performProcedureStatement.performType.varying.varyingClause.afters}}
-        }
-{{/performProcedureStatement.performType.varying.varyingClause.afters}}
+{{#$times}}
+    }
+{{/times}}
+{{#$until}}
+    {{#$condition}}
+        {{#$before}}
+            }
+        {{/before}}
+        {{#$after}}
+            }while(!({{%condition}}));
+        {{/after}}
+        {{^$before}}{{^$after}}
+            }
+        {{/after}}{{/before}}
+    {{/condition}}
+{{/until}}
 {{#$varying}}
     }
 {{/varying}}
