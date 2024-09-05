@@ -31,7 +31,7 @@ public class Test {
         System.out.println(prog);
     }
     public static void main(String[] args) throws IOException {
-        testCost("GDBI4RDB",() -> convert(cblDir + "bank/sql/GDBI4RDB.cbl", "GDBI4RDB",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
+        testCost("TestAll",() -> convert(cblDir + "demo/TestAll.cbl", "TestAll"));
 
         if (false) {
             testCost("TestData",() -> convert(cblDir + "demo/TestData.cbl", "TestData"));

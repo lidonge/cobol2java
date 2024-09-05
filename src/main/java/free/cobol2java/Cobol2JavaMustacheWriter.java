@@ -5,6 +5,7 @@ import free.servpp.mustache.MustacheCompiler;
 import free.servpp.mustache.handler.IPartialFileHandler;
 import free.servpp.mustache.handler.MustacheWriter;
 import free.servpp.mustache.model.Template;
+import io.proleap.cobol.CobolParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -85,7 +86,7 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                 addFunction("name_setFieldType", args -> ((Func) getVar("__System_Function")).name_setFieldType((String) args[0], (String) args[1]));
                 addFunction("name_getFieldClsType", args -> ((Func) getVar("__System_Function")).name_getFieldClsType((String) args[0]));
                 addFunction("name_setFieldClsType", args -> ((Func) getVar("__System_Function")).name_setFieldClsType((String) args[0], (String) args[1]));
-                addFunction("expr_convertExpr", args -> ((Func) getVar("__System_Function")).expr_convertExpr((String) args[0]));
+                addFunction("expr_convertExpr", args -> ((Func) getVar("__System_Function")).expr_convertExpr((CobolParser.ArithmeticExpressionContext) args[0]));
                 addFunction("rel_getOper", args -> ((Func) getVar("__System_Function")).rel_getOper(args[0]+"", (String) args[1], (String) args[2]));
                 addFunction("array_initString", args -> ((Func) getVar("__System_Function")).array_initString(args[0].toString(), args[1].toString()));
                 addFunction("type_getType", args -> ((Func) getVar("__System_Function")).type_getType((String) args[0]));

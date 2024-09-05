@@ -7,7 +7,10 @@
     {{#dataItemCalls}}
     {{>call}}{{%
         setName=operand;
-        setValue=byValue == null ? "Util.init(\""+name_getFieldType(setName) + "\");":byValue+";" ;
+        pictureString = obj_getVar("delegate.delegate.dataDescriptionEntry.pictureClause.pictureString");
+        pictureString = pictureString == null ? null : "\""+pictureString + "\"";
+        type = name_getFieldType(setName);
+        setValue=byValue == null ? "("+type+")Util.init(\""+type+"\","+pictureString + ");":byValue+";" ;
     ""}}
         {{%setName}}={{%setValue}}{{/dataItemCalls}}
 {{/INITIALIZE}}

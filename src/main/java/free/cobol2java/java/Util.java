@@ -15,7 +15,11 @@ public class Util {
         return "";
     }
 
-    public static String init(String string) {
+    public static Object init(String typeStr, String pictureStr) {
         return "";
+    }
+
+    public static Integer subvalue(Integer wsNum1, String s) {
+        return 0;
     }
 }
