@@ -36,7 +36,7 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                 Template tmpl = templateMap.get(partialName);
 
                 if(tmpl == null) {
-                    URL url = Cobol2JavaMustacheWriter.class.getResource("/" + partialName.replace(".", "/") + ".mustache");
+                    URL url = Cobol2JavaMustacheWriter.class.getResource("/mustache/" + partialName.replace(".", "/") + ".mustache");
                     try {
                         MustacheCompiler mustacheCompiler = new MustacheCompiler(url);
                         try {

@@ -1,5 +1,9 @@
 package free.cobol2java;
 
+import com.typesafe.config.Config;
+import free.cobol2java.config.Cobol2javaConfig;
+import free.servpp.config.IConfig;
+import free.servpp.config.hocon.HoconConfigTypeManager;
 import io.proleap.cobol.preprocessor.CobolPreprocessor;
 
 import java.io.File;
@@ -12,19 +16,38 @@ import java.util.List;
  * @author lidong@date 2024-09-04@version 1.0
  */
 public class BatchConvertor {
+    String sourcePath;
+    String targetPath;
+    List<File> copyDirs;
+    String rootPackageName;
+    String format;
+    String encoding;
 
-    public static void main(String[] args) {
-        if (args.length < 4) {
+    public static void main(String[] args) throws IOException {
+        BatchConvertor batchConvertor = new BatchConvertor();
+        if(args.length == 0){
+            Cobol2javaConfig conf = new Cobol2javaConfig();
+            batchConvertor.initConfig(conf.getManager());
+        }
+        else if (args.length < 4) {
+            System.out.println("Usage: java BatchConvertor");
             System.out.println("Usage: java BatchConvertor <sourcePath> <targetPath> <copyDir:...CopyDir> <rootPackageName> <format> <encoding>?");
             return;
-        }
+        }else
+            batchConvertor.initConfig(args);
 //        "/Users/lidong/gitspace/cobol2java/src/main/COBOL"
 //        "/Users/lidong/gitspace/cobol2java/target/generated-sources"
 //        "com.dcits"
-        String sourcePath = args[0];
-        String targetPath = args[1];
-        List<File> copyDirs = null;
-        String[] dirs = args[2].split(":");
+
+        batchConvertor.convertAll();
+    }
+
+    private void initConfig(HoconConfigTypeManager manager) {
+        IConfig config = manager.getHoconConfigManager("application").getConfigById("cobol2java");
+        Config con = (Config) config.getConfigObject();
+        sourcePath = con.getString("application.dirs.sourcePath");
+        targetPath = con.getString("application.dirs.targetPath");
+        String[] dirs = con.getString("application.dirs.copyDir").split(":");
         copyDirs = new ArrayList<>();
         for(String dir:dirs){
             File fDir = new File(dir);
@@ -34,10 +57,12 @@ public class BatchConvertor {
 
             copyDirs.add(fDir);
         }
-        String rootPackageName = args[3];
-        String format = args[4];
-        String encoding = args.length == 6 ? args[5] : "utf-8";
+        rootPackageName = con.getString("application.rootPackageName");
+        format = con.getString("application.format");
+        encoding = con.getString("application.encoding");
+    }
 
+    private void convertAll() {
         List<File> files = new ArrayList<>();
         findFiles(new File(sourcePath), files);
 
@@ -54,7 +79,7 @@ public class BatchConvertor {
 
             // Call the convert function and get the result as a string
             try {
-                String convertedContent = convert(file, packageName,format,encoding,copyDirs);
+                String convertedContent = convert(file, packageName);
 
                 // Write the result to the target file
                 writeToFile(outputFilePath, convertedContent);
@@ -64,8 +89,27 @@ public class BatchConvertor {
         }
     }
 
+    private void initConfig(String[] args) {
+        sourcePath = args[0];
+        targetPath = args[1];
+        String[] dirs = args[2].split(":");
+        copyDirs = new ArrayList<>();
+        for(String dir:dirs){
+            File fDir = new File(dir);
+            if(!fDir.exists()){
+                fDir = new File(sourcePath,dir);
+            }
+
+            copyDirs.add(fDir);
+        }
+        rootPackageName = args[3];
+        format = args[4];
+        encoding = args.length == 6 ? args[5] : "utf-8";
+
+    }
+
     // Write the converted content to the target file
-    private static void writeToFile(String outputFilePath, String content) {
+    private void writeToFile(String outputFilePath, String content) {
         File targetFile = new File(outputFilePath);
         targetFile.getParentFile().mkdirs();  // Create directories if they don't exist
 
@@ -93,7 +137,7 @@ public class BatchConvertor {
     }
 
     // Dummy convert function (you can replace it with your actual logic)
-    private static String convert(File sourceFile, String packageName, String format, String encoding, List<File> copyDirs) {
+    private String convert(File sourceFile, String packageName) {
         // Implement your conversion logic here
         System.out.println("Converting file: " + sourceFile.getAbsolutePath());
         System.out.println("Package name: " + packageName);

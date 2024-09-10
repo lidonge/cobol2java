@@ -79,7 +79,7 @@ public class Cobol2Java {
     }
 
     String convertProgram(ProgramUnit programUnit) throws IOException, URISyntaxException {
-        URL url = Cobol2JavaMustacheWriter.class.getResource("/program.mustache");
+        URL url = Cobol2JavaMustacheWriter.class.getResource("/mustache/program.mustache");
         MustacheCompiler mustacheCompiler = new MustacheCompiler(url);
         MustacheListenerImpl impl = mustacheCompiler.compile();
 
