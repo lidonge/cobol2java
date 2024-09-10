@@ -1,5 +1,6 @@
 {{%statementType=obj_getVar("statementType");IF = statementType == "IF" ? "IF" : null;""}}
-{{#$IF}}
+{{%curObj=obj_getCurObj();""}}
+{{#$IF}}{{#$curObj}}
     {{#condition}}{{>ifelse.condition}}{{/condition}}
     {{#then}}
         if ({{%condition}}){
@@ -18,4 +19,4 @@
             {{>statements}}
         }
     {{/ifElseClause}}
-{{/IF}}
+{{/curObj}}{{/IF}}

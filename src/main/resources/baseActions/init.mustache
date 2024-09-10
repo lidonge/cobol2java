@@ -1,5 +1,6 @@
 {{%statementType=obj_getVar("statementType");INITIALIZE = statementType == "INITIALIZE" ? "INITIALIZE" : null;""}}
-{{#$INITIALIZE}}
+{{%curObj=obj_getCurObj();""}}
+{{#$INITIALIZE}}{{#$curObj}}
     {{%byValue=null;""}}
     {{#replacingPhrase.bys}}
         {{#valueStmt}}{{>call}}{{#literal}}{{>literal}}{{/literal}}{{%byValue=operand;""}}{{/valueStmt}}
@@ -13,4 +14,4 @@
         setValue=byValue == null ? "("+type+")Util.init(\""+type+"\","+pictureString + ");":byValue+";" ;
     ""}}
         {{%setName}}={{%setValue}}{{/dataItemCalls}}
-{{/INITIALIZE}}
+{{/curObj}}{{/INITIALIZE}}

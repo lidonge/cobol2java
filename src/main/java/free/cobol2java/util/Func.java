@@ -17,6 +17,19 @@ public class Func {
     private Map<String, String> qualifiedNameToDimLevel = new HashMap<>();
     private Stack<String> clsLevel = new Stack<>();
     private Stack<Integer> curDims = new Stack<>();
+    private Stack<Object> variables = new Stack<>();
+
+    public Object var_push(Object var){
+        return variables.push(var);
+    }
+
+    public Object var_pop(){
+        return variables.pop();
+    }
+
+    public Object var_peek(){
+        return variables.peek();
+    }
 
     public int dim_push(Number dim) {
         return curDims.push(dim.intValue());

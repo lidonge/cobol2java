@@ -1,5 +1,6 @@
 {{%statementType=obj_getVar("statementType");COMPUTE = statementType == "COMPUTE" ? "COMPUTE" : null;""}}
-{{#$COMPUTE}}
+{{%curObj=obj_getCurObj();""}}
+{{#$COMPUTE}}{{#$curObj}}
     {{#arithmeticExpression}}{{>arithmetic}}{{/arithmeticExpression}}
     {{#stores}}
         {{#storeCall}}{{>call}}{{%storeName=operand;""}}{{/storeCall}}
@@ -10,4 +11,4 @@
     {{/stores}}
     {{#notOnSizeErrorPhrase}}//TODO COMPUTE notOnSizeErrorPhrase{{/notOnSizeErrorPhrase}}
     {{#onSizeErrorPhrase}}//TODO COMPUTE onSizeErrorPhrase{{/onSizeErrorPhrase}}
-{{/COMPUTE}}
+{{/curObj}}{{/COMPUTE}}

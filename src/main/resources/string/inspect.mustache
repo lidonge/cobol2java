@@ -1,4 +1,5 @@
 {{%statementType=obj_getVar("statementType");INSPECT = statementType == "INSPECT" ? "INSPECT" : null;""}}
-{{#$INSPECT}}
+{{%curObj=obj_getCurObj();""}}
+{{#$INSPECT}}{{#$curObj}}
 //TODO INSPECT
-{{/INSPECT}}
+{{/curObj}}{{/INSPECT}}

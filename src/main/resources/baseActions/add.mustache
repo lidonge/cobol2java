@@ -1,5 +1,6 @@
 {{%statementType=obj_getVar("statementType");ADD = statementType == "ADD" ? "ADD" : null;""}}
-{{#$ADD}}
+{{%curObj=obj_getCurObj();""}}
+{{#$ADD}}{{#$curObj}}
     {{%addValue = "";""}}
     {{#addToStatement}}
         {{>baseActions.addfroms}}
@@ -10,4 +11,4 @@
     {{#addCorrespondingStatement}}//TODO addCorrespondingStatement{{/addCorrespondingStatement}}
     {{#notOnSizeErrorPhrase}}//TODO ADD notOnSizeErrorPhrase{{/notOnSizeErrorPhrase}}
     {{#onSizeErrorPhrase}}//TODO ADD onSizeErrorPhrase{{/onSizeErrorPhrase}}
-{{/ADD}}
+{{/curObj}}{{/ADD}}

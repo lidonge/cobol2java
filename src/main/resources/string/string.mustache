@@ -1,5 +1,6 @@
 {{%statementType=obj_getVar("statementType");STRING = statementType == "STRING" ? "STRING" : null;""}}
-{{#$STRING}}
+{{%curObj=obj_getCurObj();""}}
+{{#$STRING}}{{#$curObj}}
     {{#intoPhrase}}{{#intoCall}}{{>call}}{{%intoName=operand;""}}{{/intoCall}}{{/intoPhrase}}
     {{#sendings}}{{%
     ""}}{{#delimitedByPhrase}}{{#charactersValueStmt}}{{#literal}}{{>literal}}{{/literal}}{{%
@@ -11,4 +12,4 @@
     {{#onOverflowPhrase}}//TODO onOverflowPhrase{{/onOverflowPhrase}}
     {{#notOnOverflowPhrase}}//TODO notOnOverflowPhrase{{/notOnOverflowPhrase}}
     {{#withPointerPhrase}}//TODO withPointerPhrase{{/withPointerPhrase}}
-{{/STRING}}
+{{/curObj}}{{/STRING}}

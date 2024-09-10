@@ -15,7 +15,7 @@ public class BatchConvertor {
 
     public static void main(String[] args) {
         if (args.length < 4) {
-            System.out.println("Usage: java BatchConvertor <sourcePath> <targetPath> <rootPackageName> <format> <encoding>?");
+            System.out.println("Usage: java BatchConvertor <sourcePath> <targetPath> <copyDir:...CopyDir> <rootPackageName> <format> <encoding>?");
             return;
         }
 //        "/Users/lidong/gitspace/cobol2java/src/main/COBOL"
@@ -23,9 +23,20 @@ public class BatchConvertor {
 //        "com.dcits"
         String sourcePath = args[0];
         String targetPath = args[1];
-        String rootPackageName = args[2];
-        String format = args[3];
-        String encoding = args.length == 5 ? args[4] : "utf-8";
+        List<File> copyDirs = null;
+        String[] dirs = args[2].split(":");
+        copyDirs = new ArrayList<>();
+        for(String dir:dirs){
+            File fDir = new File(dir);
+            if(!fDir.exists()){
+                fDir = new File(sourcePath,dir);
+            }
+
+            copyDirs.add(fDir);
+        }
+        String rootPackageName = args[3];
+        String format = args[4];
+        String encoding = args.length == 6 ? args[5] : "utf-8";
 
         List<File> files = new ArrayList<>();
         findFiles(new File(sourcePath), files);
@@ -43,7 +54,7 @@ public class BatchConvertor {
 
             // Call the convert function and get the result as a string
             try {
-                String convertedContent = convert(file, packageName,format,encoding);
+                String convertedContent = convert(file, packageName,format,encoding,copyDirs);
 
                 // Write the result to the target file
                 writeToFile(outputFilePath, convertedContent);
@@ -82,7 +93,7 @@ public class BatchConvertor {
     }
 
     // Dummy convert function (you can replace it with your actual logic)
-    private static String convert(File sourceFile, String packageName, String format, String encoding) {
+    private static String convert(File sourceFile, String packageName, String format, String encoding, List<File> copyDirs) {
         // Implement your conversion logic here
         System.out.println("Converting file: " + sourceFile.getAbsolutePath());
         System.out.println("Package name: " + packageName);
@@ -90,7 +101,7 @@ public class BatchConvertor {
         String prog = null;
 
         Cobol2Java cobol2Java = new Cobol2Java(sourceFile.getAbsolutePath(),
-                fileName.substring(0, fileName.lastIndexOf(".")), packageName,
+                fileName.substring(0, fileName.lastIndexOf(".")),copyDirs, packageName,
                 CobolPreprocessor.CobolSourceFormatEnum.valueOf(format), encoding);
         prog = cobol2Java.convertAll();
 

@@ -1,5 +1,6 @@
 package free.cobol2java;
 
+import free.cobol2java.parser.ExtCobolParserRunnerImpl;
 import free.servpp.mustache.MustacheCompiler;
 import free.servpp.mustache.handler.MustacheListenerImpl;
 import free.servpp.mustache.handler.MustacheWriter;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.List;
 
 /**
  * @author lidong@date 2024-08-30@version 1.0
@@ -26,17 +28,21 @@ public class Cobol2Java {
     private String encoding;
     private String packageName;
     private CobolPreprocessor.CobolSourceFormatEnum format;
+    private List<File> copyDirs;
 
-    public Cobol2Java(String cblFile, String progName, String packageName) {
-        this(cblFile,progName,packageName,CobolPreprocessor.CobolSourceFormatEnum.TANDEM,null);
+    public Cobol2Java(String cblFile, String progName, List<File> copyDirs, String packageName) {
+        this(cblFile,progName, copyDirs,packageName,CobolPreprocessor.CobolSourceFormatEnum.TANDEM,null);
     }
 
-    public Cobol2Java(String cblFile, String progName, String packageName, CobolPreprocessor.CobolSourceFormatEnum format, String encoding) {
+    public Cobol2Java(String cblFile, String progName, List<File> copyDirs, String packageName,
+                      CobolPreprocessor.CobolSourceFormatEnum format,
+                      String encoding) {
         this.cblFile = cblFile;
         this.progName = progName;
         this.encoding = encoding;
         this.packageName = packageName;
         this.format = format;
+        this.copyDirs = copyDirs;
     }
 
     public String convertAll()  {
@@ -46,7 +52,7 @@ public class Cobol2Java {
             ProgramUnit programUnit = compilationUnit.getProgramUnit();
             String prog = convertProgram(programUnit);
             return prog;
-        } catch (URISyntaxException|IOException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
 //            new ObjectTreePrinter().printObjectTree(compilationUnit);
@@ -57,9 +63,11 @@ public class Cobol2Java {
     private CompilationUnit getProgram() throws IOException {
         File inputFile = new File(cblFile);
 
-        CobolParserRunnerImpl cobolParserRunner = new CobolParserRunnerImpl() {
+        CobolParserRunnerImpl cobolParserRunner = new ExtCobolParserRunnerImpl() {
             public Program analyzeFile(final File cobolFile, final CobolPreprocessor.CobolSourceFormatEnum format) throws IOException {
                 final CobolParserParams params = createDefaultParams(format, cobolFile);
+                if(copyDirs != null)
+                    params.setCopyBookDirectories(copyDirs);
                 if(encoding != null)
                     params.setCharset(Charset.forName(encoding));
                 return analyzeFile(cobolFile, params);
@@ -71,7 +79,7 @@ public class Cobol2Java {
     }
 
     String convertProgram(ProgramUnit programUnit) throws IOException, URISyntaxException {
-        URL url = Cobol2JavaMustacheWriter.class.getResource(File.separator + "program.mustache");
+        URL url = Cobol2JavaMustacheWriter.class.getResource("/program.mustache");
         MustacheCompiler mustacheCompiler = new MustacheCompiler(url);
         MustacheListenerImpl impl = mustacheCompiler.compile();
 
@@ -84,6 +92,6 @@ public class Cobol2Java {
 
 
     private MustacheWriter getMustacheWriter(Object root) {
-        return new Cobol2JavaMustacheWriter(root, packageName);
+        return new Cobol2JavaMustacheWriter(root, packageName,false);
     }
 }

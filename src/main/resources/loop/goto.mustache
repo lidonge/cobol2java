@@ -1,5 +1,6 @@
 {{%statementType=obj_getVar("statementType");GO_TO = statementType == "GO_TO" ? "GO_TO" : null;""}}
-{{#$GO_TO}}
+{{%curObj=obj_getCurObj();""}}
+{{#$GO_TO}}{{#$curObj}}
     {{#simple}}{{#procedureCall}}
         {{>loop.procedureName}}{{%procedureCall}};
     {{/procedureCall}}{{/simple}}
@@ -15,4 +16,4 @@
         {{/procedureCalls}}
         }
     {{/dependingOnPhrase}}
-{{/GO_TO}}
+{{/curObj}}{{/GO_TO}}

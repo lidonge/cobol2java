@@ -19,8 +19,8 @@ import java.util.Map;
  */
 public class Cobol2JavaMustacheWriter extends MustacheWriter {
     private String packageName;
-    public Cobol2JavaMustacheWriter(Object root, String packageName) {
-        super(root);
+    public Cobol2JavaMustacheWriter(Object root, String packageName, boolean lookupParent) {
+        super(root,lookupParent);
         this.packageName = packageName;
         createCobol2JavaEnvironment();
         createPartialHandler();
@@ -36,7 +36,7 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                 Template tmpl = templateMap.get(partialName);
 
                 if(tmpl == null) {
-                    URL url = Cobol2JavaMustacheWriter.class.getResource(File.separator + partialName.replace(".", File.separator) + ".mustache");
+                    URL url = Cobol2JavaMustacheWriter.class.getResource("/" + partialName.replace(".", "/") + ".mustache");
                     try {
                         MustacheCompiler mustacheCompiler = new MustacheCompiler(url);
                         try {
@@ -67,6 +67,9 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                     func = new Func();
                     setVar("__System_Function", func);
                 }
+                addFunction("var_push", args -> ((Func) getVar("__System_Function")).var_push( args[0]));
+                addFunction("var_pop", args -> ((Func) getVar("__System_Function")).var_pop());
+                addFunction("var_peek", args -> ((Func) getVar("__System_Function")).var_peek());
                 addFunction("dim_push", args -> ((Func) getVar("__System_Function")).dim_push((Number) args[0]));
                 addFunction("dim_pop", args -> ((Func) getVar("__System_Function")).dim_pop());
                 addFunction("dim_peek", args -> ((Func) getVar("__System_Function")).dim_peek());

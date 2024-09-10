@@ -9,8 +9,8 @@
 {{#givingOperand}}
     {{#operandValueStmt}}{{#literal}}{{>literal}}{{/literal}}
     {{#call}}{{>call}}{{/call}}{{%sendValue = operand;""}}{{/operandValueStmt}}
-    {{#results}}
-        {{#resultCall}}{{>call}}{{/resultCall}}
-        {{%operand}} = {{%sendValue}} * {{%multiplyValue}};
-    {{/results}}
 {{/givingOperand}}
+{{#results}}
+    {{#resultCall}}{{>call}}{{/resultCall}}
+    {{%operand}} = {{%sendValue}} * {{%multiplyValue}};
+{{/results}}

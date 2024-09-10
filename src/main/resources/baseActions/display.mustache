@@ -1,4 +1,5 @@
 {{%statementType=obj_getVar("statementType");DISPLAY = statementType == "DISPLAY" ? "DISPLAY" : null;""}}
-{{#$DISPLAY}}
-        Util.output({{>baseActions.dispopnd}});
-{{/DISPLAY}}
+{{%curObj=obj_getCurObj();""}}
+{{#$DISPLAY}}{{#$curObj}}
+    Util.output({{>baseActions.dispopnd}});
+{{/curObj}}{{/DISPLAY}}

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lidong@date 2024-08-14@version 1.0
@@ -11,16 +13,26 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
         if(args.length != 2){
-            System.out.println("Usage: java -jar cobol2java.jar file_path package_name");
+            System.out.println("Usage: java -jar cobol2java.jar file_path package_name copy_dirs?");
         }
         File file = new File(args[0]);
-        if(file.exists())
-            testCost("ALL",() -> {
+        if(file.exists()) {
+            testCost("ALL", () -> {
+                List<File> copyDirs = null;
+                if(args.length == 3){
+                    String[] dirs = args[2].split(":");
+                    copyDirs = new ArrayList<>();
+                    for(String dir:dirs){
+                        copyDirs.add(new File(dir));
+                    }
+                }
                 String fileName = file.getName();
-                Cobol2Java cobol2Java = new Cobol2Java(args[0], fileName.substring(0, fileName.lastIndexOf(".")),args[1]);
+                Cobol2Java cobol2Java = new Cobol2Java(args[0],
+                        fileName.substring(0, fileName.lastIndexOf(".")),copyDirs, args[1]);
                 String prog = cobol2Java.convertAll();
                 System.out.println(prog);
             });
+        }
         else
             System.out.println("Can not find file :" + args[0]);
 

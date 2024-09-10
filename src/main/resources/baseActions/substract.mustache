@@ -1,5 +1,6 @@
 {{%statementType=obj_getVar("statementType");SUBTRACT = statementType == "SUBTRACT" ? "SUBTRACT" : null;""}}
-{{#$SUBTRACT}}
+{{%curObj=obj_getCurObj();""}}
+{{#$SUBTRACT}}{{#$curObj}}
     {{%substractValue = "";""}}
     {{#subtractFromStatement}}
         {{>baseActions.substractends}}
@@ -10,4 +11,4 @@
     {{#subtractCorrespondingStatement}}//TODO subtractCorrespondingStatement{{/subtractCorrespondingStatement}}
     {{#notOnSizeErrorPhrase}}//TODO SUBTRACT notOnSizeErrorPhrase{{/notOnSizeErrorPhrase}}
     {{#onSizeErrorPhrase}}//TODO SUBTRACT onSizeErrorPhrase{{/onSizeErrorPhrase}}
-{{/SUBTRACT}}
+{{/curObj}}{{/SUBTRACT}}

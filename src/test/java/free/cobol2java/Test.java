@@ -3,16 +3,16 @@ package free.cobol2java;
 import free.servpp.multiexpr.handler.ExprEvaluator;
 import io.proleap.cobol.preprocessor.CobolPreprocessor;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lidong@date 2024-07-30@version 1.0
  */
 public class Test {
     static String cblDir = "/Users/lidong/gitspace/cobol2java/src/main/COBOL/";
-    static String mustacheDataFile = "/Users/lidong/gitspace/cobol2java/src/main/resources/model.mustache";
-    static String mustacheProgramFile = "/Users/lidong/gitspace/cobol2java/src/main/resources/program.mustache";
-    static ExprEvaluator exprEvaluator;
 
     public static void testCost(String name, Runnable runnable){
         long curTime = System.currentTimeMillis();
@@ -21,17 +21,18 @@ public class Test {
     }
 
     private static void convert(String file, String name){
-        Cobol2Java cobol2Java = new Cobol2Java(file, name,"free.test");
-        String prog = cobol2Java.convertAll();
-        System.out.println(prog);
+        convert(file,name, CobolPreprocessor.CobolSourceFormatEnum.TANDEM,"utf-8");
     }
     private static void convert(String file, String name, CobolPreprocessor.CobolSourceFormatEnum format, String encoding){
-        Cobol2Java cobol2Java = new Cobol2Java(file, name,"free.test",format,encoding);
+        List<File> copyDirs = new ArrayList<>();
+        copyDirs.add(new File(cblDir +"/bank/copy"));
+        copyDirs.add(new File(cblDir +"/demo"));
+        Cobol2Java cobol2Java = new Cobol2Java(file, name,copyDirs,"free.test",format,encoding);
         String prog = cobol2Java.convertAll();
         System.out.println(prog);
     }
     public static void main(String[] args) throws IOException {
-        testCost("TestAll",() -> convert(cblDir + "demo/TestAll.cbl", "TestAll"));
+        testCost("TestPerform",() -> convert(cblDir + "demo/TestPerform.cbl", "TestPerform"));
 
         if (false) {
             testCost("TestData",() -> convert(cblDir + "demo/TestData.cbl", "TestData"));
@@ -53,6 +54,7 @@ public class Test {
             testCost("TestFile",() -> convert(cblDir + "demo/TestFile.cbl", "TestFile"));
             testCost("EXAMPLE",() -> convert(cblDir + "demo/Example.cbl", "EXAMPLE"));
             testCost("TestAll",() -> convert(cblDir + "demo/TestAll.cbl", "TestAll"));
+//            testCost("PSACONST",() -> convert(cblDir + "bank/copy/PSACONST", "PSACONST",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
             testCost("GSA01060NC",() -> convert(cblDir + "bank/GSA01060NC.cbl", "GSA01060NC",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
             testCost("GSA01060",() -> convert(cblDir + "bank/GSA01060.cbl", "GSA01060",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));
             testCost("SAACNACN",() -> convert(cblDir + "bank/sql/SAACNACN.sqb", "SAACNACN",CobolPreprocessor.CobolSourceFormatEnum.FIXED, "gb2312"));

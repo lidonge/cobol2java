@@ -24,12 +24,13 @@ public class {{%mainClassName}} {
         //workingStorageSection
         {{#rootDataDescriptionEntries}}
             {{#execSqlText}}//TODO execSqlText{{/execSqlText}}
-            {{^execSqlText}}
+            {{%curObj=obj_getCurObj();""}}
+            {{^execSqlText}}{{#$curObj}}
                 {{%isInnerClass="yes";innerClsLevel = 0;""}}
                 {{>comment}}
                 {{>model.model}}
                 {{>model.unused}}
-            {{/execSqlText}}
+            {{/curObj}}{{/execSqlText}}
         {{/rootDataDescriptionEntries}}
     {{/workingStorageSection}}
 {{/dataDivision}}

@@ -16,7 +16,9 @@
 {{#$varying}}
         for(int {{%varValue}}={{%fromValue}};{{%condition}};{{%varValue}} += {{%stepValue}}){
 {{/varying}}
+{{%var_push(until);var_push(before);var_push(after);""}}
 {{#performInlineStatement}}{{>statements}}{{/performInlineStatement}}
+{{%after = var_pop();before = var_pop();until=var_pop();""}}
 {{#performProcedureStatement}}{{#calls}}{{>loop.procedureName}}
 {{%procedureCall}};
 {{/calls}}{{/performProcedureStatement}}

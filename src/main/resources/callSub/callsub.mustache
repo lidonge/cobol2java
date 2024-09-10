@@ -1,5 +1,6 @@
 {{%statementType=obj_getVar("statementType");CALL = statementType == "CALL" ? "CALL" : null;""}}
-{{#$CALL}}
+{{%curObj=obj_getCurObj();""}}
+{{#$CALL}}{{#$curObj}}
     {{%givingName = null;""}}
     {{#givingPhrase}}
         {{#givingCall}}{{>call}}{{%givingName = operand;""}}{{/givingCall}}
@@ -16,4 +17,4 @@
     {{#onExceptionClause}} }catch(Exception e){
         {{>statements}}
     }{{/onExceptionClause}}
-{{/CALL}}
+{{/curObj}}{{/CALL}}

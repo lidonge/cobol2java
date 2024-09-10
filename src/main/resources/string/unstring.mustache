@@ -1,4 +1,5 @@
 {{%statementType=obj_getVar("statementType");UNSTRING = statementType == "UNSTRING" ? "UNSTRING" : null;""}}
-{{#$UNSTRING}}
+{{%curObj=obj_getCurObj();""}}
+{{#$UNSTRING}}{{#$curObj}}
 //TODO UNSTRING
-{{/UNSTRING}}
+{{/curObj}}{{/UNSTRING}}

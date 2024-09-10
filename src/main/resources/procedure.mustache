@@ -1,4 +1,4 @@
-{{#procedureDivision}}{{%isContinue="yes";""}}
+{{#procedureDivision}}{{%isContinue="isContinue";""}}
     {{%needDefaultParagraph=null;""}}
     {{#statements}}
         {{#-first}}
@@ -17,8 +17,12 @@
                 public void procedure(){
             {{/needDefaultParagraph}}
         {{/-first}}
-        {{#$isContinue}}{{#name}}{{%name_toField(obj_getVar("name"))}}();{{/name}}{{/isContinue}}
-    {{#statements}}{{%statementType=obj_getVar("statementType");isContinue = statementType == "STOP" ? null : isContinue;""}}{{/statements}}
+        {{#$isContinue}}
+            {{%theName= name_toField(obj_getVar("name"));""}}{{#$theName}}{{%theName}}();{{/theName}}
+        {{/isContinue}}
+        {{#statements}}
+            {{%statementType=obj_getVar("statementType");isContinue = statementType == "STOP" ? null : isContinue;""}}
+        {{/statements}}
     {{#-last}}
         {{^$needDefaultParagraph}}
             }
@@ -38,15 +42,17 @@
     retName=operand;retType=name_getFieldType(operand);""}}{{/givingCall}}
 {{/givingClause}}
 {{#paragraphs}}
-{{#name}}
-    public {{#$retType}}{{%retType}}{{/retType}}{{^$retType}}void{{/retType}} {{%name_toField(obj_getVar("name"))}}({{%func_parameters}}){
-        {{#$retName}}{{%retType}} {{%retName}};{{/retName}}
-        //TODO parameter transfer
-        {{#section}}//TODO section{{/section}}
-        {{>statements}}
-        {{#$retName}}return {{%retName}};{{/retName}}
-    }
-{{/name}}
+    {{%funcName=name_toField(obj_getVar("name"));""}}
+    {{%curObj=obj_getCurObj();""}}
+    {{#$funcName}}{{#$curObj}}
+        public {{#$retType}}{{%retType}}{{/retType}}{{^$retType}}void{{/retType}} {{%name_toField(obj_getVar("name"))}}({{%func_parameters}}){
+            {{#$retName}}{{%retType}} {{%retName}};{{/retName}}
+            //TODO parameter transfer
+            {{#section}}//TODO section{{/section}}
+            {{>statements}}
+            {{#$retName}}return {{%retName}};{{/retName}}
+        }
+    {{/curObj}}{{/funcName}}
 {{/paragraphs}}
 {{#declaratives}}//TODO declaratives{{/declaratives}}
 {{#sections}}{{#-first}}//TODO sections{{/-first}}{{/sections}}

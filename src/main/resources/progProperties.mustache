@@ -1,6 +1,8 @@
 {{%isInnerClass="no";""}}
 {{>dimstr}}
+{{%dimension != null ? dim_push(dimension) : dim_push(0);""}}
 {{>model.properties}}
+{{%dim_pop();""}}
 {{^pictureClause}}
     {{%
     innerCls = name_toClass(obj_getVar("name"));

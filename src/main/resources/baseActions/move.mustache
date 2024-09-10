@@ -1,5 +1,6 @@
 {{%statementType=obj_getVar("statementType");MOVE = statementType == "MOVE" ? "MOVE" : null;""}}
-{{#$MOVE}}
+{{%curObj=obj_getCurObj();""}}
+{{#$MOVE}}{{#$curObj}}
     {{#moveToStatement.moveToSendingArea.sendingAreaValueStmt}}
         {{#literal}}{{>literal}}{{/literal}}{{#call}}{{>call}}{{/call}}{{%sendValue=operand;""}}
     {{/moveToStatement.moveToSendingArea.sendingAreaValueStmt}}
@@ -7,4 +8,4 @@
     {{>call}}{{%setName=operand;setValue=sendValue;""}}
         {{%setName}}={{%setValue}};{{/moveToStatement.receivingAreaCalls}}
     {{#moveCorrespondingToStatement}}//TODO moveCorrespondingToStatement{{/moveCorrespondingToStatement}}
-{{/MOVE}}
+{{/curObj}}{{/MOVE}}

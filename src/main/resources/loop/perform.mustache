@@ -1,4 +1,5 @@
 {{%statementType=obj_getVar("statementType");PERFORM = statementType == "PERFORM" ? "PERFORM" : null;""}}
-{{#$PERFORM}}
+{{%curObj=obj_getCurObj();""}}
+{{#$PERFORM}}{{#$curObj}}
     {{>loop.procProcedure}}
-{{/PERFORM}}
+{{/curObj}}{{/PERFORM}}
