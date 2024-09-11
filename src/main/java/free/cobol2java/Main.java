@@ -1,11 +1,15 @@
 package free.cobol2java;
 
+import free.cobol2java.copybook.CopyBookManager;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static free.cobol2java.copybook.ICobol2JavaBase.GLOBAL_FUNCTION;
 
 /**
  * @author lidong@date 2024-08-14@version 1.0
@@ -29,7 +33,12 @@ public class Main {
                 String fileName = file.getName();
                 Cobol2Java cobol2Java = new Cobol2Java(args[0],
                         fileName.substring(0, fileName.lastIndexOf(".")),copyDirs, args[1]);
-                String prog = cobol2Java.convertAll();
+                CopyBookManager defaultManager = CopyBookManager.getDefaultManager();
+                Map<String,Object> varables = new HashMap<>();
+                if(defaultManager.isCopybookManage()) {
+                    varables.put(GLOBAL_FUNCTION,defaultManager.getGlobalFunc());
+                }
+                String prog = cobol2Java.convertAll(varables);
                 System.out.println(prog);
             });
         }

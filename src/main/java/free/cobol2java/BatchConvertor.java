@@ -2,6 +2,7 @@ package free.cobol2java;
 
 import com.typesafe.config.Config;
 import free.cobol2java.config.Cobol2javaConfig;
+import free.cobol2java.copybook.CopyBookManager;
 import free.servpp.config.IConfig;
 import free.servpp.config.hocon.HoconConfigTypeManager;
 import io.proleap.cobol.preprocessor.CobolPreprocessor;
@@ -10,18 +11,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static free.cobol2java.copybook.ICobol2JavaBase.GLOBAL_FUNCTION;
 
 /**
  * @author lidong@date 2024-09-04@version 1.0
  */
-public class BatchConvertor {
-    String sourcePath;
-    String targetPath;
-    List<File> copyDirs;
-    String rootPackageName;
-    String format;
-    String encoding;
+public class BatchConvertor extends BaseConvertor {
 
     public static void main(String[] args) throws IOException {
         BatchConvertor batchConvertor = new BatchConvertor();
@@ -39,28 +38,27 @@ public class BatchConvertor {
 //        "/Users/lidong/gitspace/cobol2java/target/generated-sources"
 //        "com.dcits"
 
+        batchConvertor.initCopybookManager();
+
         batchConvertor.convertAll();
+        batchConvertor.writeCopyBook();
     }
 
-    private void initConfig(HoconConfigTypeManager manager) {
-        IConfig config = manager.getHoconConfigManager("application").getConfigById("cobol2java");
-        Config con = (Config) config.getConfigObject();
-        sourcePath = con.getString("application.dirs.sourcePath");
-        targetPath = con.getString("application.dirs.targetPath");
-        String[] dirs = con.getString("application.dirs.copyDir").split(":");
-        copyDirs = new ArrayList<>();
-        for(String dir:dirs){
-            File fDir = new File(dir);
-            if(!fDir.exists()){
-                fDir = new File(sourcePath,dir);
-            }
-
-            copyDirs.add(fDir);
+    private void writeCopyBook() {
+        CopyBookManager defaultManager = CopyBookManager.getDefaultManager();
+        for(Map.Entry entry : defaultManager.getCopyBookMap().entrySet()){
+            String outputFilePath = targetPath + File.separator +
+                    rootPackageName.replace(".", File.separator) + File.separator +
+                    entry.getKey() + ".java";
+            writeToFile(outputFilePath,CodeFormator.formatCode(entry.getValue()+""));
+//            System.out.println(CodeFormator.formatCode(entry.getValue().toString()));
         }
-        rootPackageName = con.getString("application.rootPackageName");
-        format = con.getString("application.format");
-        encoding = con.getString("application.encoding");
     }
+
+    private void initCopybookManager() {
+        CopyBookManager.initDefaultManager(copyDirs,rootPackageName,format,encoding,copybookManage);
+    }
+
 
     private void convertAll() {
         List<File> files = new ArrayList<>();
@@ -87,25 +85,6 @@ public class BatchConvertor {
                 t.printStackTrace();
             }
         }
-    }
-
-    private void initConfig(String[] args) {
-        sourcePath = args[0];
-        targetPath = args[1];
-        String[] dirs = args[2].split(":");
-        copyDirs = new ArrayList<>();
-        for(String dir:dirs){
-            File fDir = new File(dir);
-            if(!fDir.exists()){
-                fDir = new File(sourcePath,dir);
-            }
-
-            copyDirs.add(fDir);
-        }
-        rootPackageName = args[3];
-        format = args[4];
-        encoding = args.length == 6 ? args[5] : "utf-8";
-
     }
 
     // Write the converted content to the target file
@@ -147,7 +126,12 @@ public class BatchConvertor {
         Cobol2Java cobol2Java = new Cobol2Java(sourceFile.getAbsolutePath(),
                 fileName.substring(0, fileName.lastIndexOf(".")),copyDirs, packageName,
                 CobolPreprocessor.CobolSourceFormatEnum.valueOf(format), encoding);
-        prog = cobol2Java.convertAll();
+        CopyBookManager defaultManager = CopyBookManager.getDefaultManager();
+        Map<String,Object> varables = new HashMap<>();
+        if(defaultManager.isCopybookManage()) {
+            varables.put(GLOBAL_FUNCTION,defaultManager.getGlobalFunc());
+        }
+        prog = cobol2Java.convertAll(varables);
 
         return prog;
     }

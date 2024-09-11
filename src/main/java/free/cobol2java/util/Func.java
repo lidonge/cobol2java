@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
  * @author lidong@date 2024-08-12@version 1.0
  */
 public class Func {
+    private Func globalFunc;
     private Map<String, String> fieldToType = new HashMap<>();
     private Map<String, String> fieldToClassType = new HashMap<>();
     private Map<String, String> fieldToQualifiedName = new HashMap<>();
@@ -18,6 +19,14 @@ public class Func {
     private Stack<String> clsLevel = new Stack<>();
     private Stack<Integer> curDims = new Stack<>();
     private Stack<Object> variables = new Stack<>();
+
+    public Func getGlobalFunc() {
+        return globalFunc;
+    }
+
+    public void setGlobalFunc(Func globalFunc) {
+        this.globalFunc = globalFunc;
+    }
 
     public Object var_push(Object var){
         return variables.push(var);
@@ -155,7 +164,9 @@ public class Func {
 
     public String name_delegateName(String fieldName) {
         String ret = fieldToQualifiedName.get(fieldName);
-        if (ret == null)
+        if (ret == null && globalFunc != null)
+            ret = globalFunc.name_delegateName(fieldName);
+        else if (ret == null)
             ret = fieldName;
         return name_delegateName1(ret, null);
     }
@@ -199,6 +210,16 @@ public class Func {
                         ret = names[names.length - i - 1] + "." + ret;
                 }
             }
+        }
+        return nestedQualifiedName(ret);
+    }
+
+    private String nestedQualifiedName(String qname){
+        String firstName = qname.split("\\.")[0];
+        String firstQName = fieldToQualifiedName.get(firstName);
+        String ret = qname;
+        if(firstQName != null && !qname.equals(firstQName)){
+            ret = firstQName + (qname.length() == firstName.length() ? "": qname.substring(firstName.length()));
         }
         return ret;
     }

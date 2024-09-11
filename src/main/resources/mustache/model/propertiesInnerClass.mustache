@@ -1,20 +1,21 @@
     {{^pictureClause}}{{>model.nopicture}}
-    {{%ignoreProp = innerClsLevel == 0 ? "ignoreProp" : null;isInnerClass == "yes" ? "" :"private "}}
-    {{^$ignoreProp}}
-        {{%innerCls)}}{{#$dimStr}}[]{{/dimStr}} {{%filedName}}{{#$dimStr}} = new {{%innerCls}}[{{%dimStr}}]{{/dimStr}};
-    {{/ignoreProp}}
-        {{%
-            dimStr = null;
-            clsName=innerCls;
-            isInnerClass="yes";
-        ""}}
     {{%
-        //must_saveBuff();
+        ignoreProp = innerClsLevel == 0 ? "ignoreProp" : null;
+        modifier = isInnerClass != "yes" && IsConstantCopybook == null ? "public ":"";
+        //modifier = modifier +(IsConstantCopybook != null ? "static final " :"");
+        modifier
+    }}{{^$ignoreProp}}{{^$IsConstantCopybook}}{{%
+    ""}}{{%innerCls)}}{{#$dimStr}}[]{{/dimStr}} {{%filedName}}{{#$dimStr}} = new {{%innerCls}}[{{%dimStr}}]{{/dimStr}};
+    {{/IsConstantCopybook}}{{/ignoreProp}}
+    {{%
+        dimStr = null;
+        clsName=innerCls;
+        isInnerClass==null && IsConstantCopybook == null ? must_saveBuff():null;
     ""}}
     {{*dataDescriptionEntries}}
     {{%
         name_exitClass();
-        //clsContent = must_popBuff();
-        //obj_addToMap(innerMap,clsName, clsContent);
+        clsContent = isInnerClass==null && IsConstantCopybook == null? must_popBuff():null;
+        isInnerClass== null && IsConstantCopybook == null?obj_addToMap(innerMap,clsName, clsContent):null;
     ""}}
     {{/pictureClause}}

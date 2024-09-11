@@ -1,12 +1,16 @@
 package free.cobol2java;
 
-import free.servpp.multiexpr.handler.ExprEvaluator;
+import free.cobol2java.copybook.CopyBookManager;
 import io.proleap.cobol.preprocessor.CobolPreprocessor;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static free.cobol2java.copybook.ICobol2JavaBase.GLOBAL_FUNCTION;
 
 /**
  * @author lidong@date 2024-07-30@version 1.0
@@ -28,12 +32,20 @@ public class Test {
         copyDirs.add(new File(cblDir +"/bank/copy"));
         copyDirs.add(new File(cblDir +"/demo"));
         Cobol2Java cobol2Java = new Cobol2Java(file, name,copyDirs,"free.test",format,encoding);
-        String prog = cobol2Java.convertAll();
+        Map<String,Object> varables = new HashMap<>();
+        CopyBookManager defaultManager = CopyBookManager.getDefaultManager();
+        if(defaultManager.isCopybookManage()) {
+            varables.put(GLOBAL_FUNCTION,defaultManager.getGlobalFunc());
+        }
+        String prog = cobol2Java.convertAll(varables);
         System.out.println(prog);
+        System.out.println("===================");
+        for(Map.Entry entry : defaultManager.getCopyBookMap().entrySet()){
+            System.out.println(CodeFormator.formatCode(entry.getValue().toString()));
+        }
     }
     public static void main(String[] args) throws IOException {
-        testCost("TestPerform",() -> convert(cblDir + "demo/TestPerform.cbl", "TestPerform"));
-
+        testCost("TestAccept",() -> convert(cblDir + "demo/TestAccept.cbl", "TestAccept"));
         if (false) {
             testCost("TestData",() -> convert(cblDir + "demo/TestData.cbl", "TestData"));
             testCost("TestAccept",() -> convert(cblDir + "demo/TestAccept.cbl", "TestAccept"));

@@ -43,7 +43,7 @@ public class {{%mainClassName}} {
         {{>model.picture}}
         {{>model.unused}}
     {{/linkageSection.rootDataDescriptionEntries}}
-    {{@$innerMap}}{{#value}}{{value}}{{/value}}{{/innerMap}}
+    {{@$innerMap}}{{#value}}{{this}}{{/value}}{{/innerMap}}
 {{/dataDivision}}
 {{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
     {{>progProperties}}

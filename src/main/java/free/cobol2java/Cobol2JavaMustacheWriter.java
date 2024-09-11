@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static free.cobol2java.copybook.ICobol2JavaBase.SYSTEM_FUNCTION;
+
 /**
  * @author lidong@date 2024-08-30@version 1.0
  */
@@ -65,7 +67,7 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                 Func func = (Func) getVar("__System_Function");
                 if(func == null){
                     func = new Func();
-                    setVar("__System_Function", func);
+                    setVar(SYSTEM_FUNCTION, func);
                 }
                 addFunction("var_push", args -> ((Func) getVar("__System_Function")).var_push( args[0]));
                 addFunction("var_pop", args -> ((Func) getVar("__System_Function")).var_pop());

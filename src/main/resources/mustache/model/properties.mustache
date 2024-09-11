@@ -1,6 +1,9 @@
 {{%valueClause=obj_getCurVar("valueClause");""}}
 {{#pictureClause}}{{>model.picture}}
-    {{%isInnerClass == "yes" ? "" :"private "}}{{%propType}}{{%
+    {{%
+        modifier = isInnerClass == "yes" ? "" :"public ";
+        modifier = modifier +(IsConstantCopybook != null ? "static final " :"")
+    }}{{%propType}}{{%
     ""}}{{#$dimStr}}[]{{/dimStr}} {{%theFieldName}}{{^$valueClause}}{{%
     ""}}{{#$dimStr}} = new {{%propType}}[{{%dimStr}}]{{/dimStr}};{{/valueClause}}{{/pictureClause}}{{#valueClause}}{{%
     ""}}{{#valueIntervals}}{{#fromValueStmt}}{{%

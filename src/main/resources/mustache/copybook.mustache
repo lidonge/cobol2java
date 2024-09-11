@@ -1,0 +1,17 @@
+{{#dataDivision}}
+    {{%innerMap = obj_newMap();""}}
+    {{#workingStorageSection}}
+        //workingStorageSection
+        {{#rootDataDescriptionEntries}}
+            {{#execSqlText}}//TODO execSqlText{{/execSqlText}}
+            {{%curObj=obj_getCurObj();""}}
+            {{^execSqlText}}{{#$curObj}}
+                {{%isInnerClass=null;innerClsLevel = 0;""}}
+                {{>comment}}
+                {{>model.model}}
+                {{>model.unused}}
+            {{/curObj}}{{/execSqlText}}
+        {{/rootDataDescriptionEntries}}
+    {{/workingStorageSection}}
+{{/dataDivision}}
+
