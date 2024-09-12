@@ -1,0 +1,8 @@
+{{%statementType=obj_getVar("statementType");EXEC_SQL = statementType == "EXEC_SQL" ? "EXEC_SQL" : null;""}}
+{{%curObj=obj_getCurObj();""}}
+{{#$EXEC_SQL}}{{#$curObj}}
+    {{%sql=obj_getVar("execSqlText");sqlstmt=sql_exec(sql);""}}
+    {{#$sqlstmt}}
+
+    {{/sqlstmt}}
+{{/curObj}}{{/EXEC_SQL}}

@@ -1,0 +1,52 @@
+package {{% model_package}};
+import free.cobol2java.java.*;
+{{%mainClassName=name_toClass(obj_getVar("identificationDivision.programIdParagraph.name"));""}}
+public class {{%mainClassName}} {
+{{#environmentDivision}}//TODO environmentDivision{{/environmentDivision}}
+{{#identificationDivision}}
+    {{#authorParagraph}}//TODO authorParagraph{{/authorParagraph}}
+    {{#dateCompiledParagraph}}//TODO dateCompiledParagraph{{/dateCompiledParagraph}}
+    {{#installationParagraph}}//TODO installationParagraph{{/installationParagraph}}
+    {{#securityParagraph}}//TODO securityParagraph{{/securityParagraph}}
+    {{#dateWrittenParagraph}}//TODO dateWrittenParagraph{{/dateWrittenParagraph}}
+    {{#remarksParagraph}}//TODO remarksParagraph{{/remarksParagraph}}
+{{/identificationDivision}}
+{{#dataDivision}}
+    {{%innerMap = obj_newMap();""}}
+    {{#communicationSection}}//TODO communicationSection{{/communicationSection}}
+    {{#dataBaseSection}}//TODO dataBaseSection{{/dataBaseSection}}
+    {{#fileSection}}//TODO fileSection{{/fileSection}}
+    {{#localStorageSection}}//TODO localStorageSection{{/localStorageSection}}
+    {{#programLibrarySection}}//TODO programLibrarySection{{/programLibrarySection}}
+    {{#reportSection}}//TODO reportSection{{/reportSection}}
+    {{#screenSection}}//TODO screenSection{{/screenSection}}
+    {{#workingStorageSection}}
+        //workingStorageSection
+        {{#rootDataDescriptionEntries}}
+            {{#execSqlText}}{{>sql.cobolsql}}{{/execSqlText}}
+            {{%curObj=obj_getCurObj();""}}
+            {{^execSqlText}}{{#$curObj}}
+                {{%isInnerClass="yes";innerClsLevel = 0;""}}
+                {{>comment}}
+                {{>model.model}}
+                {{>model.unused}}
+            {{/curObj}}{{/execSqlText}}
+        {{/rootDataDescriptionEntries}}
+    {{/workingStorageSection}}
+{{/dataDivision}}
+{{#dataDivision}}
+    {{#linkageSection.rootDataDescriptionEntries}}
+        {{#-first}}//linkageSection{{/-first}}
+        {{%isInnerClass="yes";innerClsLevel = 0;""}}
+        {{>comment}}
+        {{>model.model}}
+        {{>model.picture}}
+        {{>model.unused}}
+    {{/linkageSection.rootDataDescriptionEntries}}
+    {{@$innerMap}}{{#value}}{{this}}{{/value}}{{/innerMap}}
+{{/dataDivision}}
+{{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
+    {{>progProperties}}
+{{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}
+{{>procedure}}
+}
