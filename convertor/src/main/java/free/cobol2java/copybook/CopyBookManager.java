@@ -1,8 +1,8 @@
 package free.cobol2java.copybook;
 
-import free.cobol2java.BaseConvertor;
-import free.cobol2java.CodeFormator;
-import free.cobol2java.util.Func;
+import free.cobol2java.ExprContext;
+import free.cobol2java.ICobolConvertor;
+import free.servpp.mustache.CodeFormator;
 import free.servpp.mustache.handler.MustacheWriter;
 import io.proleap.cobol.asg.metamodel.CompilationUnit;
 import io.proleap.cobol.asg.params.CobolParserParams;
@@ -22,8 +22,8 @@ public class CopyBookManager implements ICobol2JavaBase {
     private static final String modelTemplate = "/ModelCopyBook.cbl";
     private static CopyBookManager defaultManager = new CopyBookManager();
 
-    public static void initDefaultManager(List<File> copyDirs, String rootPackageName, String format, String encoding, boolean copybookManage) {
-        defaultManager.init(copyDirs, rootPackageName,format,encoding, copybookManage);
+    public static void initDefaultManager(ICobolConvertor cobolConvertor) {
+        defaultManager.init(cobolConvertor);
     }
 
     public static CopyBookManager getDefaultManager() {
@@ -34,29 +34,23 @@ public class CopyBookManager implements ICobol2JavaBase {
         CopyBookManager.defaultManager = defaultManager;
     }
 
-    private List<File> copyDirs;
-    private String rootPackageName;
-    private String format;
-    private String encoding;
-    private boolean copybookManage = false;
+    private ICobolConvertor cobolConvertor;
     Map<String,String> copyBookMap = new HashMap<>();
-    Func globalFunc = new Func();
+    ExprContext globalExprContext = new ExprContext();
 
-    public Func getGlobalFunc() {
-        return globalFunc;
+    public ExprContext getGlobalFunc() {
+        return globalExprContext;
     }
 
-    public void init(List<File> copyDirs, String rootPackageName, String format, String encoding, boolean copybookManage) {
-        setCopyDirs(copyDirs);
-        setRootPackageName(rootPackageName);
-        setFormat(format);
-        setEncoding(encoding);
-        setCopybookManage(copybookManage);
+    public void init(ICobolConvertor cobolConvertor) {
+        this.cobolConvertor = cobolConvertor;
     }
 
-    public void loadCopyBook(File copyBook, CobolParserParams params, String copyText) throws URISyntaxException, IOException, CopybookException {
+    public void loadCopyBook(File copyBook,
+                             CobolParserParams params,
+                             String copyText) throws URISyntaxException, IOException, CopybookException {
         String name = copyBook.getName();
-        name = globalFunc.name_toClass(name);
+        name = globalExprContext.name_toClass(name);
         String copyBookJavaText = copyBookMap.get(name);
         if(copyBookJavaText == null) {
             URL url = CopyBookManager.class.getResource(modelTemplate);
@@ -70,7 +64,7 @@ public class CopyBookManager implements ICobol2JavaBase {
                 throw new CopybookException(t);
             }
             Map<String,Object> varables = new HashMap<>();
-            varables.put(SYSTEM_FUNCTION, globalFunc);
+            varables.put(LOCAL_CONTEXT, globalExprContext);
             if(name.endsWith("CONST"))
                 varables.put("IsConstantCopybook","IsConstantCopybook");
 
@@ -88,43 +82,7 @@ public class CopyBookManager implements ICobol2JavaBase {
     }
 
     public boolean isCopybookManage() {
-        return copybookManage;
-    }
-
-    public void setCopybookManage(boolean copybookManage) {
-        this.copybookManage = copybookManage;
-    }
-
-    public List<File> getCopyDirs() {
-        return copyDirs;
-    }
-
-    public void setCopyDirs(List<File> copyDirs) {
-        this.copyDirs = copyDirs;
-    }
-
-    public String getRootPackageName() {
-        return rootPackageName;
-    }
-
-    public void setRootPackageName(String rootPackageName) {
-        this.rootPackageName = rootPackageName;
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    public String getEncoding() {
-        return encoding;
-    }
-
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
+        return cobolConvertor.isCopybookManage();
     }
 
     public Map<String, String> getCopyBookMap() {

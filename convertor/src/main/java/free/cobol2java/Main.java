@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static free.cobol2java.copybook.ICobol2JavaBase.GLOBAL_FUNCTION;
+import static free.cobol2java.copybook.ICobol2JavaBase.COPYBOOK_CONTEXT;
 
 /**
  * @author lidong@date 2024-08-14@version 1.0
@@ -36,7 +36,7 @@ public class Main {
                 CopyBookManager defaultManager = CopyBookManager.getDefaultManager();
                 Map<String,Object> varables = new HashMap<>();
                 if(defaultManager.isCopybookManage()) {
-                    varables.put(GLOBAL_FUNCTION,defaultManager.getGlobalFunc());
+                    varables.put(COPYBOOK_CONTEXT,defaultManager.getGlobalFunc());
                 }
                 String prog = cobol2Java.convertAll(varables);
                 System.out.println(prog);

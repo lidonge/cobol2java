@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
  * @author lidong@date 2024-09-06@version 1.0
  */
 public class ExtCobolDocumentParserImpl extends CobolDocumentParserImpl {
+    @Override
     protected CobolDocumentParserListener createDocumentParserListener(final CobolParserParams params,
                                                                        final CommonTokenStream tokens) {
         return new ExtCobolDocumentParserListenerImpl(params, tokens);

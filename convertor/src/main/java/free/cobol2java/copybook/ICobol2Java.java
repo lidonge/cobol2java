@@ -1,28 +1,16 @@
 package free.cobol2java.copybook;
 
-import free.cobol2java.Cobol2JavaMustacheWriter;
-import free.cobol2java.CodeFormator;
-import free.cobol2java.parser.ExtCobolParserRunnerImpl;
-import free.cobol2java.util.Func;
-import free.cobol2java.util.IUrlLoader;
-import free.servpp.mustache.MustacheCompiler;
-import free.servpp.mustache.handler.MustacheListenerImpl;
+import free.servpp.mustache.CodeFormator;
 import free.servpp.mustache.handler.MustacheWriter;
-import free.servpp.mustache.model.BaseSection;
 import io.proleap.cobol.asg.metamodel.CompilationUnit;
-import io.proleap.cobol.asg.metamodel.Program;
 import io.proleap.cobol.asg.metamodel.ProgramUnit;
 import io.proleap.cobol.asg.params.impl.CobolParserParamsImpl;
-import io.proleap.cobol.asg.runner.impl.CobolParserRunnerImpl;
 import io.proleap.cobol.preprocessor.CobolPreprocessor;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

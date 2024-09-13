@@ -1,5 +1,5 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. CALL-SUB.
+       PROGRAM-ID. CALLSUB.
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
@@ -11,7 +11,7 @@
        PROCEDURE DIVISION.
        MAIN-LOGIC.
            DISPLAY "Calling subprogram to add two numbers..."
-           CALL 'SUB-PROG' USING BY VALUE WS-NUM1, BY CONTENT WS-NUM2, BY REFERENCE WS-RESULT GIVING WS-RETURN-CODE
+           CALL 'SUBPROG' USING BY VALUE WS-NUM1, BY CONTENT WS-NUM2, BY REFERENCE WS-RESULT GIVING WS-RETURN-CODE
                ON EXCEPTION
                    DISPLAY "Subprogram not found or error occurred during execution"
                    MOVE 1 TO WS-STATUS-CODE

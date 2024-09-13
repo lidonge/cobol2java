@@ -87,7 +87,7 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
 
     protected String getCopyBookContent(final SqlInclude copySource) {
         final File copyBook = findCopyBook(copySource);
-        return getCopyBookContent(copyBook,params);
+        return getCopyBookContent("", copyBook,params,true);
     }
     protected File findCopyBook(final SqlInclude copySource) {
         final File result;
@@ -106,13 +106,13 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
     @Override
     protected String getCopyBookContent(final CobolPreprocessorParser.CopySourceContext copySource, final CobolParserParams params) {
         final File copyBook = findCopyBook(copySource, params);
-        return getCopyBookContent(copyBook,params);
+        return getCopyBookContent("75 " + copySource.getText() +".",copyBook,params, true);
     }
-    protected String getCopyBookContent(final File copyBook, final CobolParserParams params) {
+    private String getCopyBookContent(final String copySource, final File copyBook, final CobolParserParams params, boolean normalCopyBook) {
         String result = null;
 
         if (copyBook == null) {
-            result =  "";
+            result =  copySource;
 //            LOG.warn("CobolPreprocessorException: Could not find copy book " + copySource.getText()
 //                    + " in directory of COBOL input file or copy books param object.");
 //			throw new CobolPreprocessorException("Could not find copy book " + copySource.getText()
@@ -121,9 +121,9 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
             try {
                 result = new CobolPreprocessorImpl().process(copyBook, params);
                 CopyBookManager defaultManager = CopyBookManager.getDefaultManager();
-                if(defaultManager.isCopybookManage()) {
+                if(normalCopyBook && defaultManager.isCopybookManage()) {
                     defaultManager.loadCopyBook(copyBook,params, result);
-                    result = "";
+                    result = copySource;
                 }
             } catch (final IOException | URISyntaxException e) {
                 result = null;
@@ -136,4 +136,45 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
         return result;
     }
 
+    @Override
+    public void exitCopyStatement(final CobolPreprocessorParser.CopyStatementContext ctx) {
+        pop();
+        String[] lines = context().read().split("\n");
+        boolean normalCopyBook = true;
+        for(int i = lines.length-1;i>0;i--){
+            String line =lines[i].trim();
+
+            if(line.isEmpty())
+                continue;
+            if(line.indexOf("PIC") != -1 ){
+                normalCopyBook = false;
+            }
+            break;
+        }
+        push();
+
+        /*
+         * replacement phrase
+         */
+        for (final CobolPreprocessorParser.ReplacingPhraseContext replacingPhrase : ctx.replacingPhrase()) {
+            context().storeReplaceablesAndReplacements(replacingPhrase.replaceClause());
+        }
+
+        /*
+         * copy the copy book
+         */
+        final CobolPreprocessorParser.CopySourceContext copySource = ctx.copySource();
+        final String copyBookContent = normalCopyBook ? getCopyBookContent(copySource, params) :
+                getCopyBookContent("", findCopyBook(copySource, params),params,false);
+
+        if (copyBookContent != null) {
+            context().write(copyBookContent + CobolPreprocessor.NEWLINE);
+            context().replaceReplaceablesByReplacements(tokens);
+        }
+
+        final String content = context().read();
+        pop();
+
+        context().write(content);
+    }
 }

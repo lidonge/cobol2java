@@ -5,58 +5,114 @@ import free.servpp.config.IConfig;
 import free.servpp.config.hocon.HoconConfigTypeManager;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author lidong@date 2024-09-11@version 1.0
  */
-public class BaseConvertor {
-    String sourcePath;
-    String targetPath;
-    List<File> copyDirs;
-    String rootPackageName;
-    String format;
-    String encoding;
-    boolean copybookManage = false;
-    protected void initConfig(String[] args) {
-        sourcePath = args[0];
-        targetPath = args[1];
-        String[] dirs = args[2].split(":");
-        copyDirs = new ArrayList<>();
-        for(String dir:dirs){
-            File fDir = new File(dir);
-            if(!fDir.exists()){
-                fDir = new File(sourcePath,dir);
-            }
+public class BaseConvertor implements ICobolConvertor {
+    private String sourcePath;
+    private String targetPath;
+    private List<File> copyDirs = new ArrayList<>();
+    private String rootPackageName;
+    private String format;
+    private String encoding;
+    private String[] suffixes = new String[]{".cbl",".sqb"};
+    private boolean copybookManage = false;
+    private String[] compileFiles;
 
-            copyDirs.add(fDir);
-        }
-        rootPackageName = args[3];
-        format = args[4];
-        encoding = args.length == 6 ? args[5] : "utf-8";
-
+    @Override
+    public String[] getCompileFiles() {
+        return compileFiles;
     }
 
+    @Override
+    public void setCompileFiles(String[] compileFiles) {
+        this.compileFiles = compileFiles;
+    }
 
-    protected void initConfig(HoconConfigTypeManager manager) {
-        IConfig config = manager.getHoconConfigManager("application").getConfigById("cobol2java");
-        Config con = (Config) config.getConfigObject();
-        sourcePath = con.getString("application.dirs.sourcePath");
-        targetPath = con.getString("application.dirs.targetPath");
-        String[] dirs = con.getString("application.dirs.copyDir").split(":");
-        copyDirs = new ArrayList<>();
-        for(String dir:dirs){
-            File fDir = new File(dir);
-            if(!fDir.exists()){
-                fDir = new File(sourcePath,dir);
-            }
+    @Override
+    public String getSourcePath() {
+        return sourcePath;
+    }
 
-            copyDirs.add(fDir);
-        }
-        rootPackageName = con.getString("application.rootPackageName");
-        format = con.getString("application.format");
-        encoding = con.getString("application.encoding");
-        copybookManage = con.getBoolean("application.copybookManage");
+    @Override
+    public void setSourcePath(String sourcePath) {
+        this.sourcePath = sourcePath;
+    }
+
+    @Override
+    public String getTargetPath() {
+        return targetPath;
+    }
+
+    @Override
+    public void setTargetPath(String targetPath) {
+        this.targetPath = targetPath;
+    }
+
+    @Override
+    public List<File> getCopyDirs() {
+        return copyDirs;
+    }
+
+    @Override
+    public void addCopyDirs(File copyDir) {
+        this.copyDirs.add( copyDir);
+    }
+
+    @Override
+    public String getRootPackageName() {
+        return rootPackageName;
+    }
+
+    @Override
+    public void setRootPackageName(String rootPackageName) {
+        this.rootPackageName = rootPackageName;
+    }
+
+    @Override
+    public String getFormat() {
+        return format;
+    }
+
+    @Override
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    @Override
+    public String getEncoding() {
+        return encoding;
+    }
+
+    @Override
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
+    @Override
+    public String[] getSuffixes() {
+        return suffixes;
+    }
+
+    @Override
+    public void setSuffixes(String[] suffixes) {
+        this.suffixes = suffixes;
+    }
+
+    @Override
+    public boolean isCopybookManage() {
+        return copybookManage;
+    }
+
+    @Override
+    public void setCopybookManage(boolean copybookManage) {
+        this.copybookManage = copybookManage;
     }
 }

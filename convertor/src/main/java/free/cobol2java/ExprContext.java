@@ -1,14 +1,19 @@
-package free.cobol2java.util;
+package free.cobol2java;
 
 import free.cobol2java.antlr.CobolWithSqlLexer;
 import free.cobol2java.antlr.CobolWithSqlParser;
+import free.cobol2java.config.CobolConfig;
 import free.cobol2java.sql.SqlStatement;
 import free.cobol2java.sql.handler.CobolSqlVisitor;
+import free.cobol2java.util.CobolConstant;
+import free.cobol2java.util.ExprUtil;
+import free.cobol2java.util.RelationalOperator;
 import io.proleap.cobol.CobolParser;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,23 +21,33 @@ import java.util.regex.Pattern;
 /**
  * @author lidong@date 2024-08-12@version 1.0
  */
-public class Func {
-    private Func globalFunc;
+public class ExprContext {
+    private ExprContext copybookContext;
+    private ExprContext orMappingContext;
     private Map<String, String> fieldToType = new HashMap<>();
     private Map<String, String> fieldToClassType = new HashMap<>();
     private Map<String, String> fieldToQualifiedName = new HashMap<>();
     private Map<String, String> dimFieldToQualifiedName = new HashMap<>();
     private Map<String, String> qualifiedNameToDimLevel = new HashMap<>();
+    private Map<String,String> copybookFirstNameToFileName = new HashMap<>();
     private Stack<String> clsLevel = new Stack<>();
     private Stack<Integer> curDims = new Stack<>();
     private Stack<Object> variables = new Stack<>();
 
-    public Func getGlobalFunc() {
-        return globalFunc;
+    public ExprContext getCopybookContext() {
+        return copybookContext;
     }
 
-    public void setGlobalFunc(Func globalFunc) {
-        this.globalFunc = globalFunc;
+    public void setCopybookContext(ExprContext copybookExprContext) {
+        this.copybookContext = copybookExprContext;
+    }
+
+    public ExprContext getOrMappingContext() {
+        return orMappingContext;
+    }
+
+    public void setOrMappingContext(ExprContext orMappingContext) {
+        this.orMappingContext = orMappingContext;
     }
 
     public Object var_push(Object var){
@@ -165,14 +180,17 @@ public class Func {
             fieldToQualifiedName.put(fieldName, qualifiedName);
             makeQlfNameAllLevel(qualifiedName);
 
+        }else{
+            fieldToQualifiedName.put(fieldName, fieldName);
+            qualifiedName = fieldName;
         }
         return qualifiedName;
     }
 
     public String name_delegateName(String fieldName) {
         String ret = fieldToQualifiedName.get(fieldName);
-        if (ret == null && globalFunc != null)
-            ret = globalFunc.name_delegateName(fieldName);
+        if (ret == null && copybookContext != null)
+            ret = copybookContext.name_delegateName(fieldName);
         else if (ret == null)
             ret = fieldName;
         return name_delegateName1(ret, null);
@@ -222,8 +240,11 @@ public class Func {
     }
 
     private String nestedQualifiedName(String qname){
+        if(fieldToQualifiedName.get(qname) != null)
+            return qname;
         String firstName = qname.split("\\.")[0];
-        String firstQName = fieldToQualifiedName.get(firstName);
+        String fieldName = copybookFirstNameToFileName.get(firstName);
+        String firstQName = fieldName == null ? fieldToQualifiedName.get(firstName) : fieldToQualifiedName.get(fieldName);
         String ret = qname;
         if(firstQName != null && !qname.equals(firstQName)){
             ret = firstQName + (qname.length() == firstName.length() ? "": qname.substring(firstName.length()));
@@ -231,6 +252,20 @@ public class Func {
         return ret;
     }
 
+    public String setCopyFirstNameToFieldName(String copyName, String fieldName){
+        return copybookFirstNameToFileName.put(copyName,fieldName);
+    }
+
+    public String cobol_compile(String fileName){
+        fileName = fileName.replace("\"","");
+        ICobolConvertor cobolConvertor = CobolConfig.getCobolConvertor();
+        List<File> files = new ArrayList<>();
+        cobolConvertor.findFiles(new File(cobolConvertor.getSourcePath()),files,cobolConvertor.getSuffixes(),fileName+"*");
+        if(files.size() > 0)
+            return cobolConvertor.convertAFile(files.get(0)) ? "Success":"Error";
+        else
+            return "File " + fileName + " not found";
+    }
     private String createQualifedName(String fieldName) {
         String ret = "";
         for (String superField : clsLevel) {

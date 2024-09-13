@@ -1,5 +1,17 @@
     {{^pictureClause}}{{>model.nopicture}}
+    {{#dataDescriptionEntries}}
+        {{#-first}}
+            {{%
+                isSubCopybook=obj_getVar("levelNumber") == 75 ? "isCopybook" :null;
+                subCopyOrgName = obj_getVar("name");
+                subCopyBookClsName = name_toClass(subCopyOrgName);
+                subCopyBookFieldName = name_toField(subCopyOrgName);
+            ""}}
+        {{/-first}}
+    {{/dataDescriptionEntries}}
     {{%
+        innerCls = isSubCopybook != null ? subCopyBookClsName : innerCls;
+        isSubCopybook != null ? setCopyFirstNameToFieldName(subCopyBookFieldName,filedName):null;
         ignoreProp = innerClsLevel == 0 ? "ignoreProp" : null;
         modifier = isInnerClass != "yes" && IsConstantCopybook == null ? "public ":"";
         //modifier = modifier +(IsConstantCopybook != null ? "static final " :"");
@@ -12,7 +24,7 @@
         clsName=innerCls;
         isInnerClass==null && IsConstantCopybook == null ? must_saveBuff():null;
     ""}}
-    {{*dataDescriptionEntries}}
+    {{^$isSubCopybook}}{{*dataDescriptionEntries}}{{/isSubCopybook}}
     {{%
         name_exitClass();
         clsContent = isInnerClass==null && IsConstantCopybook == null? must_popBuff():null;
