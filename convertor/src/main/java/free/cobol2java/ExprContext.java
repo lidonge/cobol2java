@@ -113,6 +113,7 @@ public class ExprContext {
     }
 
     public String name_toClass(String cblName) {
+        cblName = cblName.replace("\"","");
         String[] parts = cblName.split("-");
         String ret = "";
         for (int i = 0; i < parts.length; i++) {

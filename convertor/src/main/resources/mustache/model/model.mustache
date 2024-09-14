@@ -7,21 +7,27 @@
     {{%childrenCount=null;""}}
     {{#dataDescriptionEntries}}{{>dimstr}}
         {{#-first}}
-        {{^$isInnerClass}}
-            package {{% model_package}};
-            import free.cobol2java.java.*;
-            public {{%innerClsLevel >=1 && IsConstantCopybook != null? "static ":""}}{{/isInnerClass}}class {{%clsName}} {
-        {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel+1;""}}
-        {{%childrenCount=1;""}}
+            {{%isConstInnerCls = innerClsLevel >=1 && IsConstantCopybook != null? "isConstInnerCls":null;""}}
+            {{^$isInnerClass}}
+                {{^$isConstInnerCls}}
+                    package {{% model_package}};
+                    import free.cobol2java.java.*;
+                    public
+                {{/isConstInnerCls}}
+            {{/isInnerClass}}
+                {{%isConstInnerCls != null? "public static ":""}}
+                class {{%clsName}} {
+                {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel+1;""}}
+                {{%childrenCount=1;""}}
         {{/-first}}
-                {{>comment}}
-                {{%dimension != null ? dim_push(dimension) : dim_push(0);""}}
-                {{>model.properties}}
-                {{%curObj=obj_getCurObj();""}}
-                {{#$childrenCount}}{{#$curObj}}
-                    {{>model.propertiesInnerClass}}
-                {{/curObj}}{{/childrenCount}}
-                {{%dim_pop();""}}
+            {{>comment}}
+            {{%dimension != null ? dim_push(dimension) : dim_push(0);""}}
+            {{>model.properties}}
+            {{%curObj=obj_getCurObj();""}}
+            {{#$childrenCount}}{{#$curObj}}
+                {{>model.propertiesInnerClass}}
+            {{/curObj}}{{/childrenCount}}
+            {{%dim_pop();""}}
         {{#-last}}
             {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel - 1;""}}
         }{{/-last}}

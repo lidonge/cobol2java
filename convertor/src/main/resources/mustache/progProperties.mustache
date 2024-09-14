@@ -1,13 +1,15 @@
-{{%isInnerClass="no";""}}
+{{%isInnerClass=null;""}}
 {{>dimstr}}
 {{%dimension != null ? dim_push(dimension) : dim_push(0);""}}
 {{>model.properties}}
 {{%dim_pop();""}}
-{{^pictureClause}}{{^execSqlText}}
-    {{%
-    innerCls = name_toClass(obj_getVar("name"));
-    fieldName = name_toField(obj_getVar("name"));
-    name_setFieldType(fieldName,innerCls);
-    ""}}
-    private {{%innerCls)}} {{%fieldName}};
-{{/execSqlText}}{{/pictureClause}}
+{{^pictureClause}}
+    {{^execSqlText}}
+        {{%
+            innerCls = name_toClass(obj_getVar("name"));
+            fieldName = name_toField(obj_getVar("name"));
+            name_setFieldType(fieldName,innerCls);
+        ""}}
+        private {{%innerCls)}} {{%fieldName}};
+    {{/execSqlText}}
+{{/pictureClause}}

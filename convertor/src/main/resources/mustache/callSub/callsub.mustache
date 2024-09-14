@@ -19,7 +19,9 @@
     {{#onExceptionClause}}
         try{
     {{/onExceptionClause}}
-    {{%cobol_compile(operand);""}}
+    {{%
+        //cobol_compile(operand);
+    ""}}
     {{#$givingName}}
         {{%givingName}} =
     {{/givingName}}

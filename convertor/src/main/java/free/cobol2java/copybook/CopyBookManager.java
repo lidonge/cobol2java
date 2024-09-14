@@ -65,7 +65,7 @@ public class CopyBookManager implements ICobol2JavaBase {
             }
             Map<String,Object> varables = new HashMap<>();
             varables.put(LOCAL_CONTEXT, globalExprContext);
-            if(name.endsWith("CONST"))
+            if(name.endsWith("const"))
                 varables.put("IsConstantCopybook","IsConstantCopybook");
 
             MustacheWriter writer = convertProgram(varables,compilationUnit.getProgramUnit(),"/mustache/copybook.mustache","com.dcits");

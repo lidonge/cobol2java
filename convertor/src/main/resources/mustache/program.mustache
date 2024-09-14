@@ -26,7 +26,7 @@ public class {{%mainClassName}} {
             {{#execSqlText}}{{>sql.cobolsql}}{{/execSqlText}}
             {{%curObj=obj_getCurObj();""}}
             {{^execSqlText}}{{#$curObj}}
-                {{%isInnerClass="yes";innerClsLevel = 0;""}}
+                {{%isInnerClass="isInnerClass";innerClsLevel = 0;""}}
                 {{>comment}}
                 {{>model.model}}
                 {{>model.unused}}
@@ -37,7 +37,7 @@ public class {{%mainClassName}} {
 {{#dataDivision}}
     {{#linkageSection.rootDataDescriptionEntries}}
         {{#-first}}//linkageSection{{/-first}}
-        {{%isInnerClass="yes";innerClsLevel = 0;""}}
+        {{%isInnerClass="isInnerClass";innerClsLevel = 0;""}}
         {{>comment}}
         {{>model.model}}
         {{>model.picture}}
@@ -48,5 +48,8 @@ public class {{%mainClassName}} {
 {{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
     {{>progProperties}}
 {{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}
+{{#dataDivision.linkageSection.rootDataDescriptionEntries}}
+    {{>progProperties}}
+{{/dataDivision.linkageSection.rootDataDescriptionEntries}}
 {{>procedure}}
 }
