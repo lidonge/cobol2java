@@ -1,8 +1,10 @@
 package free.cobol2java.copybook;
 
+import free.cobol2java.Cobol2JavaMustacheWriter;
 import free.cobol2java.ExprContext;
 import free.cobol2java.ICobolConvertor;
 import free.servpp.mustache.CodeFormator;
+import free.servpp.mustache.handler.MustacheListenerImpl;
 import free.servpp.mustache.handler.MustacheWriter;
 import io.proleap.cobol.asg.metamodel.CompilationUnit;
 import io.proleap.cobol.asg.params.CobolParserParams;
@@ -12,7 +14,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,12 +64,16 @@ public class CopyBookManager implements ICobol2JavaBase {
             }catch (Throwable t){
                 throw new CopybookException(t);
             }
-            Map<String,Object> varables = new HashMap<>();
-            varables.put(LOCAL_CONTEXT, globalExprContext);
+            Map<String,Object> variables = new HashMap<>();
+            variables.put(LOCAL_CONTEXT, globalExprContext);
             if(name.endsWith("const"))
-                varables.put("IsConstantCopybook","IsConstantCopybook");
+                variables.put("IsConstantCopybook","IsConstantCopybook");
 
-            MustacheWriter writer = convertProgram(varables,compilationUnit.getProgramUnit(),"/mustache/copybook.mustache","com.dcits");
+            Cobol2JavaMustacheWriter writer = createMustacheWriter("com.dcits",compilationUnit.getProgramUnit());
+            globalExprContext.setEnvironment(writer.getExprEvaluator().getEnvironment());
+            MustacheListenerImpl listener = createMustacheListener("/mustache/copybook.mustache");
+            convert(variables, writer, listener);
+
 
             String prog = CodeFormator.formatCode(writer.getOutText().toString());
             copyBookMap.put(name,prog);

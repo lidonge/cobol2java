@@ -18,7 +18,7 @@ application {
     #compileFiles = "TESTACCEPT.cbl;IFCLAUSE.cbl"
     #compileFiles = "*GSA01060.cbl"
     #compileFiles = "*"
-    compileFiles = "*TESTACCEPT.cbl"
+    compileFiles = "*TESTMOVE.cbl"
     logging {
         level = "DEBUG"
     }

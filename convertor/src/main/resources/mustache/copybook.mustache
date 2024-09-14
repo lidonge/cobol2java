@@ -4,14 +4,16 @@
         //workingStorageSection
         {{#rootDataDescriptionEntries}}
             {{#execSqlText}}//TODO execSqlText{{/execSqlText}}
+            {{%IsFiller=null;""}}
+            {{#filler}} {{%IsFiller="IsFiller";""}}{{/filler}}
             {{%curObj=obj_getCurObj();""}}
-            {{^execSqlText}}{{#$curObj}}
+            {{^execSqlText}}{{^$IsFiller}}{{#$curObj}}
                 {{%isInnerClass=null;innerClsLevel = 0;""}}
                 //==========copybook.mustache========
                 {{>comment}}
                 {{>model.model}}
                 {{>model.unused}}
-            {{/curObj}}{{/execSqlText}}
+            {{/curObj}}{{/IsFiller}}{{/execSqlText}}
         {{/rootDataDescriptionEntries}}
     {{/workingStorageSection}}
 {{/dataDivision}}

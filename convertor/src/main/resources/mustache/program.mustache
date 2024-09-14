@@ -1,6 +1,7 @@
 package {{% model_package}};
 import free.cobol2java.java.*;
-{{%mainClassName=name_toClass(obj_getVar("identificationDivision.programIdParagraph.name"));""}}
+import com.dcits.*;
+{{%DEBUG="program1";mainClassName=name_toClass(obj_getVar("identificationDivision.programIdParagraph.name"));""}}
 public class {{%mainClassName}} {
 {{#environmentDivision}}//TODO environmentDivision{{/environmentDivision}}
 {{#identificationDivision}}

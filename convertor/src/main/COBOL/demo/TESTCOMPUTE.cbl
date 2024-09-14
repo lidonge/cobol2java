@@ -37,7 +37,7 @@
            COMPUTE Total1 WS-Score1 = 3 +(5 - Price1) ** 6 + 3**6.
            COMPUTE RoundedTotal ROUNDED = Total1 * TaxRate .
            COMPUTE Total1 = 3+WS-D1(2,1).
-           COMPUTE LargeResult = WS-A * WS-C ON SIZE ERROR DISPLAY "Error: Size exceeded".
+           COMPUTE LargeResult = WS-A * WS-C OF WS-Cls ON SIZE ERROR DISPLAY "Error: Size exceeded".
 *           COMPUTE Total1 = Price1 * Quantity1, Total2 = Price2 * Quantity2.
 
            STOP RUN.

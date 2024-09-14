@@ -155,10 +155,12 @@ public interface ICobolConvertor {
 
     default boolean convertAFile(File file) {
         String relativePath = file.getAbsolutePath().substring(getSourcePath().length() + 1);
-        String className = relativePath.substring(0, relativePath.lastIndexOf("."));
+        String fileName = file.getName();
+        String className = fileName.substring(0, fileName.lastIndexOf("."));
         className = className.substring(0, 1).toUpperCase() + className.substring(1).toLowerCase();
         String outputFilePath = getTargetPath() + File.separator +
                 getRootPackageName().replace(".", File.separator) + File.separator +
+                relativePath.substring(0,relativePath.length() - fileName.length()).replace(".",File.separator)+
                 className + ".java";
         String relativeParent = new File(relativePath).getParent();
         String packageName = getRootPackageName() +

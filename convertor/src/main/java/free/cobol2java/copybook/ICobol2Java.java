@@ -1,6 +1,8 @@
 package free.cobol2java.copybook;
 
+import free.cobol2java.Cobol2JavaMustacheWriter;
 import free.servpp.mustache.CodeFormator;
+import free.servpp.mustache.handler.MustacheListenerImpl;
 import free.servpp.mustache.handler.MustacheWriter;
 import io.proleap.cobol.asg.metamodel.CompilationUnit;
 import io.proleap.cobol.asg.metamodel.ProgramUnit;
@@ -34,11 +36,13 @@ public interface ICobol2Java extends ICobol2JavaBase {
         return "/mustache/program.mustache";
     }
 
-    default String convertAll(Map<String,Object> varables)  {
+    default String convertAll(Map<String,Object> variables)  {
         try {
             CompilationUnit compilationUnit = getProgram();
             ProgramUnit programUnit = compilationUnit.getProgramUnit();
-            MustacheWriter writer = convertProgram(varables,programUnit,getProgramMustache(),getRootPackageName());
+            Cobol2JavaMustacheWriter writer = createMustacheWriter(getRootPackageName(),compilationUnit.getProgramUnit());
+            MustacheListenerImpl listener = createMustacheListener(getProgramMustache());
+            convert(variables, writer, listener);
             StringBuffer sb = writer.getOutText();
 
             return CodeFormator.formatCode(sb.toString());

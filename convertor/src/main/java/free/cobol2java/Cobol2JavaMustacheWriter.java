@@ -69,6 +69,7 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                     exprContext = new ExprContext();
                     setVar(LOCAL_CONTEXT, exprContext);
                 }
+                exprContext.setEnvironment(this);
                 addFunction("sql_exec", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).sql_exec((String) args[0]));
                 addFunction("var_push", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).var_push(args[0]));
                 addFunction("var_pop", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).var_pop());

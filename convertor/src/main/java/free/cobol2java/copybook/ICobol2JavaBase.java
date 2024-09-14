@@ -1,7 +1,6 @@
 package free.cobol2java.copybook;
 
 import free.cobol2java.Cobol2JavaMustacheWriter;
-import free.cobol2java.ICobolConvertor;
 import free.cobol2java.config.CobolConfig;
 import free.cobol2java.parser.ExtCobolParserRunnerImpl;
 import free.cobol2java.ExprContext;
@@ -37,29 +36,26 @@ public interface ICobol2JavaBase extends IUrlLoader {
         return compilationUnit;
     }
 
-    default MustacheWriter convertProgram(Map<String, Object> variables,
-                                          ProgramUnit programUnit,
-                                          String mustache,
-                                          String packageName) throws IOException, URISyntaxException {
+    default MustacheListenerImpl createMustacheListener(String mustache) throws URISyntaxException, IOException {
         URL url = Cobol2JavaMustacheWriter.class.getResource(mustache);
         MustacheCompiler mustacheCompiler = new MustacheCompiler(url);
-        MustacheListenerImpl impl = mustacheCompiler.compile();
-
-        Cobol2JavaMustacheWriter writer = getMustacheWriter(packageName, programUnit);
-        writer.getExprEvaluator().getEnvironment().setVar(COBOL_CONVERTOR, CobolConfig.getCobolConvertor());
-        for(Map.Entry<String,Object> entry:variables.entrySet())
-            writer.getExprEvaluator().getEnvironment().setVar(entry.getKey(), entry.getValue());
-        if(variables.get(COPYBOOK_CONTEXT) != null){
-            ((ExprContext)writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT)).setCopybookContext((ExprContext) variables.get(COPYBOOK_CONTEXT));
-        }
-        if(variables.get(OR_MAPPING_CONTEXT) != null){
-            ((ExprContext)writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT)).setCopybookContext((ExprContext) variables.get(OR_MAPPING_CONTEXT));
-        }
-        writer.write(impl.getTemplate(), BaseSection.SectionType.Normal);
-        return writer;
+        return mustacheCompiler.compile();
     }
 
-    private Cobol2JavaMustacheWriter getMustacheWriter(String packageName, Object root) {
+    default void convert(Map<String, Object> variables, Cobol2JavaMustacheWriter writer, MustacheListenerImpl impl) {
+        writer.getExprEvaluator().getEnvironment().setVar(COBOL_CONVERTOR, CobolConfig.getCobolConvertor());
+        for(Map.Entry<String,Object> entry: variables.entrySet())
+            writer.getExprEvaluator().getEnvironment().setVar(entry.getKey(), entry.getValue());
+        if(variables.get(COPYBOOK_CONTEXT) != null){
+            ((ExprContext) writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT)).setCopybookContext((ExprContext) variables.get(COPYBOOK_CONTEXT));
+        }
+        if(variables.get(OR_MAPPING_CONTEXT) != null){
+            ((ExprContext) writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT)).setCopybookContext((ExprContext) variables.get(OR_MAPPING_CONTEXT));
+        }
+        writer.write(impl.getTemplate(), BaseSection.SectionType.Normal);
+    }
+
+    default Cobol2JavaMustacheWriter createMustacheWriter(String packageName, Object root) {
         return new Cobol2JavaMustacheWriter(root, packageName,false);
     }
 

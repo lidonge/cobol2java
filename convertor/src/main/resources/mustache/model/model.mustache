@@ -1,8 +1,8 @@
 {{^pictureClause}}
     {{%
-        clsName=name_toClass(obj_getVar("name"));
-        IsConstantCopybook != null? name_enterClass(name_toClass(obj_getVar("name"))):
-        name_enterClass(name_toField(obj_getVar("name")));
+        orgName = obj_getVar("name");
+        clsName=name_toClass(orgName);
+        IsConstantCopybook != null? name_enterClass(clsName) : name_enterClass(name_toField(orgName));
     ""}}
     {{%childrenCount=null;""}}
     {{#dataDescriptionEntries}}{{>dimstr}}
