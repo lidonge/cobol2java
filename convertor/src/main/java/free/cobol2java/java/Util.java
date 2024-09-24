@@ -19,7 +19,7 @@ public class Util {
         return "";
     }
 
-    public static Integer subvalue(Integer wsNum1, String s) {
-        return 0;
+    public static <T> T subvalue(T wsNum1, String s) {
+        return null;
     }
 }

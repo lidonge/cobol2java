@@ -1,16 +1,30 @@
-{{%
-    dimString = null;
-    callType = obj_getVar("delegate.callType");
-    isTable = callType == "TABLE_CALL";
-    isFunction = callType == "FUNCTION_CALL";
-    delegate= isTable? name_toField(obj_getVar("delegate.name")) :
-        name_toField(obj_getVar("delegate.delegate.name"));
-    operand = name_delegateName(delegate);
-    operand= (callType != "DATA_DESCRIPTION_ENTRY_CALL" && callType != "UNDEFINED_CALL" && !isTable) ? "//TODO " + obj_getVar("delegate.ctx.text"):
+
+{{#delegate}}
+    {{%
+        dimString = null;
+        callType = obj_getVar("callType");
+        isTable = callType == "TABLE_CALL";
+        isFunction = callType == "FUNCTION_CALL";
+        delegate= isTable? name_toField(obj_getVar("name")) :
+        name_toField(obj_getVar("delegate.name"));
+        ctxOfName = obj_getVar("ctx");
+        ofCopy = ctxOfName != null ? name_ofCopy(ctxOfName):null;
+        //println(obj_getCurObj()+","+obj_getVar("delegate.name")+","+ofCopy);
+        operand = name_qlfName(delegate,ofCopy);
+        dimString = callType != "UNDEFINED_CALL" ? null : dim_udfCall(obj_getVar("ctx.text"));
+        operand= (callType != "DATA_DESCRIPTION_ENTRY_CALL" && callType != "UNDEFINED_CALL" && !isTable) ? "//TODO " + obj_getVar("delegate.ctx.text"):
         operand;
-""}}{{#delegate}}{{#subscripts}}{{%
-    temp = obj_getVar("ctx.text");dimString = dimString == null ? temp:dimString + temp;
-""}}{{^-last}}{{%
-    dimString = dimString + ",";""}}{{/-last}}{{/subscripts}}{{#$dimString}}{{%
-    operand = str_indexOf(dimString,":") !=-1 ? "Util.subvalue("+operand+",\""+dimString+"\")" : name_delegateName1(operand, dimString);
-""}}{{/dimString}}{{/delegate}}
+    ""}}
+    {{#subscripts}}
+        {{%temp = obj_getVar("ctx.text");dimString = dimString == null ? temp:dimString + temp;""}}
+        {{^-last}}
+            {{%dimString = dimString + ",";""}}
+        {{/-last}}
+    {{/subscripts}}
+    {{#$dimString}}
+        {{%
+            operand = str_indexOf(dimString,":") !=-1 ? "Util.subvalue("+operand+",\""+dimString+"\")" :
+            (callType != "UNDEFINED_CALL" ? name_qlfNameWithDim(operand, dimString) : name_qlfUdfNameWithDim(operand, dimString));
+        ""}}
+    {{/dimString}}
+{{/delegate}}

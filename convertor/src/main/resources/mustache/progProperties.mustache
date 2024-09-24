@@ -3,13 +3,28 @@
 {{%dimension != null ? dim_push(dimension) : dim_push(0);""}}
 {{>model.properties}}
 {{%dim_pop();""}}
-{{^pictureClause}}
-    {{^execSqlText}}
-        {{%
-            innerCls = name_toClass(obj_getVar("name"));
-            fieldName = name_toField(obj_getVar("name"));
-            name_setFieldType(fieldName,innerCls);
-        ""}}
-        private {{%innerCls)}} {{%fieldName}};
-    {{/execSqlText}}
-{{/pictureClause}}
+{{>model.pointer}}
+{{%curObj=obj_getCurObj();""}}
+{{^$IsPointer}}{{#$curObj}}
+    {{^pictureClause}}
+        {{^execSqlText}}
+            {{%
+                innerCls = name_toClass(obj_getVar("name"));
+                fieldName = name_toField(obj_getVar("name"));
+                dim_putFieldDim(fieldName,dimension == null? 0:dimension);
+                name_setFieldType(fieldName,innerCls);
+                //println("=====in progProperties.mustache innerCls is: "+innerCls + ", fieldName:"+ fieldName);
+            ""}}
+            {{%isSubCopybook = null;""}}
+            {{>model.copy75}}
+            {{%
+                innerCls = isSubCopybook != null ? subCopyBookClsName : innerCls;
+            ""}}
+            private {{%innerCls)}} {{%fieldName}};
+        {{/execSqlText}}
+    {{/pictureClause}}
+{{/curObj}}{{/IsPointer}}
+{{#$IsPointer}}
+    {{>model.nopicture}}
+    private Object {{%fieldName}};
+{{/IsPointer}}

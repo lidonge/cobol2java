@@ -4,6 +4,7 @@ import free.cobol2java.Cobol2JavaMustacheWriter;
 import free.cobol2java.ExprContext;
 import free.cobol2java.ICobolConvertor;
 import free.servpp.mustache.CodeFormator;
+import free.servpp.mustache.ILogable;
 import free.servpp.mustache.handler.MustacheListenerImpl;
 import free.servpp.mustache.handler.MustacheWriter;
 import io.proleap.cobol.asg.metamodel.CompilationUnit;
@@ -19,7 +20,7 @@ import java.util.Map;
 /**
  * @author lidong@date 2024-09-10@version 1.0
  */
-public class CopyBookManager implements ICobol2JavaBase {
+public class CopyBookManager implements ICobol2JavaBase , ILogable {
     private static final String modelTemplate = "/ModelCopyBook.cbl";
     private static CopyBookManager defaultManager = new CopyBookManager();
 
@@ -37,10 +38,11 @@ public class CopyBookManager implements ICobol2JavaBase {
 
     private ICobolConvertor cobolConvertor;
     Map<String,String> copyBookMap = new HashMap<>();
-    ExprContext globalExprContext = new ExprContext();
+    Map<String,ExprContext> exprContextMap = new HashMap<>();
+//    ExprContext globalExprContext = new ExprContext();
 
-    public ExprContext getGlobalFunc() {
-        return globalExprContext;
+    public Map<String,ExprContext> getGlobalFunc() {
+        return exprContextMap;
     }
 
     public void init(ICobolConvertor cobolConvertor) {
@@ -51,7 +53,8 @@ public class CopyBookManager implements ICobol2JavaBase {
                              CobolParserParams params,
                              String copyText) throws URISyntaxException, IOException, CopybookException {
         String name = copyBook.getName();
-        name = globalExprContext.name_toClass(name);
+        name = ExprContext.toClassName(name);
+
         String copyBookJavaText = copyBookMap.get(name);
         if(copyBookJavaText == null) {
             URL url = CopyBookManager.class.getResource(modelTemplate);
@@ -64,22 +67,29 @@ public class CopyBookManager implements ICobol2JavaBase {
             }catch (Throwable t){
                 throw new CopybookException(t);
             }
+            getLogger().info("Open Data copybook :{}", name);
             Map<String,Object> variables = new HashMap<>();
-            variables.put(LOCAL_CONTEXT, globalExprContext);
+            variables.put(COPYBOOK_CONTEXT, exprContextMap);
             if(name.endsWith("const"))
                 variables.put("IsConstantCopybook","IsConstantCopybook");
 
             Cobol2JavaMustacheWriter writer = createMustacheWriter("com.dcits",compilationUnit.getProgramUnit());
-            globalExprContext.setEnvironment(writer.getExprEvaluator().getEnvironment());
+            for (Map.Entry<String,ExprContext> entry:exprContextMap.entrySet()){
+                entry.getValue().setEnvironment(writer.getExprEvaluator().getEnvironment());
+            }
             MustacheListenerImpl listener = createMustacheListener("/mustache/copybook.mustache");
             convert(variables, writer, listener);
 
 
             String prog = CodeFormator.formatCode(writer.getOutText().toString());
-            copyBookMap.put(name,prog);
+            if(prog.trim().length() != 0)
+                copyBookMap.put(name,prog);
+            exprContextMap.put(name, (ExprContext) writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT));
             Map<String,Object> copyBookCls = (Map<String, Object>) writer.getExprEvaluator().getEnvironment().getVar("innerMap");
             for(Map.Entry<String,Object> entry :copyBookCls.entrySet()){
-                copyBookMap.put(entry.getKey(),entry.getValue().toString());
+                String string = entry.getValue().toString();
+                if(string.trim().length() != 0)
+                    copyBookMap.put(entry.getKey(), string);
             }
 
 //            System.out.println(prog);

@@ -1,7 +1,6 @@
 {{#dataDivision}}
     {{%innerMap = obj_newMap();""}}
     {{#workingStorageSection}}
-        //workingStorageSection
         {{#rootDataDescriptionEntries}}
             {{#execSqlText}}//TODO execSqlText{{/execSqlText}}
             {{%IsFiller=null;""}}
@@ -9,7 +8,6 @@
             {{%curObj=obj_getCurObj();""}}
             {{^execSqlText}}{{^$IsFiller}}{{#$curObj}}
                 {{%isInnerClass=null;innerClsLevel = 0;""}}
-                //==========copybook.mustache========
                 {{>comment}}
                 {{>model.model}}
                 {{>model.unused}}

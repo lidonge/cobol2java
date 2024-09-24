@@ -14,7 +14,7 @@
        DISPLAY "ONE-D TABLE : "WS-A(1).
        DISPLAY "TWO-D TABLE : "WS-TABLE1.
        Finished.
-          MOVE '12ABCDEF34GHIJKL56MNOPQR' TO WS-TABLE1.
+*          MOVE '12ABCDEF34GHIJKL56MNOPQR' TO WS-TABLE1.
           DISPLAY 'WS-A(1)   : ' WS-A1(1).
           DISPLAY 'WS-C(1,1) : ' WS-C1(1,1).
           DISPLAY 'WS-B(6)   : ' WS-B1(6).
@@ -25,15 +25,20 @@
           DISPLAY 'WS-A(3)   : ' WS-A1(3).
           DISPLAY 'WS-C(3,1) : ' WS-C1(3,1).
           DISPLAY 'WS-C(3,2) : ' WS-C1(3,2).
+          DISPLAY 'WS-TABLE1(5) : ' WS-TABLE1(5).
            IF WS-A(1) = SPACES
+           THEN
+             MOVE 'EN005'              TO WS-A(2)
+           END-IF.
+           IF WS-A(1) = '999'
            THEN
              MOVE 'EN005'              TO WS-A(2)
            END-IF.
        TODO-SET.
           SET I J TO 1.
-          DISPLAY WS-C1(I,J).
+*          DISPLAY WS-C1(I,J).
           SET I J UP BY 1.
-          DISPLAY WS-C1(I,J).
+*          DISPLAY WS-C1(I,J).
        TODO-SEARCH.
           SET I TO 1.
           SEARCH WS-A1

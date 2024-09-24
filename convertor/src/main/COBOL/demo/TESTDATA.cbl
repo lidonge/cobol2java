@@ -3,7 +3,9 @@
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
+       01 MY-PTR1            POINTER.
        01 WS-VARIABLES.
+           05 MY-PTR         POINTER.
            05 WS-NUMBER      PIC 9(5)V99 VALUE 12345.
            05 WS-TEXT        PIC X(20) VALUE 'HELLO WORLD'.
            05 WS-COUNTER     PIC 9(3) VALUE 0.

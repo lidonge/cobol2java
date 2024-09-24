@@ -3,22 +3,27 @@
         orgName = obj_getVar("name");
         clsName=name_toClass(orgName);
         IsConstantCopybook != null? name_enterClass(clsName) : name_enterClass(name_toField(orgName));
+        //println("=====in model.mustache class is: "+orgName);
     ""}}
-    {{%childrenCount=null;""}}
-    {{#dataDescriptionEntries}}{{>dimstr}}
+    {{%childrenCount=null;innerCls=clsName;fieldName=name_toField(clsName);""}}
+    {{>model.copy75}}
+    {{#dataDescriptionEntries}}
+        {{>dimstr}}
         {{#-first}}
             {{%isConstInnerCls = innerClsLevel >=1 && IsConstantCopybook != null? "isConstInnerCls":null;""}}
-            {{^$isInnerClass}}
-                {{^$isConstInnerCls}}
-                    package {{% model_package}};
-                    import free.cobol2java.java.*;
-                    public
-                {{/isConstInnerCls}}
-            {{/isInnerClass}}
+            {{^$isSubCopybook}}
+                {{^$isInnerClass}}
+                    {{^$isConstInnerCls}}
+                        package {{% model_package}};
+                        import free.cobol2java.java.*;
+                        public
+                    {{/isConstInnerCls}}
+                {{/isInnerClass}}
                 {{%isConstInnerCls != null? "public static ":""}}
                 class {{%clsName}} {
-                {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel+1;""}}
-                {{%childrenCount=1;""}}
+            {{/isSubCopybook}}
+            {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel+1;""}}
+            {{%childrenCount=1;""}}
         {{/-first}}
             {{>comment}}
             {{%dimension != null ? dim_push(dimension) : dim_push(0);""}}
@@ -30,6 +35,9 @@
             {{%dim_pop();""}}
         {{#-last}}
             {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel - 1;""}}
-        }{{/-last}}
+            {{^$isSubCopybook}}
+                }
+            {{/isSubCopybook}}
+        {{/-last}}
     {{/dataDescriptionEntries}}{{%clsName=name_exitClass();""}}
 {{/pictureClause}}

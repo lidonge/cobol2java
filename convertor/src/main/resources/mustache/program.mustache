@@ -37,12 +37,13 @@ public class {{%mainClassName}} {
 {{/dataDivision}}
 {{#dataDivision}}
     {{#linkageSection.rootDataDescriptionEntries}}
-        {{#-first}}//linkageSection{{/-first}}
+        {{#-first}}//linkageSection class define{{/-first}}
         {{%isInnerClass="isInnerClass";innerClsLevel = 0;""}}
         {{>comment}}
         {{>model.model}}
         {{>model.picture}}
         {{>model.unused}}
+        {{#-last}}//End of linkageSection class define{{/-last}}
     {{/linkageSection.rootDataDescriptionEntries}}
     {{@$innerMap}}{{#value}}{{this}}{{/value}}{{/innerMap}}
 {{/dataDivision}}
@@ -50,7 +51,9 @@ public class {{%mainClassName}} {
     {{>progProperties}}
 {{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}
 {{#dataDivision.linkageSection.rootDataDescriptionEntries}}
+    {{#-first}}//linkageSection fields define{{/-first}}
     {{>progProperties}}
+    {{#-last}}//End of linkageSection fields define{{/-last}}
 {{/dataDivision.linkageSection.rootDataDescriptionEntries}}
 {{>procedure}}
 }

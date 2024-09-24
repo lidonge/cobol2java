@@ -1,0 +1,13 @@
+{{#dataDescriptionEntries}}
+    {{#-first}}
+        {{%
+        isSubCopybook=obj_getVar("levelNumber") == 75 ? "isSubCopybook" :null;
+        subCopyOrgName = obj_getVar("name");
+        subCopyBookClsName = name_toClass(subCopyOrgName);
+        subCopyBookFieldName = name_toField(subCopyOrgName);
+        //isSubCopybook != null ? println(subCopyBookFieldName +"==="+fieldName +",innerCls:"+innerCls):null;
+        isSubCopybook != null ? setCopyFirstNameToFieldName(subCopyBookFieldName,fieldName):null;
+        isSubCopybook != null ?  setInnerClsNameToCopyName(innerCls,subCopyBookClsName):null;
+        ""}}
+    {{/-first}}
+{{/dataDescriptionEntries}}

@@ -47,10 +47,12 @@ public interface ICobol2JavaBase extends IUrlLoader {
         for(Map.Entry<String,Object> entry: variables.entrySet())
             writer.getExprEvaluator().getEnvironment().setVar(entry.getKey(), entry.getValue());
         if(variables.get(COPYBOOK_CONTEXT) != null){
-            ((ExprContext) writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT)).setCopybookContext((ExprContext) variables.get(COPYBOOK_CONTEXT));
+            ((ExprContext) writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT)).
+                    setCopybookContext((Map<String,ExprContext>) variables.get(COPYBOOK_CONTEXT));
         }
         if(variables.get(OR_MAPPING_CONTEXT) != null){
-            ((ExprContext) writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT)).setCopybookContext((ExprContext) variables.get(OR_MAPPING_CONTEXT));
+            ((ExprContext) writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT)).
+                    setCopybookContext((Map<String,ExprContext>) variables.get(OR_MAPPING_CONTEXT));
         }
         writer.write(impl.getTemplate(), BaseSection.SectionType.Normal);
     }

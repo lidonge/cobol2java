@@ -3,6 +3,7 @@ package free.cobol2java;
 import free.cobol2java.config.Cobol2javaConfig;
 import free.cobol2java.config.CobolConfig;
 import free.cobol2java.copybook.CopyBookManager;
+import free.servpp.multiexpr.ReflectTool;
 import free.servpp.mustache.CodeFormator;
 import io.proleap.cobol.preprocessor.CobolPreprocessor;
 
@@ -22,6 +23,7 @@ import static free.cobol2java.copybook.ICobol2JavaBase.COPYBOOK_CONTEXT;
 public class BatchConvertor extends BaseConvertor {
 
     public static void main(String[] args) throws IOException {
+//        ReflectTool.DEBUG=true;
         BatchConvertor batchConvertor = new BatchConvertor();
         CobolConfig.setCobolConvertor(batchConvertor);
         if(args.length == 0){

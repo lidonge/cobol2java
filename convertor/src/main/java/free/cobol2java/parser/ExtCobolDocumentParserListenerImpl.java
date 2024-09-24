@@ -106,7 +106,7 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
     @Override
     protected String getCopyBookContent(final CobolPreprocessorParser.CopySourceContext copySource, final CobolParserParams params) {
         final File copyBook = findCopyBook(copySource, params);
-        return getCopyBookContent("75 " + copySource.getText() + ".", copyBook, params, true);
+        return getCopyBookContent("             75 " + copySource.getText() + ".", copyBook, params, true);
     }
 
     private String getCopyBookContent(final String copySource, final File copyBook, final CobolParserParams params, boolean normalCopyBook) {
@@ -122,10 +122,8 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
             try {
                 File parent = copyBook.getParentFile();
                 List<File> copyBookDirectories = params.getCopyBookDirectories();
-                copyBookDirectories.add(0, parent);
                 params.setCopyBookDirectories(copyBookDirectories);
                 result = new ExtCobolPreprocessorImpl().process(copyBook, params);
-                copyBookDirectories.remove(0);
                 CopyBookManager defaultManager = CopyBookManager.getDefaultManager();
                 if (normalCopyBook && defaultManager.isCopybookManage()) {
                     defaultManager.loadCopyBook(copyBook, params, result);
@@ -156,11 +154,15 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
 
             if (line.isEmpty())
                 continue;
-            if (line.indexOf("PIC") != -1) {
+            if(line.startsWith("*"))
+                continue;
+            if (line.indexOf("PIC") != -1 || line.startsWith("LINKAGE") || line.startsWith("WORKING") || line.startsWith("COPY")) {
                 normalCopyBook = false;
             }else{
                 String copyText = ctx.copySource().getText();
-                if(line.endsWith(copyText+".")){
+                line = line.replace('\t',' ');
+
+                if(line.substring(line.lastIndexOf(' ')+1).equals(copyText+".")){
                     sameNameCopy = true;
                 }
             }

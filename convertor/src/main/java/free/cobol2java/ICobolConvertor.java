@@ -4,6 +4,7 @@ import com.typesafe.config.Config;
 import free.cobol2java.copybook.CopyBookManager;
 import free.servpp.config.IConfig;
 import free.servpp.config.hocon.HoconConfigTypeManager;
+import free.servpp.mustache.ILogable;
 import io.proleap.cobol.preprocessor.CobolPreprocessor;
 
 import java.io.File;
@@ -21,7 +22,7 @@ import static free.cobol2java.copybook.ICobol2JavaBase.COPYBOOK_CONTEXT;
 /**
  * @author lidong@date 2024-09-13@version 1.0
  */
-public interface ICobolConvertor {
+public interface ICobolConvertor extends ILogable {
     String getSourcePath();
 
     void setSourcePath(String sourcePath);
@@ -187,9 +188,9 @@ public interface ICobolConvertor {
         try (FileWriter writer = new FileWriter(targetFile)) {
             writer.write(content);
             writer.close();
-            System.out.println("Written to file: " + targetFile.getAbsolutePath());
+            getLogger().info("Written to file: {}", targetFile.getAbsolutePath());
         } catch (IOException e) {
-            System.err.println("Error writing to file: " + targetFile.getAbsolutePath());
+            getLogger().error("Error writing to file: {}" , targetFile.getAbsolutePath());
             e.printStackTrace();
         }
     }

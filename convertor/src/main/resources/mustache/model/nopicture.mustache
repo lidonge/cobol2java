@@ -1,7 +1,7 @@
 {{%
     innerCls = name_toClass(obj_getVar("name"));
-    filedName = name_toField(obj_getVar("name"));
-    theQlfName=name_putInnerField(filedName);
-    name_setFieldType(theQlfName == null ? filedName : theQlfName,innerCls);
-    IsConstantCopybook != null?name_enterClass(innerCls):name_enterClass(filedName);
+    fieldName = name_toField(obj_getVar("name"));
+    theQlfName=name_putInnerField1(fieldName, isSubCopybook);
+    dim_putFieldDim(fieldName,dimension == null? 0:dimension);
+    name_setFieldType(theQlfName == null ? fieldName : theQlfName,innerCls);
 ""}}

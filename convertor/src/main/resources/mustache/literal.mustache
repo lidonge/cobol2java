@@ -3,6 +3,6 @@
     numValue=obj_getVar("numericLiteral.value");
     constValue=obj_getVar("figurativeConstant.figurativeConstantType");
     numValue= numValue == null ? obj_getVar("integerLiteral.value") : numValue;
-    operand = strValue != null ? ("\""+strValue +"\""): numValue;
+    operand = strValue != null ? ("\""+str_replace(strValue,"'","") +"\""): numValue;
     operand = constValue != null ? ("CobolConstant."+constValue): operand;
 ""}}

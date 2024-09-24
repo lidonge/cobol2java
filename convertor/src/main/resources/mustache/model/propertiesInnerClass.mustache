@@ -1,39 +1,42 @@
-{{^pictureClause}}
+{{>model.pointer}}
+{{%curObj=obj_getCurObj();""}}
+{{^$IsPointer}}{{#$curObj}}
+    {{^pictureClause}}
+        {{>model.nopicture}}
+        {{%IsConstantCopybook != null?name_enterClass(innerCls):name_enterClass(fieldName);""}}
+        {{%
+            //println("=======innerCls:" +innerCls);
+            innerCls = isSubCopybook != null ? subCopyBookClsName : innerCls;
+            ignoreProp = innerClsLevel == 0 ? "ignoreProp" : null;
+            modifier = isInnerClass != "isInnerClass" && IsConstantCopybook == null ? "public ":"";
+            //modifier = modifier +(IsConstantCopybook != null ? "static final " :"");
+        ""}}
+        {{^$ignoreProp}}
+            {{^$IsConstantCopybook}}
+                {{^$isSubCopybook}}
+                    {{%modifier}} {{%innerCls)}}{{#$dimStr}}[]{{/dimStr}} {{%fieldName}}{{#$dimStr}} = new {{%innerCls}}[{{%dimStr}}]{{/dimStr}};
+                {{/isSubCopybook}}
+            {{/IsConstantCopybook}}
+        {{/ignoreProp}}
+        {{%
+            dimStr = null;
+            clsName=innerCls;
+            var_push(clsName);
+            isInnerClass==null && IsConstantCopybook == null ? must_saveBuff():null;
+        ""}}
+        {{^$isSubCopybook}}
+            {{*dataDescriptionEntries}}
+        {{/isSubCopybook}}
+        {{%
+            name_exitClass();
+            clsName = var_pop();
+            clsContent = isInnerClass==null && IsConstantCopybook == null? must_popBuff():null;
+            isInnerClass== null && IsConstantCopybook == null?obj_addToMap(innerMap,clsName, clsContent):null;
+            //sInnerClass== null && IsConstantCopybook == null?println("========addto innermap:" +clsName):null;
+        ""}}
+    {{/pictureClause}}
+{{/curObj}}{{/IsPointer}}
+{{#$IsPointer}}
     {{>model.nopicture}}
-    {{#dataDescriptionEntries}}
-        {{#-first}}
-            {{%
-                isSubCopybook=obj_getVar("levelNumber") == 75 ? "isCopybook" :null;
-                subCopyOrgName = obj_getVar("name");
-                subCopyBookClsName = name_toClass(subCopyOrgName);
-                subCopyBookFieldName = name_toField(subCopyOrgName);
-            ""}}
-        {{/-first}}
-    {{/dataDescriptionEntries}}
-    {{%
-        innerCls = isSubCopybook != null ? subCopyBookClsName : innerCls;
-        isSubCopybook != null ? setCopyFirstNameToFieldName(subCopyBookFieldName,filedName):null;
-        ignoreProp = innerClsLevel == 0 ? "ignoreProp" : null;
-        modifier = isInnerClass != "isInnerClass" && IsConstantCopybook == null ? "public ":"";
-        //modifier = modifier +(IsConstantCopybook != null ? "static final " :"");
-        modifier
-    }}
-    {{^$ignoreProp}}
-        {{^$IsConstantCopybook}}
-            {{%innerCls)}}{{#$dimStr}}[]{{/dimStr}} {{%filedName}}{{#$dimStr}} = new {{%innerCls}}[{{%dimStr}}]{{/dimStr}};
-        {{/IsConstantCopybook}}
-    {{/ignoreProp}}
-    {{%
-        dimStr = null;
-        clsName=innerCls;
-        isInnerClass==null && IsConstantCopybook == null ? must_saveBuff():null;
-    ""}}
-    {{^$isSubCopybook}}
-        {{*dataDescriptionEntries}}
-    {{/isSubCopybook}}
-    {{%
-        name_exitClass();
-        clsContent = isInnerClass==null && IsConstantCopybook == null? must_popBuff():null;
-        isInnerClass== null && IsConstantCopybook == null?obj_addToMap(innerMap,clsName, clsContent):null;
-    ""}}
-{{/pictureClause}}
+    {{%isInnerClass==null ? "public":""}} Object {{%fieldName}};
+{{/IsPointer}}

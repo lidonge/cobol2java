@@ -20,7 +20,8 @@
         try{
     {{/onExceptionClause}}
     {{%
-        //cobol_compile(operand);
+        println("convert call sub : " + operand);
+        cobol_compile(operand);
     ""}}
     {{#$givingName}}
         {{%givingName}} =
