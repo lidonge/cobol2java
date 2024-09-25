@@ -22,4 +22,8 @@ public class Util {
     public static <T> T subvalue(T wsNum1, String s) {
         return null;
     }
+
+    public static Integer sizeof(Object obj) {
+        return 0;
+    }
 }

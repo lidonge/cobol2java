@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
  * @author lidong@date 2024-08-12@version 1.0
  */
 public class ExprContext {
+    public static final String LENGTHOF = "LENGTHOF";
     private IEvaluatorEnvironment environment;
     //    private ExprContext copybookContext;
     private Map<String, ExprContext> copybookContexts;
@@ -228,26 +229,36 @@ public class ExprContext {
     }
 
     private String name_qlfName(String fieldName, String ofCopy, boolean includeCopyBook) {
-        if(fieldName.equals("dbiSegmentName")){
-            debugPoint();
-        }
         String ret = null;
-        if (ofCopy != null && ofCopy.length() != 0 && !"null".equals(ofCopy)) {
-            if(ofCopy.indexOf(".")!=-1) {
-                debugPoint();
-                return null;
-            }
-            if(fieldName.equals("tftPdCode")){
-                debugPoint();
-            }
+        boolean isInCopy = ofCopy != null && ofCopy.length() != 0 && !"null".equals(ofCopy);
+        if (isInCopy) {
             String ofCopyCls = name_toClass(ofCopy);
-            ExprContext exprContext = copybookContexts.get(ofCopyCls);
-            if (exprContext == null) {
-                ofCopyCls = innerClsNameToCopybookName.get(ofCopyCls);
-                exprContext = copybookContexts.get(ofCopyCls);
+            String ofCopyField = name_toField(ofCopy);
+            if(javaFieldToType.get(ofCopyField) != null || javaFieldToQualifiedName.get(ofCopyField) != null){
+                //is of local inner class
+                isInCopy = false;
+            }else {
+                ExprContext exprContext = copybookContexts.get(ofCopyCls);
+                if (exprContext == null) {
+                    ofCopyCls = innerClsNameToCopybookName.get(ofCopyCls);
+                    exprContext = copybookContexts.get(ofCopyCls);
+                }
+                if (exprContext == null) {
+                    /**
+                     * In copybook
+                     * 02  O-PDPRTSAK.
+                     *      COPY PDPRTSAK.
+                     *
+                     * In main cbl
+                     * MOVE AA TO BB OF O-PDPRTSAK.
+                     */
+                    exprContext = getExprContext(name_toField(ofCopy));
+                }
+
+                ret = exprContext.name_qlfName(fieldName, null);
             }
-            ret = exprContext.name_qlfName(fieldName, null);
-        } else {
+        }
+        if(!isInCopy){
             ret = javaFieldToQualifiedName.get(fieldName);
             if (ret == null && includeCopyBook) {
                 if (copybookContexts.get(javaFieldToType.get(fieldName)) == null) {
@@ -276,9 +287,6 @@ public class ExprContext {
     }
 
     public String name_qlfUdfNameWithDim(String javaQlfName, String dimStr) {
-        if(javaQlfName.indexOf("dbiSegmentName")!=-1 && dimStr != null){
-            debugPoint();
-        }
         String ret = null;
         String delegate = javaQlfName.substring(javaQlfName.lastIndexOf('.') +1);
         ExprContext exprContext = getExprContext(delegate);
@@ -287,16 +295,13 @@ public class ExprContext {
         return ret;
     }
     public String name_qlfNameWithDim(String javaQlfName, String dimStr) {
-        if(javaQlfName.indexOf("dbiSegmentName")!=-1 && dimStr != null){
-            debugPoint();
-        }
         String ret = null;
         if (dimStr == null) {
             ret = javaQlfName;
         } else {
             String[] dims = dimStr.split(",");
             //use max name access array, there is an ambiguity here, but can not avoid
-            javaQlfName = javaFieldToQlfNameWithLeaf.get(javaQlfName.substring(javaQlfName.lastIndexOf(".")+1));
+            javaQlfName = getJavaQlfNameWithLeaf(javaQlfName);
             String[] names = javaQlfName.split("\\.");
             int dimIndex = 0;
             for (String name : names) {
@@ -316,6 +321,10 @@ public class ExprContext {
         }
         ret = nestedQualifiedName(ret);
         return ret;
+    }
+
+    private String getJavaQlfNameWithLeaf(String javaQlfName) {
+        return javaFieldToQlfNameWithLeaf.get(javaQlfName.substring(javaQlfName.lastIndexOf(".") + 1));
     }
 
     /**
@@ -482,8 +491,8 @@ public class ExprContext {
                 if (isOf) {
                     if (ret == null)
                         ret = node.getText();
-                    else
-                        ret += "." + node.getText();
+//                    else
+//                        ret += "." + node.getText();
                 }
             }
         }
@@ -493,39 +502,54 @@ public class ExprContext {
     private void getPropOfIds(CobolParser.ArithmeticExpressionContext ctx, List<Object> ofIds) {
         List<TerminalNode> list = new ArrayList<>();
         getAllTerm(ctx, list);
-        if (ctx.getText().indexOf("CM-DOC-TYPOFO-PDPRTSAKOFPCSAINF1") != -1)
+        if (ctx.getText().indexOf("ARL-DATA-LL+ASR-DATA-LL+LENGTHOFWK-ASR-AREA") != -1)
             debugPoint();
         boolean isOf = false;
-        TerminalNode prevNode = null;
+        String prevNode = null;
+        boolean isLengthOf = false;
         for (TerminalNode node : list) {
             String text = node.getText();
-            if ("OF".equals(text)) {
-                isOf = true;
-            } else if (node.getSymbol().getType() == CobolLexer.IDENTIFIER) {
-                if (isOf) {
-                    isOf = false;
-                    List<String> ofs = null;
-                    if (prevNode != null) {
-                        String id = prevNode.getText();
-                        String ofField = node.getText();
-                        ofs = new ArrayList<>();
-                        ofs.add(ofField);
-                        PropOfField propOfField = new PropOfField(id, ofs);
-                        ofIds.add(propOfField);
-                    } else {
-                        PropOfField propOfField = (PropOfField) ofIds.get(ofIds.size() - 1);
-                        propOfField.ofId.add(node.getText());
-                    }
-                    prevNode = null;
-                    continue;
-                } else if (prevNode != null) {
-                    ofIds.add(prevNode.getText());
+            int symbolType = node.getSymbol().getType();
+            switch (symbolType){
+                case CobolLexer.OF: {
+                    if(!isLengthOf)
+                        isOf = true;
+                    break;
                 }
-                prevNode = node;
+                case CobolLexer.LENGTH:
+                    isLengthOf = true;
+                    break;
+                case CobolLexer.IDENTIFIER:{
+                    if (isOf) {
+                        isOf = false;
+                        List<String> ofs = null;
+                        if (prevNode != null) {
+                            String id = prevNode;
+                            String ofField = node.getText();
+                            ofs = new ArrayList<>();
+                            ofs.add(ofField);
+                            PropOfField propOfField = new PropOfField(id, ofs);
+                            ofIds.add(propOfField);
+                        } else {
+                            PropOfField propOfField = (PropOfField) ofIds.get(ofIds.size() - 1);
+                            propOfField.ofId.add(node.getText());
+                        }
+                        prevNode = null;
+                        continue;
+                    } else if (prevNode != null) {
+                        if(isLengthOf){
+                            isLengthOf = false;
+                            text =LENGTHOF + node.getText();
+                        }
+                        ofIds.add(prevNode);
+                    }
+                    prevNode = text;
+                    break;
+                }
             }
         }
         if (prevNode != null)
-            ofIds.add(prevNode.getText());
+            ofIds.add(prevNode);
     }
 
     private static void getAllTerm(ParseTree root, List<TerminalNode> list) {
@@ -543,6 +567,7 @@ public class ExprContext {
     public String expr_convertExpr(CobolParser.ArithmeticExpressionContext ctx) {
         List<Object> ofIds = new ArrayList<>();
         String cobolExpr = getCtxText(ctx, ofIds);
+
         String ret = cobolExpr.replace("**", "^");
         if (ofIds.size() != 0) {
             for (Object value : ofIds) {
@@ -558,9 +583,15 @@ public class ExprContext {
         String id = null;
         String fieldName = null;
         String ofId = null;
+        boolean isLengthOf = false;
         if (value instanceof String) {
             id = (String) value;
-            fieldName = name_toField(id);
+            String realId = id;
+            if(id.startsWith(LENGTHOF)){
+                realId = id.substring(LENGTHOF.length());
+                isLengthOf = true;
+            }
+            fieldName = name_toField(realId);
         } else {
             PropOfField propOfField = ((PropOfField) value);
             fieldName = name_toField(propOfField.id);
@@ -568,7 +599,7 @@ public class ExprContext {
                 debugPoint();
                 ofId = ofId;
             }
-            ofId = propOfField.ofId.get(0);
+            ofId = propOfField.ofId.get(propOfField.ofId.size() -1);
             id = propOfField.id;
             for (String of : propOfField.ofId) {
                 id = id + "OF" + of;
@@ -580,7 +611,11 @@ public class ExprContext {
         String dimStr = dims[1];
         String qlfName = name_qlfName(fieldName, ofId);
         if (dimStr == null) {
-            ret = ret.replace(id, qlfName);
+            String sExpr = qlfName;
+            if(isLengthOf){
+                sExpr = "Util.sizeof("+qlfName+")";
+            }
+            ret = ret.replace(id, sExpr);
         } else {
             int index = cobolExpr.indexOf(":");
             if (index != -1) {
@@ -589,7 +624,11 @@ public class ExprContext {
                 String range = cobolExpr.substring(left + 1, right);
                 ret = "Util.subvalue(" + qlfName + ",\"" + range + "\")";
             } else {
-                String qlfNameWithDims = name_qlfNameWithDim(qlfName, dimStr);
+                String qlfNameWithDims = null;
+                if(getJavaQlfNameWithLeaf(qlfName) != null)
+                    qlfNameWithDims = name_qlfNameWithDim(qlfName, dimStr);
+                else
+                    qlfNameWithDims = name_qlfUdfNameWithDim(qlfName, dimStr);
                 ret = dims[0] + qlfNameWithDims + dims[2];
             }
         }
@@ -599,6 +638,7 @@ public class ExprContext {
     private String[] getDimStringOfVar(String cobolExpr, String var) {
         String[] ret = new String[3];
         int index = cobolExpr.indexOf(var);
+
         String sub = cobolExpr.substring(index + var.length()).trim();
         ret[0] = cobolExpr.substring(0, index);
         ret[2] = sub;

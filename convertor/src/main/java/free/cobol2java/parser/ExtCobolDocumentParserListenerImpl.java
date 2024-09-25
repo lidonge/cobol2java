@@ -6,9 +6,11 @@ import free.cobol2java.copybook.CopyBookManager;
 import free.cobol2java.copybook.CopybookException;
 import free.cobol2java.sql.SqlInclude;
 import free.cobol2java.sql.handler.CobolSqlVisitor;
+import free.servpp.mustache.ILogable;
 import io.proleap.cobol.CobolPreprocessorParser;
 import io.proleap.cobol.asg.params.CobolParserParams;
 import io.proleap.cobol.preprocessor.CobolPreprocessor;
+import io.proleap.cobol.preprocessor.exception.CobolPreprocessorException;
 import io.proleap.cobol.preprocessor.sub.CobolLine;
 import io.proleap.cobol.preprocessor.sub.document.impl.CobolDocumentParserListenerImpl;
 import io.proleap.cobol.preprocessor.sub.util.TokenUtils;
@@ -25,7 +27,7 @@ import java.util.List;
 /**
  * @author lidong@date 2024-09-06@version 1.0
  */
-public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListenerImpl {
+public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListenerImpl implements ILogable {
     private final CobolParserParams params;
 
     private final BufferedTokenStream tokens;
@@ -137,6 +139,9 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
 //                LOG.warn(e.getMessage());
             } catch (CopybookException e) {
                 //not data copybook
+            }catch(CobolPreprocessorException ex){
+                getLogger(getClass()).error("Error when parse COPYBOOK:{} with exception {}", copyBook.getName(),ex.getMessage());
+                result = null;
             }
         }
 
