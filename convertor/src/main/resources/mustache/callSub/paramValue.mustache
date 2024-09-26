@@ -4,6 +4,9 @@
 {{#referenceCall}}
     {{>call}}
 {{/referenceCall}}
+{{#valueStmt.literal}}
+    {{>literal}}
+{{/valueStmt.literal}}
 {{#$subparameters}}
     {{>callSub.linkageParam}}
 {{/subparameters}}

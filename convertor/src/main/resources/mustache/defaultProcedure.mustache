@@ -1,0 +1,31 @@
+{{%isContinue="isContinue";""}}
+{{%needDefaultParagraph=null;""}}
+{{#statements}}
+    {{#-first}}
+        {{%needDefaultParagraph="$needDefaultParagraph";""}}
+    {{/-first}}
+{{/statements}}
+{{>callSub.subparameters}}
+{{%
+    func_parameters=parameters == null ? "":parameters;
+    func_parametersWithoutType=parametersWithoutType == null ? "":parametersWithoutType;
+""}}
+
+public void procedure({{%func_parameters}}){
+    {{%tempNeedDefaultParagraph=needDefaultParagraph;""}}
+    {{>statements}}
+    {{%needDefaultParagraph=tempNeedDefaultParagraph;""}}
+    {{#paragraphs}}
+        {{#$isContinue}}
+            {{%theName= name_toField(obj_getVar("name"));""}}{{#$theName}}{{%theName}}({{%func_parametersWithoutType}});{{/theName}}
+        {{/isContinue}}
+        {{#statements}}
+            {{%
+                statementType=obj_getVar("statementType");
+                isContinue = (statementType == "STOP" ||
+                            statementType == "GO_BACK" ||
+                            statementType == "EXIT") ? null : isContinue;
+            ""}}
+        {{/statements}}
+    {{/paragraphs}}
+}

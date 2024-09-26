@@ -21,17 +21,17 @@
     {{/onExceptionClause}}
     {{%
         println("convert call sub : " + operand);
-        cobol_compile(operand);
+        calleeClass = cobol_compile(operand);
     ""}}
     {{#$givingName}}
         {{%givingName}} =
     {{/givingName}}
-        new {{%calleeClass}}().subLogic(
+        new {{%calleeClass}}().procedure(
     {{%parameters = null;""}}
     {{#usingPhrase.usingParameters}}
         {{>callSub.parameter}}
     {{/usingPhrase.usingParameters}}
-        {{%parameters == null ? "":parameters}});
+    {{%parameters == null ? "":parameters}});
     {{#notOnExceptionClause}}
         {{>statements}}
     {{/notOnExceptionClause}}

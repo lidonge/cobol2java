@@ -9,6 +9,7 @@ import free.cobol2java.util.CobolConstant;
 import free.cobol2java.util.ExprUtil;
 import free.cobol2java.util.RelationalOperator;
 import free.servpp.multiexpr.IEvaluatorEnvironment;
+import free.servpp.mustache.ILogable;
 import io.proleap.cobol.CobolLexer;
 import io.proleap.cobol.CobolParser;
 import org.antlr.v4.runtime.CharStreams;
@@ -24,7 +25,7 @@ import java.util.regex.Pattern;
 /**
  * @author lidong@date 2024-08-12@version 1.0
  */
-public class ExprContext {
+public class ExprContext implements ILogable {
     public static final String LENGTHOF = "LENGTHOF";
     private IEvaluatorEnvironment environment;
     //    private ExprContext copybookContext;
@@ -369,18 +370,23 @@ public class ExprContext {
     }
 
     public String cobol_compile(String fileName) {
-        if(compiledCobol.get(fileName) != null){
-            return "";
-        }
-        compiledCobol.put(fileName,fileName);
         fileName = fileName.replace("\"", "");
+        String fullClsName = compiledCobol.get(fileName);
+        if(fullClsName != null){
+            return fullClsName;
+        }
         ICobolConvertor cobolConvertor = CobolConfig.getCobolConvertor();
         List<File> files = new ArrayList<>();
         cobolConvertor.findFiles(new File(cobolConvertor.getSourcePath()), files, cobolConvertor.getSuffixes(), fileName + "*");
-        if (files.size() > 0)
-            return cobolConvertor.convertAFile(files.get(0)) ? "Success" : "Error";
-        else
-            return "File " + fileName + " not found";
+        if (files.size() > 0) {
+            fullClsName = cobolConvertor.convertAFile(files.get(0));
+        }
+        else {
+            getLogger().error("Can not find given file: {}", fileName);
+            fullClsName = "UNDEFINED";
+        }
+        compiledCobol.put(fileName,fullClsName);
+        return fullClsName;
     }
 
     private String createQualifedName(String fieldName) {

@@ -2,10 +2,14 @@
 {{%curObj=obj_getCurObj();""}}
 {{#$MOVE}}{{#$curObj}}
     {{#moveToStatement.moveToSendingArea.sendingAreaValueStmt}}
-        {{#literal}}{{>literal}}{{/literal}}{{#call}}{{>call}}{{/call}}{{%sendValue=operand;""}}
+        {{#literal}}{{>literal}}{{/literal}}
+        {{#call}}{{>call}}{{/call}}
+        {{%sendValue=operand;""}}
     {{/moveToStatement.moveToSendingArea.sendingAreaValueStmt}}
     {{#moveToStatement.receivingAreaCalls}}
-    {{>call}}{{%setName=operand;setValue=sendValue;""}}
-        {{%setName}}={{%setValue}};{{/moveToStatement.receivingAreaCalls}}
+        {{>call}}
+        {{%setName=operand;setValue=sendValue;""}}
+        {{%setName}}={{%setValue}};
+    {{/moveToStatement.receivingAreaCalls}}
     {{#moveCorrespondingToStatement}}//TODO moveCorrespondingToStatement{{/moveCorrespondingToStatement}}
 {{/curObj}}{{/MOVE}}

@@ -154,7 +154,7 @@ public interface ICobolConvertor extends ILogable {
         return ret;
     }
 
-    default boolean convertAFile(File file) {
+    default String convertAFile(File file) {
         String relativePath = file.getAbsolutePath().substring(getSourcePath().length() + 1);
         String fileName = file.getName();
         String className = fileName.substring(0, fileName.lastIndexOf("."));
@@ -173,10 +173,10 @@ public interface ICobolConvertor extends ILogable {
 
             // Write the result to the target file
             writeToFile(outputFilePath, convertedContent);
-            return true;
+            return packageName+"."+className;
         } catch (Throwable t) {
-            t.printStackTrace();
-            return false;
+            getLogger().error("Error while convert file {}",file.getName(),t);
+            return "ERRORCLS";
         }
 
     }
