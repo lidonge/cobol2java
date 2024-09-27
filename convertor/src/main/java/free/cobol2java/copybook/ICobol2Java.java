@@ -39,7 +39,6 @@ public interface ICobol2Java extends ICobol2JavaBase {
     default String convertAll(Map<String,Object> variables)  {
         try {
             CompilationUnit compilationUnit = getProgram();
-            ProgramUnit programUnit = compilationUnit.getProgramUnit();
             Cobol2JavaMustacheWriter writer = createMustacheWriter(getRootPackageName(),compilationUnit.getProgramUnit());
             MustacheListenerImpl listener = createMustacheListener(getProgramMustache());
             convert(variables, writer, listener);

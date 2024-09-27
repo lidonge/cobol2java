@@ -47,6 +47,18 @@ public class {{%mainClassName}} {
     {{/linkageSection.rootDataDescriptionEntries}}
     {{@$innerMap}}{{#value}}{{this}}{{/value}}{{/innerMap}}
 {{/dataDivision}}
+{{#dataDivision}}
+    {{#localStorageSection.rootDataDescriptionEntries}}
+        {{#-first}}//localStorageSection class define{{/-first}}
+        {{%isInnerClass="isInnerClass";innerClsLevel = 0;""}}
+        {{>comment}}
+        {{>model.model}}
+        {{>model.picture}}
+        {{>model.unused}}
+        {{#-last}}//End of linkageSection class define{{/-last}}
+    {{/localStorageSection.rootDataDescriptionEntries}}
+    {{@$innerMap}}{{#value}}{{this}}{{/value}}{{/innerMap}}
+{{/dataDivision}}
 {{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
     {{>progProperties}}
 {{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}
@@ -55,5 +67,10 @@ public class {{%mainClassName}} {
     {{>progProperties}}
     {{#-last}}//End of linkageSection fields define{{/-last}}
 {{/dataDivision.linkageSection.rootDataDescriptionEntries}}
+{{#dataDivision.localStorageSection.rootDataDescriptionEntries}}
+    {{#-first}}//localStorageSection fields define{{/-first}}
+    {{>progProperties}}
+    {{#-last}}//End of localStorageSection fields define{{/-last}}
+{{/dataDivision.localStorageSection.rootDataDescriptionEntries}}
 {{>procedure}}
 }

@@ -5,6 +5,7 @@ import free.servpp.mustache.handler.IPartialFileHandler;
 import free.servpp.mustache.handler.MustacheWriter;
 import free.servpp.mustache.model.Template;
 import io.proleap.cobol.CobolParser;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.io.IOException;
 import java.net.URL;
@@ -82,6 +83,7 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                 addFunction("dim_value", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).dim_value());
                 addFunction("dim_udfCall", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).dim_udfCall((String) args[0]));
                 addFunction("str_replace", args -> ((String) args[0]).replace((String) args[1], (String) args[2]));
+                addFunction("value_fix", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).value_fix((String) args[0], args[1]));
                 addFunction("name_toField", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_toField((String) args[0]));
                 addFunction("name_toClass", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_toClass((String) args[0]));
                 addFunction("name_enterClass", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_enterClass((String) args[0]));
@@ -96,7 +98,7 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                 addFunction("name_setFieldType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_setFieldType((String) args[0], (String) args[1]));
                 addFunction("name_getFieldClsType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_getFieldClsType((String) args[0]));
                 addFunction("name_setFieldClsType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_setFieldClsType((String) args[0], (String) args[1]));
-                addFunction("expr_convertExpr", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).expr_convertExpr((CobolParser.ArithmeticExpressionContext) args[0]));
+                addFunction("expr_convertExpr", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).expr_convertExpr((ParserRuleContext) args[0]));
                 addFunction("rel_getOper", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).rel_getOper(args[0] + "", (String) args[1], (String) args[2]));
                 addFunction("array_initString", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).array_initString(args[0].toString(), args[1].toString()));
                 addFunction("type_getType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).type_getType((String) args[0]));

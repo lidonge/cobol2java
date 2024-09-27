@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public interface ICobol2JavaBase extends IUrlLoader {
     String LOCAL_CONTEXT = "__System_Context";
-    String COPYBOOK_CONTEXT = "__Copybook_Context";
+//    String COPYBOOK_CONTEXT = "__Copybook_Context";
     String OR_MAPPING_CONTEXT = "__OR_Mapping_Context";
     String COBOL_CONVERTOR = "COBOL_CONVERTOR";
 
@@ -46,13 +46,10 @@ public interface ICobol2JavaBase extends IUrlLoader {
         writer.getExprEvaluator().getEnvironment().setVar(COBOL_CONVERTOR, CobolConfig.getCobolConvertor());
         for(Map.Entry<String,Object> entry: variables.entrySet())
             writer.getExprEvaluator().getEnvironment().setVar(entry.getKey(), entry.getValue());
-        if(variables.get(COPYBOOK_CONTEXT) != null){
-            ((ExprContext) writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT)).
-                    setCopybookContext((Map<String,ExprContext>) variables.get(COPYBOOK_CONTEXT));
-        }
+
         if(variables.get(OR_MAPPING_CONTEXT) != null){
             ((ExprContext) writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT)).
-                    setCopybookContext((Map<String,ExprContext>) variables.get(OR_MAPPING_CONTEXT));
+                    setOrMappingContext((ExprContext) variables.get(OR_MAPPING_CONTEXT));
         }
         writer.write(impl.getTemplate(), BaseSection.SectionType.Normal);
     }

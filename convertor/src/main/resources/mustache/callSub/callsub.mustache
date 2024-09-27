@@ -16,12 +16,18 @@
         {{>literal}}
         {{%calleeClass = name_toClass(str_replace(operand,"\"",""));""}}
     {{/programValueStmt.literal}}
+    {{#programValueStmt.call}}
+        {{%operand = obj_getVar("delegate.delegate.name");""}}
+    {{/programValueStmt.call}}
     {{#onExceptionClause}}
         try{
     {{/onExceptionClause}}
     {{%
-        println("convert call sub : " + operand);
-        calleeClass = cobol_compile(operand);
+        //var_push(operand);
+        //println("convert call sub : " + operand);
+        //calleeClass = cobol_compile(operand);
+        //operand = var_pop();
+        //println("end convert call sub : " + operand);
     ""}}
     {{#$givingName}}
         {{%givingName}} =

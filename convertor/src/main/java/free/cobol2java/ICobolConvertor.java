@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static free.cobol2java.copybook.ICobol2JavaBase.COPYBOOK_CONTEXT;
-
 /**
  * @author lidong@date 2024-09-13@version 1.0
  */
@@ -197,8 +195,8 @@ public interface ICobolConvertor extends ILogable {
     // Dummy convert function (you can replace it with your actual logic)
     private String convert(File sourceFile, String packageName) {
         // Implement your conversion logic here
-        System.out.println("Converting file: " + sourceFile.getAbsolutePath());
-        System.out.println("Package name: " + packageName);
+        getLogger().info("Converting file: {}" , sourceFile.getAbsolutePath());
+        getLogger().info("Package name: {}" , packageName);
         String fileName = sourceFile.getName();
         String prog = null;
 
@@ -207,9 +205,6 @@ public interface ICobolConvertor extends ILogable {
                 CobolPreprocessor.CobolSourceFormatEnum.valueOf(getFormat()), getEncoding());
         CopyBookManager defaultManager = CopyBookManager.getDefaultManager();
         Map<String,Object> varables = new HashMap<>();
-        if(defaultManager.isCopybookManage()) {
-            varables.put(COPYBOOK_CONTEXT,defaultManager.getGlobalFunc());
-        }
         prog = cobol2Java.convertAll(varables);
 
         return prog;

@@ -69,7 +69,7 @@ public class CopyBookManager implements ICobol2JavaBase , ILogable {
             }
             getLogger().info("Open Data copybook :{}", name);
             Map<String,Object> variables = new HashMap<>();
-            variables.put(COPYBOOK_CONTEXT, exprContextMap);
+//            variables.put(COPYBOOK_CONTEXT, exprContextMap);
             if(name.endsWith("const"))
                 variables.put("IsConstantCopybook","IsConstantCopybook");
 

@@ -26,4 +26,16 @@ public class Util {
     public static Integer sizeof(Object obj) {
         return 0;
     }
+
+    public static <T> T copyObject(Object src, T target) {
+        return null;
+    }
+
+    public static int lengthOf(Object fmCurrCod) {
+        return 0;
+    }
+
+    public static int compare(Object subvalue, Object cSaDrwByPsbk) {
+        return 0;
+    }
 }

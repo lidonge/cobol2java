@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static free.cobol2java.copybook.ICobol2JavaBase.COPYBOOK_CONTEXT;
-
 /**
  * @author lidong@date 2024-09-04@version 1.0
  */

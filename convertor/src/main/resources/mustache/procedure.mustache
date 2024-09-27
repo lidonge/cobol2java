@@ -15,7 +15,6 @@
         {{#$funcName}}{{#$curObj}}
             public {{#$retType}}{{%retType}}{{/retType}}{{^$retType}}void{{/retType}} {{%name_toField(obj_getVar("name"))}}({{%func_parameters}}){
                 {{#$retName}}{{%retType}} {{%retName}};{{/retName}}
-                //TODO parameter transfer
                 {{#section}}//TODO section{{/section}}
                 {{>statements}}
                 {{#$retName}}return {{%retName}};{{/retName}}

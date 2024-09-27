@@ -8,7 +8,10 @@
     {{/moveToStatement.moveToSendingArea.sendingAreaValueStmt}}
     {{#moveToStatement.receivingAreaCalls}}
         {{>call}}
-        {{%setName=operand;setValue=sendValue;""}}
+        {{%
+            setName=operand;
+            setValue=value_fix(setName,sendValue);
+        ""}}
         {{%setName}}={{%setValue}};
     {{/moveToStatement.receivingAreaCalls}}
     {{#moveCorrespondingToStatement}}//TODO moveCorrespondingToStatement{{/moveCorrespondingToStatement}}
