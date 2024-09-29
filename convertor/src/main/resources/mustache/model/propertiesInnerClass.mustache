@@ -4,6 +4,8 @@
     {{^pictureClause}}
         {{>model.nopicture}}
         {{%IsConstantCopybook != null?name_enterClass(innerCls):name_enterClass(fieldName);""}}
+        {{%isSubCopybook = null;""}}
+        {{>model.copy75}}
         {{%
             //println("=======innerCls:" +innerCls);
             innerCls = isSubCopybook != null ? subCopyBookClsName : innerCls;
@@ -11,11 +13,12 @@
             modifier = isInnerClass != "isInnerClass" && IsConstantCopybook == null ? "public ":"";
             //modifier = modifier +(IsConstantCopybook != null ? "static final " :"");
         ""}}
+        {{%
+            innerCls = isSubCopybook != null ? subCopyBookClsName : innerCls;
+        ""}}
         {{^$ignoreProp}}
             {{^$IsConstantCopybook}}
-                {{^$isSubCopybook}}
-                    {{%modifier}} {{%innerCls)}}{{#$dimStr}}[]{{/dimStr}} {{%fieldName}}{{#$dimStr}} = new {{%innerCls}}[{{%dimStr}}]{{/dimStr}};
-                {{/isSubCopybook}}
+                {{%modifier}} {{%innerCls)}}{{#$dimStr}}[]{{/dimStr}} {{%fieldName}}{{#$dimStr}} = new {{%innerCls}}[{{%dimStr}}]{{/dimStr}};
             {{/IsConstantCopybook}}
         {{/ignoreProp}}
         {{%

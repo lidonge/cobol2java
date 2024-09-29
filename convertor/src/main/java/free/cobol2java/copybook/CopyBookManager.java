@@ -84,7 +84,10 @@ public class CopyBookManager implements ICobol2JavaBase , ILogable {
             String prog = CodeFormator.formatCode(writer.getOutText().toString());
             if(prog.trim().length() != 0)
                 copyBookMap.put(name,prog);
-            exprContextMap.put(name, (ExprContext) writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT));
+            ExprContext exprContext = (ExprContext) writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT);
+            exprContext.setCopyBookName(name);
+            exprContext.setCopyBookPath(copyBook.getAbsolutePath());
+            exprContextMap.put(name, exprContext);
             Map<String,Object> copyBookCls = (Map<String, Object>) writer.getExprEvaluator().getEnvironment().getVar("innerMap");
             for(Map.Entry<String,Object> entry :copyBookCls.entrySet()){
                 String string = entry.getValue().toString();

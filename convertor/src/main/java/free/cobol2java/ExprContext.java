@@ -29,17 +29,46 @@ import java.util.regex.Pattern;
  */
 public class ExprContext implements ILogable {
     public static final String LENGTHOF = "LENGTHOF";
+    private String copyBookName;
+    private String copyBookPath;
     private IEvaluatorEnvironment environment;
-    //    private ExprContext copybookContext;
-    private Map<String, ExprContext> copybookContexts = CopyBookManager.getDefaultManager().getGlobalFunc();
     private ExprContext orMappingContext;
+    //    private ExprContext copybookContext;
+
+    private Map<String, ExprContext> copybookContexts = CopyBookManager.getDefaultManager().getGlobalFunc();
+    /**
+     * Set when field defined(PIC or 01 FIELD-NAME.)
+     */
     private Map<String, String> javaQlfFieldToType = new HashMap<>();
     private Map<String, String> fieldToClassType = new HashMap<>();
+    /**
+     * Put when field defined(PIC A(10)..., or 01 FIELD-NAME. COPY COPYBOOK.)
+     * If field level is 75, set QlfName = null
+     */
     private Map<String, String> javaFieldToQualifiedName = new HashMap<>();
+    /**
+     * Put when qlf_name is creating, each level name all point to qlf_name
+     */
     private Map<String, String> javaFieldToQlfNameWithLeaf = new HashMap<>();
+    /**
+     * Set when field defined(PIC A(10)..., or 01 FIELD-NAME. COPY COPYBOOK.)
+     */
     private Map<String, Number> javaFieldNameToDim = new HashMap<>();
+    /**
+     * If field level is 75,means inner class name should be the copybook name.
+     * Set when copy75, the key is fieldName in the copybook, and value is fieldName in main cbl.
+     */
     private Map<String, String> copybookFirstNameToFileName = new HashMap<>();
+    /**
+     * If field level is 75,means inner class name should be the copybook name.
+     * Set when copy75, the key is innerClassName in main cbl, and value is copybook class name.
+     */
     private Map<String, String> innerClsNameToCopybookName = new HashMap<>();
+    /**
+     * Global map of cobol sub-program stored
+     * Key is cobol shorten file name
+     * Value is full class name
+     */
     private static Map<String, String> compiledCobol = new HashMap<>();
     /**
      * The field of nested class.
@@ -60,6 +89,22 @@ public class ExprContext implements ILogable {
     private Stack<String> clsLevel = new Stack<>();
     private Stack<Integer> curDims = new Stack<>();
     private Stack<Object> variables = new Stack<>();
+
+    public String getCopyBookName() {
+        return copyBookName;
+    }
+
+    public void setCopyBookName(String copyBookName) {
+        this.copyBookName = copyBookName;
+    }
+
+    public String getCopyBookPath() {
+        return copyBookPath;
+    }
+
+    public void setCopyBookPath(String copyBookPath) {
+        this.copyBookPath = copyBookPath;
+    }
 
     public ExprContext getOrMappingContext() {
         return orMappingContext;
@@ -153,9 +198,6 @@ public class ExprContext implements ILogable {
     }
 
     public String name_getFieldType(String fieldName) {
-        if (fieldName.equals("pceccii4")) {
-            debugPoint();
-        }
         String ret = javaQlfFieldToType.get(fieldName);
         if (ret != null && innerClsNameToCopybookName.get(ret) != null)
             ret = innerClsNameToCopybookName.get(ret);
@@ -166,6 +208,12 @@ public class ExprContext implements ILogable {
         return fieldToClassType.get(fieldName);
     }
 
+    /**
+     * Set when field defined(PIC or 01 FIELD-NAME.)
+     * @param fieldName
+     * @param type
+     * @return
+     */
     public String name_setFieldType(String fieldName, String type) {
         return javaQlfFieldToType.put(fieldName, type);
     }
@@ -197,9 +245,6 @@ public class ExprContext implements ILogable {
     }
 
     public String name_putInnerField1(String fieldName, String isSubCopybook) {
-        if(fieldName.equals("pdbimain")){
-            debugPoint();
-        }
         String qualifiedName = null;
         if (isSubCopybook != null && !isSubCopybook.equals("null")) {
             qualifiedName = null;
@@ -229,51 +274,33 @@ public class ExprContext implements ILogable {
         return ret;
     }
 
-    /**
-     * Conditions:
-     *  1. ofCopy == null
-     *      1.1 fieldName is local variable, return the qlf_name of the fieldName in javaFieldToQualifiedName
-     *      1.2 fieldName is in a copybook(of more but that is cobol error), get the context
-     *          use the context, and the fieldName call 1.1
-     *  2. ofCopy == a field, e.g. "account", ofCopyCls = find the classType in javaFieldToType
-     *      2.0 ofCopyCls == null, ofCopy is a field of a copyfile
-     *          2.0.1 take ofCopy as fieldName, ofCopy=null,
-     *              then 1 get return of qlf_name of the ofCopy and the copyfile context
-     *          2.0.2 use returned context, take fieldName and ofCopy=null call 1 get returned qlf_name
-     *          2.0.3 merge two qlf_name
-     *      2.1 ofCopyCls != null
-     *          2.1.1 ofCopyCls is a real copyfile, it can be found in contexts by ofCopy value
-     *              then 1.1
-     *          2.1.2 ofCopyCls is an alias of copyfile, it can be found in innerClsNameToCopybookName by ofCopy Class name
-     *              then become 2.1 and replace copyfile name by alias name of the return
-     *          2.1.3 ofCopyCls is a local inner class, it can be found in javaFieldToQualifiedName by fieldName
-     *              then become 1.1
-     *          2.1.4 both 2.1.1 and 2.1.3, is cobol error
-     *  3. ofCopy == a qualified name, e.g. "a.b.c"
-     *      3.1 take "b" as fieldName and "c" is ofCopy, then 2 get returned qlf_name and context of "b"
-     *      3.2 use the context of "b" take "a" as fieldName and ofCopy=null, call 1
-     *      3.3 merge two name and call 3.2 recursive
-     * @param fieldName
-     * @param ofCopy
-     * @return
-     */
     public String name_qlfName(String fieldName, String ofCopy) {
         String ret = null;
-        if(fieldName.equals("tblIdx")){
-            debugPoint();
-        }
         boolean isInCopy = ofCopy != null && ofCopy.length() != 0 && !"null".equals(ofCopy);
         if (isInCopy) {
             String[] ofIds = ofCopy.split("\\.");
             if (ofIds.length == 1) {
+                //A OF B
                 String ofCopyField = name_toField(ofCopy);
                 String qlfNameInCopybook = _getQlfName(fieldName, ofCopyField);
                 if(qlfNameInCopybook == null){
                     debugPoint();
                 }
-                ret = name_qlfName(ofCopyField,null)+
-                        qlfNameInCopybook.substring(qlfNameInCopybook.indexOf(ofCopyField) + ofCopyField.length());
+                int index = qlfNameInCopybook.indexOf(ofCopyField);
+                int beginIndex = index + ofCopyField.length();
+                //01 A. COPY B.
+                //MOVE C OF A TO X.
+                if(index == -1){
+                    beginIndex = qlfNameInCopybook.indexOf(".");
+                }
+                if(beginIndex == -1) {
+                    ret = name_qlfName(ofCopyField, null) + "." + qlfNameInCopybook;
+                }else {
+                    ret = name_qlfName(ofCopyField, null) +
+                            qlfNameInCopybook.substring(beginIndex);
+                }
             } else {
+                //A OF B OF C
                 for (int i = ofIds.length-1; i > 0; i--) {
                     String theFieldName = ofIds[i-1];
                     String theOfCopy = ofIds[i];
@@ -294,25 +321,47 @@ public class ExprContext implements ILogable {
                     ret = firstName != null ? firstName:fieldName;
                 }
                 else {
-                    ExprContext exprContext = getExprContext(fieldName);
-                    if(exprContext == null){
-                        debugPoint();
-                        getLogger().error("Error Undefined field:" + fieldName);
-                        return "UNDEFINED_FIELD_"+fieldName;
-                    }
-                    ret = exprContext.javaFieldToQualifiedName.get(fieldName);
-                    int index = ret.indexOf(".");
-                    String firstName = ret.substring(0,index);
-                    String firstToField = copybookFirstNameToFileName.get(firstName);
-                    if(firstToField == null){
-                        firstToField = javaFieldToQualifiedName.get(firstName);
-                    }
-                    if(firstToField != null) {//constant
-                        ret = firstToField + ret.substring(index);
-                    }
+                    ret = getFirstToField(fieldName);
                 }
             }
         }
+        return ret;
+    }
+
+    private String getFirstToField(String fieldName) {
+        String ret = null;
+        ExprContext exprContext = getExprContext(fieldName);
+        if(exprContext == null){
+            getLogger().error("Error Undefined field:" + fieldName);
+            return "UNDEFINED_FIELD_"+fieldName;
+        }
+        ret = exprContext.javaFieldToQualifiedName.get(fieldName);
+        int index = ret.indexOf(".");
+        String firstName = ret.substring(0,index);
+        //copy75
+        String firstToField = copybookFirstNameToFileName.get(firstName);
+        if(firstToField == null){
+//                        firstToField = javaFieldToQualifiedName.get(firstName);
+
+
+        }
+        if(firstToField != null) {//constant
+            ret = firstToField + ret.substring(index);
+        }else{
+            firstToField = javaFieldToQualifiedName.get(firstName);
+            if(firstToField == null) {
+                for (Map.Entry<String, ExprContext> entry : copybookContexts.entrySet()) {
+                    ExprContext exprCtx = entry.getValue();
+                    String theFirstName = exprCtx.copybookFirstNameToFileName.get(firstName);
+                    if (theFirstName != null) {
+                        firstToField = exprCtx.javaFieldToQualifiedName.get(theFirstName);
+                        break;
+                    }
+                }
+            }
+            ret = firstToField + ret.substring(index);
+        }
+
         return ret;
     }
 
@@ -333,8 +382,10 @@ public class ExprContext implements ILogable {
 
     private ExprContext getOfCopyContext(String ofCopyField) {
         String qlfName = javaFieldToQualifiedName.get(ofCopyField);
+        //Field leve is 75 or is defined in a copybook
         if(qlfName == null)
             qlfName = ofCopyField;
+
         String ofCopyCls = javaQlfFieldToType.get(qlfName);
         String realCopyCls = null;
         ExprContext exprContext = null;
@@ -596,7 +647,14 @@ public class ExprContext implements ILogable {
                 ret = right + "d";
             }
         } else {
-            ret = "Util.copyObject(" + right + "," + left + ")";
+            if(left.startsWith("Util.subvalue(")){
+                left = left.substring("Util.subvalue(".length(), left.length()-1);
+                int idx = left.indexOf(",");
+                String var = left.substring(0,idx);
+                String rang = left.substring(idx+1);
+                ret = "Util.copyObject(" + right + "," + var+","+rang + ")";
+            }else
+                ret = "Util.copyObject(" + right + "," + left + ")";
         }
         return ret;
     }
@@ -703,7 +761,7 @@ public class ExprContext implements ILogable {
     }
 
     public String expr_convertExpr(ParserRuleContext ctx) {
-        if (ctx.getText().indexOf("DBI-CMD-CODE") != -1) {
+        if (ctx.getText().indexOf("TD-CUST-NO") != -1) {
             debugPoint();
         }
         List<Object> ofIds = new ArrayList<>();
@@ -757,7 +815,8 @@ public class ExprContext implements ILogable {
             if (isLengthOf) {
                 sExpr = "Util.sizeof(" + qlfName + ")";
             }
-            ret = ret.replace(id, sExpr);
+            //Whole word replace
+            ret = ret.replaceAll("\\b"+id+"\\b", sExpr);
         } else {
             if(dimStr.indexOf(":") == -1) {
                 String qlfNameWithDims = null;

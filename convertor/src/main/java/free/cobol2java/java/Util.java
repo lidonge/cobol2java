@@ -38,4 +38,7 @@ public class Util {
     public static int compare(Object subvalue, Object cSaDrwByPsbk) {
         return 0;
     }
+
+    public static <T> void copyObject(T src, Object target, String targetRange) {
+    }
 }

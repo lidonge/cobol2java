@@ -11,8 +11,15 @@
         {{%
             setName=operand;
             setValue=value_fix(setName,sendValue);
+            isUseCopy = str_indexOf(setValue,"Util.copyObject(") != -1 ? "isUseCopy": null;
         ""}}
-        {{%setName}}={{%setValue}};
+        {{#$isUseCopy}}
+            {{%setValue}};
+        {{/isUseCopy}}
+        {{^$isUseCopy}}
+            {{%setName}}={{%setValue}};
+        {{/isUseCopy}}
+
     {{/moveToStatement.receivingAreaCalls}}
     {{#moveCorrespondingToStatement}}//TODO moveCorrespondingToStatement{{/moveCorrespondingToStatement}}
 {{/curObj}}{{/MOVE}}
