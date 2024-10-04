@@ -9,10 +9,11 @@
     {{^pictureClause}}
         {{^execSqlText}}
             {{%
-                innerCls = name_toClass(obj_getVar("name"));
-                fieldName = name_toField(obj_getVar("name"));
-                dim_putFieldDim(fieldName,dimension == null? 0:dimension);
-                name_setFieldType(fieldName,innerCls);
+                //println("=====in progProperties.mustache ");
+            ""}}
+            {{%isSubCopybook=obj_getVar("levelNumber") == 75 ? "isSubCopybook" :null;""}}
+            {{>model.nopicture}}
+            {{%
                 //println("=====in progProperties.mustache innerCls is: "+innerCls + ", fieldName:"+ fieldName);
             ""}}
             {{%isSubCopybook = null;""}}

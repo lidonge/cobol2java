@@ -23,21 +23,21 @@
 {{%procedureCall}};
 {{/calls}}{{/performProcedureStatement}}
 {{#$times}}
-    }
+    }//End times;
 {{/times}}
 {{#$until}}
     {{#$condition}}
         {{#$before}}
-            }
+            }//End before;
         {{/before}}
         {{#$after}}
             }while(!({{%condition}}));
         {{/after}}
         {{^$before}}{{^$after}}
-            }
+            }//End ^Before/After;
         {{/after}}{{/before}}
     {{/condition}}
 {{/until}}
 {{#$varying}}
-    }
+    }//End varying;
 {{/varying}}

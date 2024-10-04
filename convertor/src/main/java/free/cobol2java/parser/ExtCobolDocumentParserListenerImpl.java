@@ -121,6 +121,9 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
 //			throw new CobolPreprocessorException("Could not find copy book " + copySource.getText()
 //					+ " in directory of COBOL input file or copy books param object.");
         } else {
+            String copyName = copyBook.getName();
+            CobolCompiler cobolCompiler = TopCompiler.currentCompiler();
+            cobolCompiler.enterCopybook(copyName);
             try {
                 File parent = copyBook.getParentFile();
                 List<File> copyBookDirectories = params.getCopyBookDirectories();
@@ -142,6 +145,8 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
             }catch(CobolPreprocessorException ex){
                 getLogger(getClass()).error("Error when parse COPYBOOK:{} with exception {}", copyBook.getName(),ex.getMessage());
                 result = null;
+            }finally {
+                cobolCompiler.exitCopybook(copyName);
             }
         }
 

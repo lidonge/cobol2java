@@ -1,10 +1,10 @@
 package free.cobol2java;
 
+import free.cobol2java.context.ExprContext;
 import free.servpp.mustache.MustacheCompiler;
 import free.servpp.mustache.handler.IPartialFileHandler;
 import free.servpp.mustache.handler.MustacheWriter;
 import free.servpp.mustache.model.Template;
-import io.proleap.cobol.CobolParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.io.IOException;
@@ -91,9 +91,10 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                 addFunction("name_putInnerField", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_putInnerField((String) args[0]));
                 addFunction("name_putInnerField1", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_putInnerField1((String) args[0],(String) args[1]));
                 addFunction("name_ofCopy", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_ofCopy((Object) args[0]));
-                addFunction("name_qlfName", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_qlfName((String) args[0], (String) args[1]));
-                addFunction("name_qlfNameWithDim", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_qlfNameWithDim((String) args[0], (String) args[1]));
-                addFunction("name_qlfUdfNameWithDim", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_qlfUdfNameWithDim((String) args[0], (String) args[1]));
+//                addFunction("name_qlfName", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_qlfName((String) args[0], (String) args[1]));
+//                addFunction("name_qlfNameWithDim", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_qlfNameWithDim((String) args[0], (String) args[1]));
+//                addFunction("name_qlfUdfNameWithDim", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_qlfUdfNameWithDim((String) args[0], (String) args[1]));
+//                addFunction("copybook", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).copybook((String) args[0], (String) args[1]));
                 addFunction("name_getFieldType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_getFieldType((String) args[0]));
                 addFunction("name_setFieldType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_setFieldType((String) args[0], (String) args[1]));
                 addFunction("name_getFieldClsType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_getFieldClsType((String) args[0]));
@@ -103,7 +104,7 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                 addFunction("array_initString", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).array_initString(args[0].toString(), args[1].toString()));
                 addFunction("type_getType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).type_getType((String) args[0]));
                 addFunction("setInnerClsNameToCopyName", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).setInnerClsNameToCopyName((String) args[0],(String) args[1]));
-                addFunction("setCopyFirstNameToFieldName", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).setCopyFirstNameToFieldName((String) args[0],(String) args[1]));
+                addFunction("setFieldNameToCopyFieldName", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).setFieldNameToCopyFieldName((String) args[0],(String) args[1]));
                 addFunction("cobol_compile", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).cobol_compile((String) args[0]));
                 addFunction("cbl_getComment", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).cbl_getComment((Integer) args[0], (String) args[1], (List<String>) args[2]));
             }

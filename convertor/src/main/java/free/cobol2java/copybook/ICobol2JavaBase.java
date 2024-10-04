@@ -3,15 +3,13 @@ package free.cobol2java.copybook;
 import free.cobol2java.Cobol2JavaMustacheWriter;
 import free.cobol2java.config.CobolConfig;
 import free.cobol2java.parser.ExtCobolParserRunnerImpl;
-import free.cobol2java.ExprContext;
+import free.cobol2java.context.ExprContext;
 import free.cobol2java.util.IUrlLoader;
 import free.servpp.mustache.MustacheCompiler;
 import free.servpp.mustache.handler.MustacheListenerImpl;
-import free.servpp.mustache.handler.MustacheWriter;
 import free.servpp.mustache.model.BaseSection;
 import io.proleap.cobol.asg.metamodel.CompilationUnit;
 import io.proleap.cobol.asg.metamodel.Program;
-import io.proleap.cobol.asg.metamodel.ProgramUnit;
 import io.proleap.cobol.asg.params.CobolParserParams;
 import io.proleap.cobol.asg.runner.impl.CobolParserRunnerImpl;
 

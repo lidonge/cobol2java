@@ -2,6 +2,7 @@ package free.cobol2java;
 
 import com.typesafe.config.Config;
 import free.cobol2java.copybook.CopyBookManager;
+import free.cobol2java.parser.TopCompiler;
 import free.servpp.config.IConfig;
 import free.servpp.config.hocon.HoconConfigTypeManager;
 import free.servpp.mustache.ILogable;
@@ -166,6 +167,7 @@ public interface ICobolConvertor extends ILogable {
                 (relativeParent != null ? "." + relativeParent.replace(File.separator, ".") : "");
 
         // Call the convert function and get the result as a string
+        TopCompiler.enterCobol(fileName);
         try {
             String convertedContent = convert(file, packageName);
 
@@ -175,6 +177,8 @@ public interface ICobolConvertor extends ILogable {
         } catch (Throwable t) {
             getLogger().error("Error while convert file {}",file.getName(),t);
             return "ERRORCLS";
+        }finally {
+            TopCompiler.exitCobol();
         }
 
     }

@@ -6,8 +6,8 @@
     {{#pictureClause}}
         {{>model.picture}}
         {{%
-        modifier = isInnerClass == "isInnerClass" ? "" :"public ";
-        modifier = modifier +(IsConstantCopybook != null ? "static final " :"")
+            modifier = isInnerClass == "isInnerClass" ? "" :"public ";
+            modifier = modifier +(IsConstantCopybook != null ? "static final " :"")
         }}
         {{%propType}} {{#$dimStr}}[]{{/dimStr}} {{%theFieldName}}
         {{^$valueClause}}

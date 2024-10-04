@@ -1,11 +1,17 @@
-{{^pictureClause}}
+{{%IsFiller=null;""}}
+{{#filler}} {{%IsFiller="IsFiller";""}}{{/filler}}
+{{^$IsFiller}}{{^pictureClause}}
     {{%
         orgName = obj_getVar("name");
         clsName=name_toClass(orgName);
+        //println(obj_getVar("levelNumber")+"****model enter class:" + clsName);
+
         IsConstantCopybook != null? name_enterClass(clsName) : name_enterClass(name_toField(orgName));
         //println("=====in model.mustache class is: "+orgName);
     ""}}
-    {{%childrenCount=null;innerCls=clsName;fieldName=name_toField(clsName);""}}
+    {{%childrenCount=null;innerCls=clsName;fieldName=name_toField(orgName);""}}
+    {{%isSubCopybook = null;""}}
+    {{>model.copy75}}
     {{#dataDescriptionEntries}}
         {{>dimstr}}
         {{#-first}}
@@ -19,24 +25,26 @@
                     {{/isConstInnerCls}}
                 {{/isInnerClass}}
                 {{%isConstInnerCls != null? "public static ":""}}
+                {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel+1;""}}
                 class {{%clsName}} {
             {{/isSubCopybook}}
-            {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel+1;""}}
             {{%childrenCount=1;""}}
         {{/-first}}
             {{>comment}}
             {{%dimension != null ? dim_push(dimension) : dim_push(0);""}}
+            {{%var_push(isSubCopybook);""}}
             {{>model.properties}}
             {{%curObj=obj_getCurObj();""}}
             {{#$childrenCount}}{{#$curObj}}
                 {{>model.propertiesInnerClass}}
             {{/curObj}}{{/childrenCount}}
+            {{%isSubCopybook=var_pop();""}}
             {{%dim_pop();""}}
         {{#-last}}
             {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel - 1;""}}
             {{^$isSubCopybook}}
-                }
+                }//End model;
             {{/isSubCopybook}}
         {{/-last}}
     {{/dataDescriptionEntries}}{{%clsName=name_exitClass();""}}
-{{/pictureClause}}
+{{/pictureClause}}{{/IsFiller}}

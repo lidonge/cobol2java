@@ -1,12 +1,12 @@
 package free.cobol2java.copybook;
 
 import free.cobol2java.Cobol2JavaMustacheWriter;
-import free.cobol2java.ExprContext;
+import free.cobol2java.context.ExprContext;
 import free.cobol2java.ICobolConvertor;
+import free.cobol2java.context.IExprBaseContext;
 import free.servpp.mustache.CodeFormator;
 import free.servpp.mustache.ILogable;
 import free.servpp.mustache.handler.MustacheListenerImpl;
-import free.servpp.mustache.handler.MustacheWriter;
 import io.proleap.cobol.asg.metamodel.CompilationUnit;
 import io.proleap.cobol.asg.params.CobolParserParams;
 
@@ -53,7 +53,7 @@ public class CopyBookManager implements ICobol2JavaBase , ILogable {
                              CobolParserParams params,
                              String copyText) throws URISyntaxException, IOException, CopybookException {
         String name = copyBook.getName();
-        name = ExprContext.toClassName(name);
+        name = IExprBaseContext.toClassName(name);
 
         String copyBookJavaText = copyBookMap.get(name);
         if(copyBookJavaText == null) {

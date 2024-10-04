@@ -2,38 +2,52 @@
 {{%curObj=obj_getCurObj();""}}
 {{^$IsPointer}}{{#$curObj}}
     {{^pictureClause}}
+        {{%
+            //println("=====in propertiesInnerClass.mustache ");
+        ""}}
+        {{%isSubCopybook=obj_getVar("levelNumber") == 75 ? "isSubCopybook" :null;""}}
         {{>model.nopicture}}
-        {{%IsConstantCopybook != null?name_enterClass(innerCls):name_enterClass(fieldName);""}}
-        {{%isSubCopybook = null;""}}
         {{>model.copy75}}
         {{%
-            //println("=======innerCls:" +innerCls);
+        //println("****props enter class:" + innerCls +",fieldName:" +fieldName);
+        //IsConstantCopybook != null?name_enterClass(innerCls):name_enterClass(fieldName);
+        ""}}
+        {{%
+            //println(isSubCopybook+",subCopyBookClsName:"+subCopyBookClsName+"=======innerCls:" +innerCls);
             innerCls = isSubCopybook != null ? subCopyBookClsName : innerCls;
+            orgCls = innerCls;
             ignoreProp = innerClsLevel == 0 ? "ignoreProp" : null;
             modifier = isInnerClass != "isInnerClass" && IsConstantCopybook == null ? "public ":"";
             //modifier = modifier +(IsConstantCopybook != null ? "static final " :"");
         ""}}
-        {{%
-            innerCls = isSubCopybook != null ? subCopyBookClsName : innerCls;
-        ""}}
         {{^$ignoreProp}}
             {{^$IsConstantCopybook}}
+                {{%
+                    innerCls = obj_getFromMap(innerMap,innerCls) != null ? innerCls + "1":innerCls;
+                ""}}
                 {{%modifier}} {{%innerCls)}}{{#$dimStr}}[]{{/dimStr}} {{%fieldName}}{{#$dimStr}} = new {{%innerCls}}[{{%dimStr}}]{{/dimStr}};
             {{/IsConstantCopybook}}
         {{/ignoreProp}}
         {{%
             dimStr = null;
             clsName=innerCls;
-            var_push(clsName);
+            var_push(clsName);var_push(isSubCopybook);var_push(innerClsLevel);var_push(childrenCount);var_push(orgCls);
             isInnerClass==null && IsConstantCopybook == null ? must_saveBuff():null;
         ""}}
-        {{^$isSubCopybook}}
-            {{*dataDescriptionEntries}}
-        {{/isSubCopybook}}
+        {{^$isSubCopybook}}{{#$curObj}}
+            {{>model.model}}
+            {{!-->model.copy75--}}
+            {{!--*dataDescriptionEntries--}}
+        {{/curObj}}{{/isSubCopybook}}
         {{%
-            name_exitClass();
+            orgCls = var_pop();
+            childrenCount = var_pop();
+            innerClsLevel = var_pop();
+            isSubCopybook = var_pop();
             clsName = var_pop();
+            //name_exitClass();
             clsContent = isInnerClass==null && IsConstantCopybook == null? must_popBuff():null;
+            clsContent = orgCls == clsName ? clsContent : str_replace(clsContent+"", "class " +orgCls , "class " + clsName);
             isInnerClass== null && IsConstantCopybook == null?obj_addToMap(innerMap,clsName, clsContent):null;
             //sInnerClass== null && IsConstantCopybook == null?println("========addto innermap:" +clsName):null;
         ""}}
