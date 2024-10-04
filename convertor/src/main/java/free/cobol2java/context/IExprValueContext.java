@@ -5,16 +5,6 @@ package free.cobol2java.context;
  */
 public interface IExprValueContext extends IExprEnvContext, IExprPhysicalContext{
 
-    default String name_getFieldType(String fieldName) {
-        String ret = getJavaQlfFieldToType().get(fieldName);
-        if (ret != null && getInnerClsNameToCopybookName().get(ret) != null)
-            ret = getInnerClsNameToCopybookName().get(ret);
-        return ret == null ? name_getFieldClsType(fieldName) : ret;
-    }
-
-    default String name_getFieldClsType(String fieldName) {
-        return getFieldToClassType().get(fieldName);
-    }
 
     default String type_getType(String cblType) {
         boolean bString = cblType.indexOf("X(") != -1 || cblType.indexOf("A(") != -1;

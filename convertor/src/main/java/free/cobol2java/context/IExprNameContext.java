@@ -184,37 +184,28 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
         return ret;
     }
 
-    /**
-     * If main cbl define
-     * 01 DBI-FTCALL.
-     * COPY FTCALL.
-     * <p>
-     * And COPYBOOL FTCALL define
-     * 05  FT-GU                   PIC X(4) VALUE 'GU  '.
-     * 05  FT-GHU                  PIC X(4) VALUE 'GHU '.
-     * <p>
-     * Then main cbl access use 'FT-GU'
-     * the qname = "ftcall.ftGu"
-     * String fieldName = copybookFirstNameToFileName.get(firstName ="ftcall");
-     * fieldName = "dbiFtcall"
-     * ret = "dbiFtcall.ftGu"
-     *
-     * @param qname
-     * @return
-     */
-    private String nestedQualifiedName(String qname) {
-        String qlfName = getJavaFieldToQualifiedName().get(qname);
-        if (qlfName != null && !qlfName.equals(qname))
-            return qname;
-        if (qname == null)
-            debugPoint();
-        String firstName = qname.split("\\.")[0];
-        String fieldName = getJavaFieldNameToCopyFieldName().get(firstName);
-        String firstQName = fieldName == null ? getJavaFieldToQualifiedName().get(firstName) : fieldName;
-        String ret = qname;
-        if (firstQName != null && !qname.equals(firstQName)) {
-            ret = firstQName + (qname.length() == firstName.length() ? "" : qname.substring(firstName.length()));
+
+    default String name_getFieldType(String fieldName) {
+        String ret = getJavaQlfFieldToType().get(fieldName);
+        if (ret != null && getInnerClsNameToCopybookName().get(ret) != null) {
+            ret = getInnerClsNameToCopybookName().get(ret);
+        }
+        if(ret == null) {
+            ret = name_getFieldClsType(fieldName);
+            if(ret == null){
+                int index = fieldName.lastIndexOf('.');
+                if(index != -1){
+                    fieldName = fieldName.substring(index+1);
+                }
+                IExprNameContext exprContext = getExprContext(fieldName, false);
+                if(exprContext != null)
+                    ret = exprContext.name_getFieldType(exprContext.name_qlfName(fieldName,null));
+            }
         }
         return ret;
+    }
+
+    default String name_getFieldClsType(String fieldName) {
+        return getFieldToClassType().get(fieldName);
     }
 }
