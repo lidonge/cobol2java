@@ -42,6 +42,9 @@ public interface IExprCtxHandler extends IExprEnvContext{
 
     default String getCtxText(ParserRuleContext ctx, List<Object> ofIds) {
         getPropOfIds(ctx, ofIds);
+        if(ctx.getText().equals("WS-C1(I,J)")){
+            debugPoint();
+        }
         String ret = "";
         int begTable = -1;
         for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -53,6 +56,8 @@ public interface IExprCtxHandler extends IExprEnvContext{
             else if(text.equals(")"))
                 begTable = -1;
             if(begTable != -1){
+                if(text.equals(","))
+                    continue;
                 if(begTable > 1)
                     ret +=",";
                 begTable++;
@@ -109,6 +114,11 @@ public interface IExprCtxHandler extends IExprEnvContext{
                             text = LENGTHOF + node.getText();
                         }
                         ofIds.add(prevNode);
+                    }else{
+                        if (isLengthOf) {
+                            isLengthOf = false;
+                            text = LENGTHOF + node.getText();
+                        }
                     }
                     prevNode = text;
                     break;

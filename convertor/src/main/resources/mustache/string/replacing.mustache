@@ -1,0 +1,12 @@
+{{%srcString}}=Inspector.replacingBy({{%srcString}},
+{{#allLeadings}}
+    {{%replacingAllLeadingsType=obj_getVar("replacingAllLeadingsType");""}}
+    Inspector.LeadType.{{%replacingAllLeadingsType}},new ReplaceStruct(
+    {{>string.allLeadings}})
+{{/allLeadings}}
+{{#characters}}
+    {{#-first}}
+        /*TODO INSPECT characters*/
+    {{/-first}}
+{{/characters}}
+);

@@ -1,0 +1,29 @@
+{{#allLeadings}}
+    {{#patternDataItemValueStmt}}
+        {{#call}}{{>call}}{{/call}}
+        {{#literal}}{{>literal}}{{/literal}}
+        {{%tallyingTarget=operand;""}}
+        {{%tallyingTarget}}
+    {{/patternDataItemValueStmt}}
+    {{#by}}
+        {{#byValueStmt}}
+            {{#call}}{{>call}}{{/call}}
+            {{#literal}}{{>literal}}{{/literal}}
+            {{%byTarget=operand;""}}
+            ,{{%byTarget}}
+        {{/byValueStmt}}
+    {{/by}}
+    {{#beforeAfterPhrases}}
+        {{%isBefore=obj_getVar("beforeAfterType") == "BEFORE";""}}
+        {{#call}}{{>call}}{{/call}}
+        {{#literal}}{{>literal}}{{/literal}}
+        {{%tallyingBeforeAfter=operand;""}}
+        {{#-first}}
+            ,
+        {{/-first}}
+        {{^-first}}{{^-last}}
+            ,
+        {{/-last}}{{/-first}}
+        new BeforeAfter({{%isBefore}},false,{{%tallyingBeforeAfter}})
+    {{/beforeAfterPhrases}}
+{{/allLeadings}}

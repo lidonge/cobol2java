@@ -58,7 +58,7 @@ public class CopyBookManager implements ICobol2JavaBase , ILogable {
         String copyBookJavaText = copyBookMap.get(name);
         if(copyBookJavaText == null) {
             URL url = CopyBookManager.class.getResource(modelTemplate);
-            String sText = getString(url.toURI());
+            String sText = getString(url.toURI(), cobolConvertor.getEncoding());
             sText = sText.replace("COPY-BOOK-NAME", name);
             sText += "\n" + copyText;
             CompilationUnit compilationUnit;

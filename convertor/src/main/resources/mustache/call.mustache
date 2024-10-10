@@ -8,10 +8,15 @@
         callType = obj_getVar("callType");
         isTable = callType == "TABLE_CALL";
         isLengthOf = callType == "SPECIAL_REGISTER_CALL" && obj_getVar("type") == "LENGTH_OF";
+        isAddressOf = callType == "SPECIAL_REGISTER_CALL" && obj_getVar("type") == "ADDRESS_OF";
         isFunction = callType == "FUNCTION_CALL";
-        operand = isLengthOf ? "Util.lengthOf("+operand+")": expr_convertExpr(obj_getVar("ctx"));
+        isIndexCall = callType == "INDEX_CALL";
+        operand = isLengthOf ? "Util.lengthOf("+operand+")": (isAddressOf ? operand :expr_convertExpr(obj_getVar("ctx")));
+        operand = isIndexCall ? "int " + operand: operand;
         //println("****ctx=" +obj_getVar("ctx.text")+",operand=" +operand);
-        operand= (callType != "DATA_DESCRIPTION_ENTRY_CALL" && callType != "UNDEFINED_CALL" && !isTable && !isLengthOf) ? "//TODO " + obj_getVar("delegate.ctx.text"):
+        operand= (callType != "DATA_DESCRIPTION_ENTRY_CALL" &&
+            callType != "UNDEFINED_CALL" &&callType != "INDEX_CALL" &&
+            !isTable && !isLengthOf && !isAddressOf) ? "//TODO " + obj_getVar("delegate.ctx.text"):
         operand;
     ""}}
 {{/delegate}}

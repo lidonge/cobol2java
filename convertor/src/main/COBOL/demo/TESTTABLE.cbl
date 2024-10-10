@@ -3,6 +3,7 @@
     DATA DIVISION.
        WORKING-STORAGE SECTION.
        01 WS-SRCH PIC A(10) VALUE 'TUTORIALS'.
+       01 WS-SRCH1 PIC A(10) VALUE 'TUTORIALS'.
        01 WS-TABLE.
           05 WS-A PIC A(10) VALUE 'TUTORIALS' OCCURS 5 TIMES.
        01 WS-TABLE1.
@@ -35,10 +36,11 @@
              MOVE 'EN005'              TO WS-A(2)
            END-IF.
        TODO-SET.
-          SET I J TO 1.
-*          DISPLAY WS-C1(I,J).
+          SET ADDRESS OF WS-SRCH     TO WS-SRCH1.
+          SET I J TO 1 2.
+          DISPLAY WS-C1(I,J).
           SET I J UP BY 1.
-*          DISPLAY WS-C1(I,J).
+          DISPLAY WS-C1(I,J).
        TODO-SEARCH.
           SET I TO 1.
           SEARCH WS-A1

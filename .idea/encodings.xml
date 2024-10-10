@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/convertor/src/main/COBOL/bank/GSA01060.cbl" charset="GB2312" />
-    <file url="file://$PROJECT_DIR$/convertor/src/main/COBOL/bank/GSA01060NC.cbl" charset="GB2312" />
-    <file url="file://$PROJECT_DIR$/convertor/src/main/COBOL/bank/KSADEP0.cbl" charset="GB2312" />
-    <file url="file://$PROJECT_DIR$/convertor/src/main/COBOL/bank/copy/PKSAACN1" charset="GB2312" />
-    <file url="file://$PROJECT_DIR$/convertor/src/main/COBOL/bank/copy/PSACONST" charset="GB2312" />
-    <file url="file://$PROJECT_DIR$/convertor/src/main/COBOL/bank/sql/GDBI4RDB.cbl" charset="GB2312" />
-    <file url="file://$PROJECT_DIR$/convertor/src/main/COBOL/bank/sql/GDBIMAIN.cbl" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/convertor/src/main/COBOL/demo/CMMSCSAW" charset="GB2312" />
-    <file url="file://$PROJECT_DIR$/convertor/src/main/COBOL/demo/PSACONST" charset="GB2312" />
     <file url="file://$PROJECT_DIR$/convertor/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/convertor/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/embeddedsql/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/embeddedsql/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>
 </project>

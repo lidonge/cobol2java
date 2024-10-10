@@ -1,0 +1,32 @@
+{{%
+    conditionType=obj_getVar("conditionType");
+    isValueCondition=conditionType=="VALUE" ? "isValueCondition":null;
+    isThroughCondition=conditionType=="VALUE_THROUGH" ? "isThroughCondition":null;
+    isConditionCondition=conditionType=="CONDITION" ? "isConditionCondition":null;
+""}}
+{{>ifelse.not}}
+{{%curObj=obj_getCurObj();""}}
+{{#$isThroughCondition}}{{#$curObj}}
+    {{#through}}
+        {{>eval.value}}
+        {{%throughValue = operand;""}}
+    {{/through}}
+    {{>eval.value}}
+    {{%throughFromValue = operand;""}}
+{{/curObj}}{{/isThroughCondition}}
+{{#$isConditionCondition}}{{#$curObj}}
+    {{#conditionValueStmt}}
+        {{>ifelse.condition}}
+        {{%conditionCondition=condition;""}}
+    {{/conditionValueStmt}}
+{{/curObj}}{{/isConditionCondition}}
+{{#$isValueCondition}}{{#$curObj}}
+    {{>eval.value}}
+    {{%conditionValue=operand;""}}
+{{/curObj}}{{/isValueCondition}}
+{{%
+    whenStmt = isValueCondition != null ? theSelOperand +" == " +conditionValue:null;
+    whenStmt = isConditionCondition != null ? theSelOperand +" == " +conditionCondition:whenStmt;
+    whenStmt = isThroughCondition != null ? theSelOperand +" >= " +throughFromValue
+    +" && "+theSelOperand +" <= " +throughValue:whenStmt;
+""}}

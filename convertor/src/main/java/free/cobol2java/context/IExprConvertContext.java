@@ -13,7 +13,7 @@ import java.util.List;
 public interface IExprConvertContext extends IExprNameContext{
 
     default String expr_convertExpr(ParserRuleContext ctx) {
-        if (ctx.getText().indexOf("O-MSG-TYPE") != -1) {
+        if (ctx.getText().indexOf("LENGTHOFIO-DISP-TYPOFPCCMCHK6") != -1) {
             debugPoint();
         }
         List<Object> ofIds = new ArrayList<>();
@@ -38,15 +38,19 @@ public interface IExprConvertContext extends IExprNameContext{
         boolean isLengthOf = false;
         if (value instanceof String) {
             id = (String) value;
-            String realId = id;
-            if (id.startsWith(LENGTHOF)) {
-                realId = id.substring(LENGTHOF.length());
-                isLengthOf = true;
-            }
-            fieldName = name_toField(realId);
         } else {
             IExprCtxHandler.PropOfField propOfField = ((IExprCtxHandler.PropOfField) value);
-            fieldName = name_toField(propOfField.id());
+            id = propOfField.id();
+//            fieldName = name_toField(propOfField.id());
+        }
+        String realId = id;
+        if (id.startsWith(LENGTHOF)) {
+            realId = id.substring(LENGTHOF.length());
+            isLengthOf = true;
+        }
+        fieldName = name_toField(realId);
+        if (!(value instanceof String)) {
+            IExprCtxHandler.PropOfField propOfField = ((IExprCtxHandler.PropOfField) value);
             if (propOfField.ofId().size() > 1) {
                 debugPoint();
             }

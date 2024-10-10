@@ -1,7 +1,7 @@
 {{#simpleCondition}}
     {{%curCondition = obj_getCurVar("condition");""}}
     {{#$curCondition}}{{>ifelse.condition}}{{/curCondition}}
-    {{#classCondition}}//TODO classCondition{{/classCondition}}
+    {{#classCondition}}{{%condition="true";""}}//TODO classCondition default is  true{{/classCondition}}
     {{#conditionNameReference}}//TODO conditionNameReference{{/conditionNameReference}}
     {{#relationCondition}}
         {{#signCondition}}//TODO signCondition{{/signCondition}}

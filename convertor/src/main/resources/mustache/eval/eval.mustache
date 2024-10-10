@@ -1,0 +1,59 @@
+{{%statementType=obj_getVar("statementType");EVALUATE = statementType == "EVALUATE" ? "EVALUATE" : null;""}}
+{{%curObj=obj_getCurObj();""}}
+{{#$EVALUATE}}{{#$curObj}}
+{{%
+    isAlsoSelects = null;
+    alsoSelectsList=obj_newList();
+    whensList=obj_newList();index=0;
+""}}
+{{#alsoSelects}}
+    {{%isAlsoSelects = "isAlsoSelects";""}}
+    {{#select}}
+        {{>eval.selectValue}}
+        {{%obj_addToList(alsoSelectsList,selOperand);""}}
+    {{/select}}
+{{/alsoSelects}}
+{{#select}}
+    {{>eval.selectValue}}
+{{/select}}
+{{%index=0;""}}
+{{#whenPhrases}}
+    {{#whens}}
+        {{%alsoIndex = 0;alsoWhenStmt=null;""}}
+        {{#alsoConditions}}
+            {{#condition}}
+                {{%
+                    theSelOperand=obj_getFromList(alsoSelectsList,alsoIndex);
+                    alsoIndex = alsoIndex+1;
+                ""}}
+                {{>eval.whenCondition}}
+                {{%alsoWhenStmt=whenStmt;""}}
+            {{/condition}}
+        {{/alsoConditions}}
+        {{#condition}}
+            {{%theSelOperand=selOperand;""}}
+            {{>eval.whenCondition}}
+            {{%
+                whenStmt = alsoWhenStmt==null?whenStmt:whenStmt+" && " + alsoWhenStmt;
+                obj_addToList(whensList,whenStmt);
+            ""}}
+        {{/condition}}
+    {{/whens}}
+    {{#-first}}
+        if(
+    {{/-first}}
+    {{^-first}}
+        else if(
+    {{/-first}}
+    {{%
+        whenCondition=obj_getFromList(whensList, index);
+        index = index +1;
+    ""}}
+    {{%whenCondition}}){
+        {{>statements}}
+    }
+{{/whenPhrases}}
+{{#whenOther}}
+    {{#statements}}{{/statements}}
+{{/whenOther}}
+{{/curObj}}{{/EVALUATE}}

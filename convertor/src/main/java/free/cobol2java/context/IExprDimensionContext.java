@@ -3,7 +3,7 @@ package free.cobol2java.context;
 /**
  * @author lidong@date 2024-09-29@version 1.0
  */
-public interface IExprDimensionContext extends IExprPhysicalContext{
+public interface IExprDimensionContext extends IExprPhysicalContext, IExprEnvContext{
     default String addDimToQlfName(String theJavaQlfName, String dimStr) {
         String ret= null;
         String[] dims = dimStr.split(",");
@@ -39,6 +39,9 @@ public interface IExprDimensionContext extends IExprPhysicalContext{
         int index = cobolExpr.indexOf(var);
 
         String sub = cobolExpr.substring(index + var.length()).trim();
+        if(index == -1){
+            debugPoint();
+        }
         ret[0] = cobolExpr.substring(0, index);
         ret[2] = sub;
         if (sub.length() != 0 && sub.charAt(0) == '(') {

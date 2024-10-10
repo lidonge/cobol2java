@@ -20,9 +20,11 @@ sqlStatement
     ;
 
 declareCursor
-    : SQL_EXEC SQL 'DECLARE' cursorName 'CURSOR' 'FOR' selectQuery forUpdateClause? SQL_END
+    : SQL_EXEC SQL 'DECLARE' cursorName 'CURSOR' withClause? 'FOR' selectQuery forUpdateClause? SQL_END
     ;
-
+withClause
+    : 'WITH' ('HOLD' | 'ROWSET' 'POSITIONING' | 'INSENSITIVE' 'SCROLL'|'SENSITIVE' 'SCROLL')
+    ;
 sqlQuery
     : selectQuery
     | insertQuery
@@ -110,7 +112,7 @@ orderDirection
     ;
 
 forUpdateClause
-    : 'FOR' 'UPDATE'
+    : 'FOR' ('UPDATE' | 'READ' 'ONLY'| 'FETCH' 'ONLY' |'SYSTEM' 'NAME')
     ;
 
 

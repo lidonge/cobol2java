@@ -1,0 +1,18 @@
+{{#fors}}
+    {{#tallyCountDataItemCall}}
+        {{>call}}
+        {{%tallyingResult=operand;""}}
+        {{%tallyingResult}} = Inspector.tallyingFor({{%srcString}},
+    {{/tallyCountDataItemCall}}
+    {{#allLeadingPhrase}}
+        {{%allLeadingsType=obj_getVar("allLeadingsType");""}}
+        Inspector.LeadType.{{%allLeadingsType}},
+        {{>string.allLeadings}}
+    {{/allLeadingPhrase}}
+    {{#characters}}
+        {{#-first}}
+            /*TODO INSPECT characters*/
+        {{/-first}}
+    {{/characters}}
+    );
+{{/fors}}

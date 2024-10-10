@@ -1,0 +1,7 @@
+{{#selectValueStmt}}
+    {{%isArith=null;""}}
+    {{#call}}{{>call}}{{/call}}
+    {{#literal}}{{>literal}}{{/literal}}
+    {{#multDivs}}{{%isArith="isArith";""}}{{/multDivs}}
+    {{%selOperand=isArith !=null ? expr_convertExpr(obj_getVar("ctx")):operand;""}}
+{{/selectValueStmt}}

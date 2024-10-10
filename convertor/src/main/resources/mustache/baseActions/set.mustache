@@ -1,0 +1,22 @@
+{{%statementType=obj_getVar("statementType");SET = statementType == "SET" ? "SET" : null;""}}
+{{%curObj=obj_getCurObj();""}}
+{{#$SET}}{{#$curObj}}
+    {{%setType=obj_getVar("setType");""}}
+    {{#setBy}}//TODO setBy;{{/setBy}}
+    {{#setTos}}
+        {{%tosList=obj_newList();index=0;""}}
+        {{#tos}}{{#toCall}}
+            {{>call}}
+            {{%obj_addToList(tosList,operand);""}}
+        {{/toCall}}{{/tos}}
+        {{#values}}
+            {{%valueType=obj_getVar("valueType");""}}
+            {{#valueStmt}}
+                {{#literal}}{{>literal}}{{/literal}}
+                {{#call}}{{>call}}{{/call}}
+                {{%obj_getFromList(tosList,index)}}={{%operand}};
+                {{%index = index +1;""}}
+            {{/valueStmt}}
+        {{/values}}
+    {{/setTos}}
+{{/curObj}}{{/SET}}

@@ -57,7 +57,7 @@ public interface ICobol2Java extends ICobol2JavaBase {
         URI uri = inputFile.toURI();
 
         CobolParserParamsImpl params = getCobolParserParams();
-        return getCompilationUnit(getProgName(), getString(uri), params);
+        return getCompilationUnit(getProgName(), getString(uri, getEncoding()), params);
     }
 
     private CobolParserParamsImpl getCobolParserParams() {

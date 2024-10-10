@@ -13,11 +13,11 @@ import java.nio.file.Paths;
  * @author lidong@date 2024-09-10@version 1.0
  */
 public interface IUrlLoader {
-    default String getString( URI antlrUri) throws IOException {
+    default String getString( URI antlrUri, String encoding) throws IOException {
         InputStream reader = getInputStreamFromURI(antlrUri);
         byte[] bytes = reader.readAllBytes();
         reader.close();
-        String str = new String(bytes);
+        String str = encoding == null ?new String(bytes): new String(bytes,encoding);
         return str;
     }
 

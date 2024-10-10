@@ -165,6 +165,9 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
         String ret = null;
         String delegate = javaQlfName.substring(javaQlfName.lastIndexOf('.') + 1);
         IExprNameContext exprContext = getExprContext(delegate, false);
+        if(exprContext == null){
+            debugPoint();
+        }
         ret = exprContext.name_qlfNameWithDim(javaQlfName, dimStr);
 //        ret = nestedQualifiedName(ret);
 

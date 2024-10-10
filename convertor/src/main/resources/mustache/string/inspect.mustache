@@ -1,5 +1,21 @@
 {{%statementType=obj_getVar("statementType");INSPECT = statementType == "INSPECT" ? "INSPECT" : null;""}}
 {{%curObj=obj_getCurObj();""}}
 {{#$INSPECT}}{{#$curObj}}
-//TODO INSPECT
+    {{%inspectType= obj_getVar("inspectType");""}}
+    {{#dataItemCall}}
+        {{>call}}
+        {{%srcString=operand;""}}
+    {{/dataItemCall}}
+    {{#tallying}}
+        {{>string.tallying}}
+    {{/tallying}}
+    {{#replacing}}
+        {{>string.replacing}}
+    {{/replacing}}
+    {{#converting}}
+        //TODO inspect converting;
+    {{/converting}}
+    {{#tallyingReplacing}}
+        //TODO tallyingReplacing;
+    {{/tallyingReplacing}}
 {{/curObj}}{{/INSPECT}}

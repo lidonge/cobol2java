@@ -13,7 +13,7 @@ application {
     copybookManage=true
     suffixes = ".cbl;.sqb"
     #compileFiles = "TESTACCEPT.cbl;IFCLAUSE.cbl"
-    compileFiles = "*TESTCOPY.cbl"
+    compileFiles = "*TESTSTRING.cbl"
     logging {
         level = "DEBUG"
     }

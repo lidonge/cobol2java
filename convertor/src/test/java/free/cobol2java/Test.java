@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static free.cobol2java.copybook.ICobol2JavaBase.COPYBOOK_CONTEXT;
-
 /**
  * @author lidong@date 2024-07-30@version 1.0
  */
@@ -35,9 +33,6 @@ public class Test extends BaseConvertor{
         Cobol2Java cobol2Java = new Cobol2Java(file, name,copyDirs,"free.test",format,encoding);
         Map<String,Object> varables = new HashMap<>();
         CopyBookManager defaultManager = CopyBookManager.getDefaultManager();
-        if(defaultManager.isCopybookManage()) {
-            varables.put(COPYBOOK_CONTEXT,defaultManager.getGlobalFunc());
-        }
         String prog = cobol2Java.convertAll(varables);
         System.out.println(prog);
         System.out.println("===================");

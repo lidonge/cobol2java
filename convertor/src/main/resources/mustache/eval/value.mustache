@@ -1,0 +1,7 @@
+{{#value}}
+    {{#valueStmt}}
+        {{#call}}{{>call}}{{/call}}
+        {{#literal}}{{>literal}}{{/literal}}
+        {{#arithmeticExpression}}{{>arithmetic}}{{%operand=arithmeticExpression;""}}{{/arithmeticExpression}}
+    {{/valueStmt}}
+{{/value}}
