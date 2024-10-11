@@ -25,8 +25,8 @@
     {{%conditionValue=operand;""}}
 {{/curObj}}{{/isValueCondition}}
 {{%
-    whenStmt = isValueCondition != null ? theSelOperand +" == " +conditionValue:null;
-    whenStmt = isConditionCondition != null ? theSelOperand +" == " +conditionCondition:whenStmt;
-    whenStmt = isThroughCondition != null ? theSelOperand +" >= " +throughFromValue
-    +" && "+theSelOperand +" <= " +throughValue:whenStmt;
+    whenStmt = isValueCondition != null ? rel_getOper("EQUAL",theSelOperand ,conditionValue):null;
+    whenStmt = isConditionCondition != null ? rel_getOper("EQUAL",theSelOperand ,conditionCondition):whenStmt;
+    whenStmt = isThroughCondition != null ? rel_getOper("MORETHANOREQUAL",theSelOperand,throughFromValue)
+    +" && "+rel_getOper("LESSTHANOREQUAL",theSelOperand,throughValue):whenStmt;
 ""}}

@@ -2,7 +2,14 @@
     {{%curCondition = obj_getCurVar("condition");""}}
     {{#$curCondition}}{{>ifelse.condition}}{{/curCondition}}
     {{#classCondition}}{{%condition="true";""}}//TODO classCondition default is  true{{/classCondition}}
-    {{#conditionNameReference}}//TODO conditionNameReference{{/conditionNameReference}}
+    {{#conditionNameReference}}
+        {{#conditionCall}}
+            {{%
+                cobolName=obj_getVar("name");
+                condition=expr_conditionReference(cobolName);
+            ""}}
+        {{/conditionCall}}
+    {{/conditionNameReference}}
     {{#relationCondition}}
         {{#signCondition}}//TODO signCondition{{/signCondition}}
         {{#arithmeticComparison}}

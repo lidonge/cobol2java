@@ -15,8 +15,8 @@ public interface IExprRelContext {
     default String rel_getOper(String cobolOper, String left, String right) {
         String ret = null;
         RelationalOperator oper = RelationalOperator.valueOf(cobolOper);
-        List<String> lefts = extractQualifiedNames(left);
-        List<String> rights = extractQualifiedNames(right);
+//        List<String> lefts = extractQualifiedNames(left);
+//        List<String> rights = extractQualifiedNames(right);
         switch (oper) {
             case EQUAL:
             case EQUALCHAR:

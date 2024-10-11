@@ -3,6 +3,7 @@
 {{#filler}} {{%IsFiller="IsFiller";"//====IsFiller"}}{{/filler}}
 {{%curObj=obj_getCurObj();""}}
 {{^$IsFiller}}{{#$curObj}}
+    {{%isEnum = obj_getVar("levelNumber") == 88 ? "isEnum" : null;""}}
     {{#pictureClause}}
         {{>model.picture}}
         {{%
@@ -14,6 +15,15 @@
             {{#$dimStr}} = new {{%propType}}[{{%dimStr}}]{{/dimStr}};
         {{/valueClause}}
     {{/pictureClause}}
+    {{#$isEnum}}
+        {{>model.picture}}
+        {{%
+            name_setFieldType(theFieldName,referFieldName);
+            modifier = isInnerClass == "isInnerClass" ? "" :"public ";
+            modifier = modifier +"static final "
+        }}
+        {{%propType}} {{%theFieldName}}
+    {{/isEnum}}
     {{#valueClause}}
         {{#valueIntervals}}
             {{#fromValueStmt}}
@@ -29,4 +39,8 @@
             {{/fromValueStmt}}
         {{/valueIntervals}};
     {{/valueClause}}
+    {{#dataDescriptionEntries}}
+        {{%referFieldName=theFieldName;""}}
+        {{>model.properties}}
+    {{/dataDescriptionEntries}}
 {{/curObj}}{{/IsFiller}}

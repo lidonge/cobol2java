@@ -11,9 +11,26 @@ import java.util.List;
  * @author lidong@date 2024-09-29@version 1.0
  */
 public interface IExprConvertContext extends IExprNameContext{
+    default String expr_conditionReference(String fieldName){
+        String javaFieldName = name_toField(fieldName);
+        String ret = "";
+        String qlfName=name_qlfName(javaFieldName,null);
+        String refFieldName = getJavaQlfFieldToType().get(javaFieldName);
+        if(refFieldName == null){
+            IExprNameContext exprContext = getExprContext(javaFieldName,false);
+            refFieldName = exprContext.getJavaQlfFieldToType().get(javaFieldName);
+        }
 
+        if(refFieldName != null)
+            ret = name_qlfName(refFieldName,null) +"==" +qlfName;
+        else {
+            getLogger().error("Error UNKNOW_CONDITION_REF: " + fieldName);
+            ret = "UNKNOW_CONDITION_REF" + "==" + qlfName;
+        }
+        return ret;
+    }
     default String expr_convertExpr(ParserRuleContext ctx) {
-        if (ctx.getText().indexOf("BCT-AREA") != -1) {
+        if (ctx.getText().indexOf("ALL'9'") != -1) {
             debugPoint();
         }
         List<Object> ofIds = new ArrayList<>();
@@ -26,6 +43,10 @@ public interface IExprConvertContext extends IExprNameContext{
             }
         } else if (CobolConstant.isConstant(ret)) {
             ret = "CobolConstant." + ret;
+        }
+        if(!ret.startsWith("\"") && ret.indexOf("'") != -1){
+            //FIX ALL'9'
+            ret ="\"" +ret + "\"";
         }
         return ret.indexOf('^') != -1 ? ExprUtil.convertExpression(ret) : ret;
 
