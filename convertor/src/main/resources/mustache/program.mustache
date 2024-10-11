@@ -62,15 +62,28 @@ public class {{%mainClassName}} {
 {{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
     {{>progProperties}}
 {{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}
-{{#dataDivision.linkageSection.rootDataDescriptionEntries}}
-    {{#-first}}//linkageSection fields define{{/-first}}
-    {{>progProperties}}
-    {{#-last}}//End of linkageSection fields define{{/-last}}
-{{/dataDivision.linkageSection.rootDataDescriptionEntries}}
-{{#dataDivision.localStorageSection.rootDataDescriptionEntries}}
-    {{#-first}}//localStorageSection fields define{{/-first}}
-    {{>progProperties}}
-    {{#-last}}//End of localStorageSection fields define{{/-last}}
-{{/dataDivision.localStorageSection.rootDataDescriptionEntries}}
-{{>procedure}}
+class {{%mainClassName}}Handler{
+    {{#dataDivision.linkageSection.rootDataDescriptionEntries}}
+        {{#-first}}//linkageSection fields define{{/-first}}
+        {{>progProperties}}
+        {{#-last}}//End of linkageSection fields define{{/-last}}
+    {{/dataDivision.linkageSection.rootDataDescriptionEntries}}
+    {{#dataDivision.localStorageSection.rootDataDescriptionEntries}}
+        {{#-first}}//localStorageSection fields define{{/-first}}
+        {{>progProperties}}
+        {{#-last}}//End of localStorageSection fields define{{/-last}}
+    {{/dataDivision.localStorageSection.rootDataDescriptionEntries}}
+    {{#procedureDivision}}
+        {{>callSub.funcparam}}
+        {{%mainClassName}}Handler({{%func_parameters}}){
+            {{%func_initStmt}}
+        }
+    {{/procedureDivision}}
+    {{>procedure}}
+}
+{{#procedureDivision}}
+    {{>callSub.funcparam}}
+    {{>defaultProcedure}}
+{{/procedureDivision}}
+
 }

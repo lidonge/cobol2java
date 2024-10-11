@@ -13,7 +13,7 @@ import java.util.List;
 public interface IExprConvertContext extends IExprNameContext{
 
     default String expr_convertExpr(ParserRuleContext ctx) {
-        if (ctx.getText().indexOf("LENGTHOFIO-DISP-TYPOFPCCMCHK6") != -1) {
+        if (ctx.getText().indexOf("BCT-AREA") != -1) {
             debugPoint();
         }
         List<Object> ofIds = new ArrayList<>();

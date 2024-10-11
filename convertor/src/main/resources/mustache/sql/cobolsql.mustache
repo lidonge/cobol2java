@@ -1,4 +1,8 @@
-{{%sql=obj_getVar("execSqlText");sqlstmt=sql_exec(sql);""}}
+{{%
+    sql=obj_getVar("execSqlText");
+    //sqlstmt=sql_exec(sql);
+""}}
+//TODO SQL: {{%sql}};
 {{#$sqlstmt}}
-    //TODO include {{this}}
+    //TODO include {{this}};
 {{/sqlstmt}}

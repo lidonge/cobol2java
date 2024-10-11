@@ -1,5 +1,4 @@
 {{#procedureDivision}}
-    {{>defaultProcedure}}
     {{%
         func_parameters=parameters == null ? "":parameters;
         func_parametersWithoutType=parametersWithoutType == null ? "":parametersWithoutType;
@@ -13,7 +12,7 @@
         {{%funcName=name_toField(obj_getVar("name"));""}}
         {{%curObj=obj_getCurObj();""}}
         {{#$funcName}}{{#$curObj}}
-            public {{#$retType}}{{%retType}}{{/retType}}{{^$retType}}void{{/retType}} {{%name_toField(obj_getVar("name"))}}({{%func_parameters}}){
+            public {{#$retType}}{{%retType}}{{/retType}}{{^$retType}}void{{/retType}} {{%name_toField(obj_getVar("name"))}}(){
                 {{#$retName}}{{%retType}} {{%retName}};{{/retName}}
                 {{#section}}//TODO section{{/section}}
                 {{>statements}}

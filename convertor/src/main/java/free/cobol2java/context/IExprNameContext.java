@@ -11,7 +11,7 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
         IExprBaseContext, ICopybookContext, IExprCtxHandler,
         IExprDimensionContext{
     default String name_qlfName(String fieldName, String ofCopies) {
-        if(fieldName.equals("fmCurrCod")){
+        if(fieldName.equals("bctArea")){
             debugPoint();
         }
         String ret = null;

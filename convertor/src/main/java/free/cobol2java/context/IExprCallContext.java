@@ -36,8 +36,9 @@ public interface IExprCallContext extends ILogable {
         ICobolConvertor cobolConvertor = CobolConfig.getCobolConvertor();
         List<File> files = new ArrayList<>();
         cobolConvertor.findFiles(new File(cobolConvertor.getSourcePath()), files,
-                cobolConvertor.getSuffixes(), fileName + "*");
+                cobolConvertor.getSuffixes(), fileName + ".*");
         if (files.size() > 0) {
+            LoggerFactory.getLogger(IExprCallContext.class).error("Compiling sub cbl {}:{}",fileName, files);
             fullClsName = cobolConvertor.convertAFile(files.get(0));
         } else {
 //            getLogger().error("Error can not find given callsub file: {}", fileName);
@@ -76,7 +77,6 @@ public interface IExprCallContext extends ILogable {
             }
             if (keyList.size() != 0) {
                 for (String key : keyList) {
-                    LoggerFactory.getLogger(IExprCallContext.class).error("Compiling sub cbl:{}",key);
                     compile(key);
                 }
             }else{
@@ -94,6 +94,6 @@ public interface IExprCallContext extends ILogable {
         String packageName = cobolConvertor.getRootPackageName() +
                 (relativeParent != null ? "." + relativeParent.replace(File.separator, ".") : "");
 
-        return packageName+"."+className;
+        return ICobolConvertor.checkPackageName(packageName+"."+className);
     }
 }

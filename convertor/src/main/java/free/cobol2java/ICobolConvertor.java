@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,9 @@ import java.util.regex.Pattern;
  * @author lidong@date 2024-09-13@version 1.0
  */
 public interface ICobolConvertor extends ILogable {
+    static final String[] JAVA_WORDS = new String[]{
+            "public", "class"
+    };
     String getSourcePath();
 
     void setSourcePath(String sourcePath);
@@ -155,17 +159,19 @@ public interface ICobolConvertor extends ILogable {
 
     default String convertAFile(File file) {
         String relativePath = file.getAbsolutePath().substring(getSourcePath().length() + 1);
+        String relativeParent = new File(relativePath).getParent();
+        relativeParent = relativeParent == null ? "" : relativeParent;
         String fileName = file.getName();
         String className = fileName.substring(0, fileName.lastIndexOf("."));
         className = className.substring(0, 1).toUpperCase() + className.substring(1).toLowerCase();
+        String rootPackageName = checkPackageName(getRootPackageName());
+        String relativePackageName = checkPackageName(relativeParent.replace(File.separator, "."));
         String outputFilePath = getTargetPath() + File.separator +
-                getRootPackageName().replace(".", File.separator) + File.separator +
-                relativePath.substring(0,relativePath.length() - fileName.length()).replace(".",File.separator)+
+                rootPackageName.replace(".", File.separator) + File.separator +
+                (relativePackageName.length() == 0 ?"":relativePackageName.replace(".",File.separator) +File.separator) +
                 className + ".java";
-        String relativeParent = new File(relativePath).getParent();
-        String packageName = getRootPackageName() +
-                (relativeParent != null ? "." + relativeParent.replace(File.separator, ".") : "");
-
+        String packageName = rootPackageName +
+                (relativeParent != null ? "." + relativePackageName : "");
         // Call the convert function and get the result as a string
         TopCompiler.enterCobol(fileName);
         try {
@@ -173,6 +179,7 @@ public interface ICobolConvertor extends ILogable {
 
             // Write the result to the target file
             writeToFile(outputFilePath, convertedContent);
+            CopyBookManager.getDefaultManager().writeCopyBook();
             return packageName+"."+className;
         } catch (Throwable t) {
             getLogger().error("Error while convert file {}",file.getName(),t);
@@ -180,8 +187,26 @@ public interface ICobolConvertor extends ILogable {
         }finally {
             TopCompiler.exitCobol();
         }
-
     }
+
+    public static String checkPackageName(String packageName){
+        if(JAVA_WORDS[0].equals("public")){
+            Arrays.sort(JAVA_WORDS);
+        }
+        String[] parts = packageName.split("\\.");
+        String ret = "";
+        for(int i = 0;i<parts.length;i++){
+            String part = parts[i];
+            if(Arrays.binarySearch(JAVA_WORDS,part) > 0){
+                part = part+"1";
+            }
+            if(i != 0)
+                ret +=".";
+            ret += part;
+        }
+        return ret;
+    }
+
     // Write the converted content to the target file
     default void writeToFile(String outputFilePath, String content) {
         File targetFile = new File(outputFilePath);

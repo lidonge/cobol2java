@@ -18,3 +18,7 @@
     parameters = parameters == null ?  param: parameters + "," + param;
     parametersWithoutType = parametersWithoutType == null ?  operand: parametersWithoutType + "," + operand;
 ""}}
+{{%
+    curInitStmt = "this."+operand+"="+operand+";\n";
+    initStmt = initStmt == null ? curInitStmt : initStmt + curInitStmt;
+""}}

@@ -1,0 +1,13 @@
+{{%isContinue="isContinue";""}}
+{{%needDefaultParagraph=null;""}}
+{{#statements}}
+    {{#-first}}
+        {{%needDefaultParagraph="$needDefaultParagraph";""}}
+    {{/-first}}
+{{/statements}}
+{{>callSub.subparameters}}
+{{%
+    func_parameters=parameters == null ? "":parameters;
+    func_parametersWithoutType=parametersWithoutType == null ? "":parametersWithoutType;
+    func_initStmt=initStmt == null ?"":initStmt;
+""}}

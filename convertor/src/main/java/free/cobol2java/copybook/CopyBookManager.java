@@ -99,6 +99,18 @@ public class CopyBookManager implements ICobol2JavaBase , ILogable {
         }
     }
 
+    public void writeCopyBook() {
+        for(String key: copyBookMap.keySet()){
+            String text = copyBookMap.get(key);
+            if(!"WRITED".equals(text)){
+                String outputFilePath = cobolConvertor.getTargetPath() + File.separator +
+                        cobolConvertor.getRootPackageName().replace(".", File.separator) + File.separator +
+                        key + ".java";
+                cobolConvertor.writeToFile(outputFilePath, CodeFormator.formatCode(text+""));
+                copyBookMap.put(key,"WRITED");
+            }
+        }
+    }
     public boolean isCopybookManage() {
         return cobolConvertor.isCopybookManage();
     }

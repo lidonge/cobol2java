@@ -40,18 +40,6 @@ public class BatchConvertor extends BaseConvertor {
 
         batchConvertor.convertAll();
         IExprCallContext.compileAllSub();
-        batchConvertor.writeCopyBook();
-    }
-
-    private void writeCopyBook() {
-        CopyBookManager defaultManager = CopyBookManager.getDefaultManager();
-        for(Map.Entry entry : defaultManager.getCopyBookMap().entrySet()){
-            String outputFilePath = getTargetPath() + File.separator +
-                    getRootPackageName().replace(".", File.separator) + File.separator +
-                    entry.getKey() + ".java";
-            writeToFile(outputFilePath, CodeFormator.formatCode(entry.getValue()+""));
-//            System.out.println(CodeFormator.formatCode(entry.getValue().toString()));
-        }
     }
 
     private void initCopybookManager() {

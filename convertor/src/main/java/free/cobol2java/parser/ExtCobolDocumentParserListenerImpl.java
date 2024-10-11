@@ -166,7 +166,8 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
                 continue;
             if(line.startsWith("*"))
                 continue;
-            if (line.indexOf("PIC") != -1 || line.startsWith("LINKAGE") || line.startsWith("WORKING") || line.startsWith("COPY")) {
+            if (line.indexOf("PIC") != -1 || line.startsWith("LINKAGE") ||
+                    line.startsWith("WORKING") || line.startsWith("COPY") || line.startsWith("75")) {
                 normalCopyBook = false;
             }else{
                 String copyText = ctx.copySource().getText();

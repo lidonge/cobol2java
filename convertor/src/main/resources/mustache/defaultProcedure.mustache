@@ -1,23 +1,14 @@
-{{%isContinue="isContinue";""}}
-{{%needDefaultParagraph=null;""}}
-{{#statements}}
-    {{#-first}}
-        {{%needDefaultParagraph="$needDefaultParagraph";""}}
-    {{/-first}}
-{{/statements}}
-{{>callSub.subparameters}}
-{{%
-    func_parameters=parameters == null ? "":parameters;
-    func_parametersWithoutType=parametersWithoutType == null ? "":parametersWithoutType;
-""}}
-
 public void procedure({{%func_parameters}}){
+    {{%mainClassName}}Handler handler = new {{%mainClassName}}Handler({{%func_parametersWithoutType}});
     {{%tempNeedDefaultParagraph=needDefaultParagraph;""}}
     {{>statements}}
     {{%needDefaultParagraph=tempNeedDefaultParagraph;""}}
     {{#paragraphs}}
         {{#$isContinue}}
-            {{%theName= name_toField(obj_getVar("name"));""}}{{#$theName}}{{%theName}}({{%func_parametersWithoutType}});{{/theName}}
+            {{%theName= name_toField(obj_getVar("name"));""}}
+            {{#$theName}}
+                handler.{{%theName}}();
+            {{/theName}}
         {{/isContinue}}
         {{#statements}}
             {{%
