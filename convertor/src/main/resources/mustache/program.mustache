@@ -60,7 +60,14 @@ public class {{%mainClassName}} {
     {{@$innerMap}}{{#value}}{{this}}{{/value}}{{/innerMap}}
 {{/dataDivision}}
 {{#dataDivision.workingStorageSection.rootDataDescriptionEntries}}
-    {{>progProperties}}
+    {{#-first}}
+        {{%hasWorkingData="hasWorkingData";""}}
+    {{/-first}}
+    {{%curObj=obj_getCurObj();""}}
+    {{#$hasWorkingData}}{{#$curObj}}
+        {{>progProperties}}
+    {{/curObj}}{{/hasWorkingData}}
+
 {{/dataDivision.workingStorageSection.rootDataDescriptionEntries}}
 class {{%mainClassName}}Handler{
     {{#dataDivision.linkageSection.rootDataDescriptionEntries}}
