@@ -18,10 +18,22 @@
             {{>ifelse.reloper}}
             {{%condition=relOperStr;""}}
         {{/arithmeticComparison}}
-        {{#combinedComparison}}//TODO combinedComparison
-        {{#arithmeticExpressionLeft}}{{/arithmeticExpressionLeft}}
-        {{#operator}}{{%relationalOperatorType=obj_getVar("relationalOperatorType");""}}{{/operator}}
-        {{#combinedCondition}}//TODO combinedCondition{{/combinedCondition}}
+        {{#combinedComparison}}
+            {{%condition=null;""}}
+            {{#arithmeticExpression}}{{>arithmetic}}{{%left=arithmeticExpression;""}}{{/arithmeticExpression}}
+            {{#operator}}{{%relationalOperatorType=obj_getVar("relationalOperatorType");""}}{{/operator}}
+            {{#combinedCondition}}
+                {{%combinedConditionType=obj_getVar("combinedConditionType") == "AND" ? " && " :" || ";""}}
+                {{#arithmeticExpressions}}
+                    {{>arithmetic}}
+                    {{%
+                        right=arithmeticExpression;
+                        relOperStr=rel_getOper(relationalOperatorType,left,right);
+                        condition = condition==null ? relOperStr: condition +combinedConditionType+relOperStr;
+                    ""}}
+                {{/arithmeticExpressions}}
+            {{/combinedCondition}}
+            {{%condition="("+condition+")";""}}
         {{/combinedComparison}}
     {{/relationCondition}}
 {{/simpleCondition}}
