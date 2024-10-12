@@ -55,5 +55,5 @@
 {{/curObj}}{{/IsPointer}}
 {{#$IsPointer}}
     {{>model.nopicture}}
-    {{%isInnerClass==null ? "public":""}} Object {{%fieldName}};
+    {{%isInnerClass==null ? "public":""}} Object{{#$dimStr}}[]{{/dimStr}} {{%fieldName}};
 {{/IsPointer}}

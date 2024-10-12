@@ -39,8 +39,10 @@
             {{/fromValueStmt}}
         {{/valueIntervals}};
     {{/valueClause}}
+    {{#pictureClause}}{{#$curObj}}
     {{#dataDescriptionEntries}}
         {{%referFieldName=theFieldName;""}}
         {{>model.properties}}
     {{/dataDescriptionEntries}}
+    {{/curObj}}{{/pictureClause}}
 {{/curObj}}{{/IsFiller}}

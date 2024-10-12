@@ -14,6 +14,9 @@ public interface IExprRelContext {
 
     default String rel_getOper(String cobolOper, String left, String right) {
         String ret = null;
+        if(left.indexOf("SBCA-CNTWK-REL-CNT") != -1){
+            left = left;
+        }
         RelationalOperator oper = RelationalOperator.valueOf(cobolOper);
 //        List<String> lefts = extractQualifiedNames(left);
 //        List<String> rights = extractQualifiedNames(right);

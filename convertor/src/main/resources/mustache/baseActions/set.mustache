@@ -14,7 +14,11 @@
             {{#valueStmt}}
                 {{#literal}}{{>literal}}{{/literal}}
                 {{#call}}{{>call}}{{/call}}
-                {{%obj_getFromList(tosList,index)}}={{%operand}};
+                {{%
+                    targetVar = obj_getFromList(tosList,index);
+                    expr_changeAddressType(targetVar,operand);
+                ""}}
+                {{%targetVar}}={{%operand}};
                 {{%index = index +1;""}}
             {{/valueStmt}}
         {{/values}}

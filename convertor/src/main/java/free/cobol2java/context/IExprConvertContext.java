@@ -30,7 +30,7 @@ public interface IExprConvertContext extends IExprNameContext{
         return ret;
     }
     default String expr_convertExpr(ParserRuleContext ctx) {
-        if (ctx.getText().indexOf("ALL'9'") != -1) {
+        if (ctx.getText().indexOf("DBI-SEGMENT-NAME") != -1) {
             debugPoint();
         }
         List<Object> ofIds = new ArrayList<>();

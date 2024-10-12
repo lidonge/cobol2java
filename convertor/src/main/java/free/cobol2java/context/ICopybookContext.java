@@ -1,5 +1,6 @@
 package free.cobol2java.context;
 
+import free.cobol2java.copybook.CopyBookManager;
 import free.cobol2java.parser.CobolCompiler;
 import free.cobol2java.parser.TopCompiler;
 
@@ -53,6 +54,23 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
             }
         }
         return value;
+    }
+
+    default String expr_changeAddressType(String targetVar,String operand){
+        String type = getJavaQlfFieldToType().get(targetVar);
+        type = getInnerClsNameToCopybookName().get(type);
+        if(type != null) {
+            String operandField = operand.substring(operand.lastIndexOf(".") + 1);
+            IExprNameContext context = getExprContext(
+                    operandField, false);
+            String copyName = context.getCopyBookName();
+            Map<String, String> copyBookMap = CopyBookManager.getDefaultManager().getCopyBookMap();
+            String copyContent = copyBookMap.get(copyName);
+            copyContent = copyContent.replace("Object " + operandField, type + " " + operandField);
+            //copyContent = copyContent.replace("Object[] " + operandField, type + "[] " + operandField);
+            copyBookMap.put(copyName, copyContent);
+        }
+        return "";
     }
 
 //

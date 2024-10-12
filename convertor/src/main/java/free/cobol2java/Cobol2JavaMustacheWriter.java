@@ -101,7 +101,9 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                 addFunction("name_setFieldClsType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_setFieldClsType((String) args[0], (String) args[1]));
                 addFunction("expr_convertExpr", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).expr_convertExpr((ParserRuleContext) args[0]));
                 addFunction("expr_conditionReference", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).expr_conditionReference((String) args[0]));
-                addFunction("rel_getOper", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).rel_getOper(args[0] + "", (String) args[1], (String) args[2]));
+
+                addFunction("expr_changeAddressType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).expr_changeAddressType(args[0] + "", args[1]+""));
+                addFunction("rel_getOper", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).rel_getOper(args[0] + "", args[1]+"", ""+args[2]));
                 addFunction("array_initString", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).array_initString(args[0].toString(), args[1].toString()));
                 addFunction("type_getType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).type_getType((String) args[0]));
                 addFunction("setInnerClsNameToCopyName", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).setInnerClsNameToCopyName((String) args[0],(String) args[1]));

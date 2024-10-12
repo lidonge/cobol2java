@@ -1,5 +1,29 @@
-{{#occursClauses}}{{%
-    dimension=obj_getVar("from.integerLiteral.value");
-    dimStr = dimension != null ? dimension : null;
-    dimLevelStr = dim_value();
-""}}{{/occursClauses}}
+{{%dimension=0;""}}
+{{#occursClauses}}
+    {{#from}}
+        {{>literal}}
+        {{%
+            dimension=operand;
+            dimStr = dimension != null ? dimension : null;
+            dimLevelStr = dim_value();
+        ""}}
+    {{/from}}
+    {{#to}}
+        //TODO occurse to;
+    {{/to}}
+    {{#occursDepending}}
+        //TODO occursDepending;
+    {{/occursDepending}}
+    {{#occursIndexed}}
+        {{#indices}}
+            {{%
+                indexName=name_toField(obj_getVar("name"));
+                name_putInnerField(indexName);
+            ""}}
+            int {{%indexName}} = 0;
+        {{/indices}}
+    {{/occursIndexed}}
+    {{#occursSorts}}
+        //TODO occursSorts;
+    {{/occursSorts}}
+{{/occursClauses}}
