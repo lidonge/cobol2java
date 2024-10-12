@@ -20,7 +20,31 @@ public interface IExprSetContext extends IExprPhysicalContext,IExprEnvContext{
      * @return
      */
     default String name_setFieldType(String fieldName, String type) {
+        if(fieldName.equals("pceccii4")){
+            debugPoint();
+        }
+        String fullClsName = createFullClassName(type);
+        if(fullClsName != null){
+            getFieldToClassType().put(fieldName, fullClsName+"."+type);
+        }
         return getJavaQlfFieldToType().put(fieldName, type);
+    }
+    private String createFullClassName(String type){
+        String ret = null;
+        if(getClsLevel().size() != 0){
+            for(String path:getClsLevel()) {
+                path = IExprBaseContext.capitalizeFirstLetter(path);
+                if(type.equals(getInnerClsNameToCopybookName().get(path))){
+                    continue;
+                }
+                if(ret ==null){
+                    ret = path;
+                }else{
+                    ret +="."+path;
+                }
+            }
+        }
+        return ret;
     }
     default Number dim_putFieldDim(String fieldName, Number dim) {
         return getJavaFieldNameToDim().put(fieldName, dim);
@@ -39,7 +63,13 @@ public interface IExprSetContext extends IExprPhysicalContext,IExprEnvContext{
             qualifiedName = null;
         } else {
             qualifiedName = getClsLevel().size() == 0 ? fieldName : createQualifiedName(fieldName);
-            getJavaFieldToQualifiedName().put(fieldName, qualifiedName);
+            String oldQlfName = getJavaFieldToQualifiedName().get(fieldName);
+            if(oldQlfName == null || oldQlfName.equals(qualifiedName)){
+                oldQlfName =qualifiedName;
+            }else {
+                oldQlfName += "|" + qualifiedName;
+            }
+            getJavaFieldToQualifiedName().put(fieldName, oldQlfName);
             makeQlfNameAllLevel(qualifiedName);
         }
         return qualifiedName;

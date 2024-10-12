@@ -2,6 +2,7 @@ package free.cobol2java.context;
 
 import free.servpp.mustache.ILogable;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -11,7 +12,10 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
         IExprBaseContext, ICopybookContext, IExprCtxHandler,
         IExprDimensionContext{
     default String name_qlfName(String fieldName, String ofCopies) {
-        if(fieldName.equals("sbctCnt")){
+        return name_qlfName(fieldName,ofCopies,null);
+    }
+    default String name_qlfName(String fieldName, String ofCopies, String localOf) {
+        if(fieldName.equals("cSaPsbkDlWritten")){
             debugPoint();
         }
         String ret = null;
@@ -19,7 +23,7 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
         if (isInCopy) {
             ret = getQlfNameWithOfCopies(fieldName, ofCopies);
         }else{
-            ret = getQlfNameWithoutOfCopy(fieldName);
+            ret = getQlfNameWithoutOfCopy(fieldName,localOf);
         }
         return ret;
     }
@@ -65,21 +69,27 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
             beginIndex = qlfNameInCopybook.indexOf(".");
         }
         if(beginIndex == -1) {
-            ret = getQlfNameWithoutOfCopy(ofCopyField) + "." + qlfNameInCopybook;
+            ret = getQlfNameWithoutOfCopy(ofCopyField,null) + "." + qlfNameInCopybook;
         }else {
-            //FIXME 03  CICIFCIF-DEF1-AREA     REDEFINES    CICIFCIF-AREA.
-            ret = getQlfNameWithoutOfCopy(ofCopyField) +
-                    qlfNameInCopybook.substring(beginIndex);
+            //Not local of and not Constant
+            if(getJavaFieldToQualifiedName().get(fieldName) == null /*&&
+                    !Character.isUpperCase(qlfNameInCopybook.charAt(0))*/) {
+                ret = getQlfNameWithoutOfCopy(ofCopyField, null) +
+                        qlfNameInCopybook.substring(beginIndex);
+            }else {
+                //local of
+                ret = qlfNameInCopybook;
+            }
         }
         return ret;
     }
 
-    private String getQlfNameWithoutOfCopy(String fieldName) {
+    private String getQlfNameWithoutOfCopy(String fieldName, String localOf) {
         String ret;
         String qlfName = getJavaFieldToQualifiedName().get(fieldName);
         if(qlfName != null) {
             //Local field
-            ret = qlfName;
+            ret = fixAmbiguousName(fieldName,localOf,qlfName);
         }
         else{
             if(getJavaQlfFieldToType().get(fieldName) != null) {
@@ -153,10 +163,52 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
     private String _getQlfName(String fieldName, String ofCopyField) {
         String ret = null;
         IExprNameContext exprContext = getOfCopyContext(ofCopyField);
-        if(exprContext == null)
+        if(exprContext == null) {
             ret = getJavaFieldToQualifiedName().get(fieldName);
+            ret = fixAmbiguousName(fieldName, ofCopyField, ret);
+        }
         else {
-            ret = exprContext.name_qlfName(fieldName,null);
+            ret = exprContext.name_qlfName(fieldName,null,ofCopyField);
+        }
+        return ret;
+    }
+
+    private String fixAmbiguousName(String fieldName, String ofCopyField, String multiQlfName) {
+        String ret = multiQlfName;
+        if(multiQlfName == null){
+            debugPoint();
+        }
+        String[] qlfnames = multiQlfName.split("\\|");
+        if(qlfnames.length > 1){
+            boolean isAmbiguous = true;
+            if(ofCopyField != null){
+                for(String qlfName:qlfnames){
+                    String[] parts = qlfName.split("\\.");
+                    if(contains(ofCopyField, parts)){
+                        ret = qlfName;
+                        isAmbiguous = false;
+                        break;
+                    }
+                }
+            }
+            if(isAmbiguous){
+                ret = qlfnames[0];
+                getLogger().error("Error Ambiguous filed {}:{}" , fieldName, multiQlfName);
+            }
+        }
+        return ret;
+    }
+
+    private static boolean contains(String ofCopyField, String[] parts) {
+        boolean ret = false;
+        boolean isConst = Character.isUpperCase(parts[0].charAt(0));
+        if(isConst)
+            ofCopyField = IExprBaseContext.capitalizeFirstLetter(ofCopyField);
+        for(String part:parts){
+            if(part.equals(ofCopyField)){
+                ret = true;
+                break;
+            }
         }
         return ret;
     }
@@ -187,7 +239,13 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
         return ret;
     }
 
-
+    default String name_getFullFieldType(String fieldName) {
+        String ret = getFieldToClassType().get(fieldName);
+        if(ret == null){
+            ret = name_getFieldType(fieldName);
+        }
+        return ret;
+    }
     default String name_getFieldType(String fieldName) {
         String ret = getJavaQlfFieldToType().get(fieldName);
         if (ret != null && getInnerClsNameToCopybookName().get(ret) != null) {

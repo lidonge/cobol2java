@@ -96,10 +96,11 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
 //                addFunction("name_qlfNameWithDim", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_qlfNameWithDim((String) args[0], (String) args[1]));
 //                addFunction("name_qlfUdfNameWithDim", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_qlfUdfNameWithDim((String) args[0], (String) args[1]));
 //                addFunction("copybook", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).copybook((String) args[0], (String) args[1]));
+                addFunction("name_getFullFieldType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_getFullFieldType((String) args[0]));
                 addFunction("name_getFieldType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_getFieldType((String) args[0]));
                 addFunction("name_setFieldType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_setFieldType((String) args[0], (String) args[1]));
                 addFunction("name_getFieldClsType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_getFieldClsType((String) args[0]));
-                addFunction("name_setFieldClsType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_setFieldClsType((String) args[0], (String) args[1]));
+//                addFunction("name_setFieldClsType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_setFieldClsType((String) args[0], (String) args[1]));
                 addFunction("expr_convertExpr", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).expr_convertExpr((ParserRuleContext) args[0]));
                 addFunction("expr_conditionReference", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).expr_conditionReference((String) args[0]));
 
