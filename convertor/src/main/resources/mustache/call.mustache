@@ -12,7 +12,7 @@
         isFunction = callType == "FUNCTION_CALL";
         isIndexCall = callType == "INDEX_CALL";
         operand = isLengthOf ? "Util.lengthOf("+operand+")": (isAddressOf ? operand :expr_convertExpr(obj_getVar("ctx")));
-        operand = isIndexCall ? "int " + operand: operand;
+        //operand = isIndexCall ? "int " + operand: operand;
         //println("****ctx=" +obj_getVar("ctx.text")+",operand=" +operand);
         operand= (callType != "DATA_DESCRIPTION_ENTRY_CALL" &&
             callType != "UNDEFINED_CALL" &&callType != "INDEX_CALL" &&

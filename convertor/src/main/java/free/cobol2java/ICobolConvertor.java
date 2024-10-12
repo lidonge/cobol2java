@@ -171,7 +171,7 @@ public interface ICobolConvertor extends ILogable {
                 (relativePackageName.length() == 0 ?"":relativePackageName.replace(".",File.separator) +File.separator) +
                 className + ".java";
         String packageName = rootPackageName +
-                (relativeParent != null ? "." + relativePackageName : "");
+                (!relativeParent.equals("") ? "." + relativePackageName : "");
         // Call the convert function and get the result as a string
         TopCompiler.enterCobol(fileName);
         try {

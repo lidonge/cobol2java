@@ -69,7 +69,7 @@ public class Inspector {
         ALL , LEADING , FIRST
     }
 
-    public static int tallyingFor(String src, LeadType leadType, String target, BeforeAfter...beforeAfters){
+    public static int tallyingFor(String src, LeadType leadType,TallyingTarget... targets){
         return 0;
     }
 

@@ -1,9 +1,12 @@
 {{#allLeadings}}
+    {{^-first}}
+        ,
+    {{/-first}}
     {{#patternDataItemValueStmt}}
         {{#call}}{{>call}}{{/call}}
         {{#literal}}{{>literal}}{{/literal}}
         {{%tallyingTarget=operand;""}}
-        {{%tallyingTarget}}
+        new TallyingTarget({{%tallyingTarget}}
     {{/patternDataItemValueStmt}}
     {{#by}}
         {{#byValueStmt}}
@@ -13,17 +16,23 @@
             ,{{%byTarget}}
         {{/byValueStmt}}
     {{/by}}
+    {{%hasBeforeAfter=null;""}}
     {{#beforeAfterPhrases}}
         {{%isBefore=obj_getVar("beforeAfterType") == "BEFORE";""}}
         {{#call}}{{>call}}{{/call}}
         {{#literal}}{{>literal}}{{/literal}}
         {{%tallyingBeforeAfter=operand;""}}
         {{#-first}}
-            ,
+            ,{{%hasBeforeAfter="hasBeforeAfter";""}}
         {{/-first}}
-        {{^-first}}{{^-last}}
-            ,
-        {{/-last}}{{/-first}}
-        new BeforeAfter({{%isBefore}},false,{{%tallyingBeforeAfter}})
+        {{#$hasBeforeAfter}}
+            {{^-first}}{{^-last}}
+                ,
+            {{/-last}}{{/-first}}
+            new BeforeAfter({{%isBefore}},false,{{%tallyingBeforeAfter}})
+        {{/hasBeforeAfter}}
     {{/beforeAfterPhrases}}
+    {{#patternDataItemValueStmt}}
+        )
+    {{/patternDataItemValueStmt}}
 {{/allLeadings}}

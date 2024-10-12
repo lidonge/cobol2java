@@ -1,4 +1,4 @@
-package free.cobol2java.util;
+package free.cobol2java.java;
 
 /**
  * @author lidong@date 2024-08-22@version 1.0

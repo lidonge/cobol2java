@@ -1,0 +1,74 @@
+{{!--
+// search statement
+
+searchStatement
+   : SEARCH ALL? qualifiedDataName searchVarying? atEndPhrase? searchWhen+ END_SEARCH?
+   ;
+
+searchVarying
+   : VARYING qualifiedDataName
+   ;
+
+searchWhen
+   : WHEN condition (NEXT SENTENCE | statement*)
+   ;
+
+--}}
+{{%statementType=obj_getVar("statementType");SEARCH = statementType == "SEARCH" ? "SEARCH" : null;""}}
+{{%curObj=obj_getCurObj();""}}
+{{#$SEARCH}}{{#$curObj}}
+    {{%searchTable = null;searchVar=null;""}}
+    {{#dataCall}}
+        {{>call}}
+        {{%searchTable = operand;""}}
+        {{%occursClausesCount=0;occursIndexedCount=0;""}}
+        {{#delegate.dataDescriptionEntry.occursClauses}}
+            {{%occursClausesCount=occursClausesCount+1;""}}
+            {{#occursIndexed}}
+                {{%occursIndexedCount=occursIndexedCount+1;""}}
+                {{#indices}}
+                    {{%
+                        definedIndex = name_toField(obj_getVar("name"));
+                        definedIndex = name_qlfName(definedIndex,null);
+                    ""}}
+                {{/indices}}
+            {{/occursIndexed}}
+        {{/delegate.dataDescriptionEntry.occursClauses}}
+        {{%
+            multOccurs = occursClausesCount > 1?"multOccurs":null;
+            multIndexed = occursClausesCount > 1?"multIndexed":null;
+        ""}}
+        {{#$multOccurs}}//FIXME multOccurs;{{/multOccurs}}
+        {{#$multIndexed}}//FIXME multIndexed;{{/multIndexed}}
+    {{/dataCall}}
+    {{#varyingPhrase}}
+        {{#dataCall}}
+            {{>call}}
+            {{%searchVar = operand;""}}
+        {{/dataCall}}
+    {{/varyingPhrase}}
+    {
+        boolean isMatch = Searcher.search({{%searchTable}},
+        {{#$searchVar}}(index)->{{%searchVar}}=index{{/searchVar}}{{^$searchVar}}(index)->{{%definedIndex}}=index{{/searchVar}},
+        {{#whenPhrases}}
+            {{#condition}}
+                {{>ifelse.condition}}
+                {{%searchWhenCond=retCond;""}}
+            {{/condition}}
+            ()->{
+                boolean ret = {{%searchWhenCond}};
+                if(ret){
+                    {{>statements}}
+                }
+                return ret;
+            }
+            {{^-last}},{{/-last}}
+        {{/whenPhrases}}
+        );
+        {{#atEndPhrase}}
+            if(!isMatch){
+                {{>statements}}
+            }
+        {{/atEndPhrase}}
+    }
+{{/curObj}}{{/SEARCH}}

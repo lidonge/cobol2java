@@ -13,7 +13,6 @@
     {{%isSubCopybook = null;""}}
     {{>model.copy75}}
     {{#dataDescriptionEntries}}
-        {{>dimstr}}
         {{#-first}}
             {{%isConstInnerCls = innerClsLevel >=1 && IsConstantCopybook != null? "isConstInnerCls":null;""}}
             {{^$isSubCopybook}}
@@ -30,6 +29,7 @@
             {{/isSubCopybook}}
             {{%childrenCount=1;""}}
         {{/-first}}
+            {{>dimstr}}
             {{>comment}}
             {{%dimension != null ? dim_push(dimension) : dim_push(0);""}}
             {{%var_push(isSubCopybook);""}}
