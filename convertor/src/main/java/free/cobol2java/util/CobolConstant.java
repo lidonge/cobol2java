@@ -10,7 +10,7 @@ public class CobolConstant {
         ALL ,HIGH_VALUE ,HIGH_VALUES ,LOW_VALUE ,LOW_VALUES ,NULL ,NULLS ,QUOTE ,QUOTES ,SPACE ,SPACES ,ZERO ,ZEROS ,ZEROES
     }
 
-    public static String[] texts = new String[]{"ALL" ,"HIGH_VALUE" ,"HIGH_VALUES" ,"LOW_VALUE" ,"LOW_VALUES" ,"NULL" ,"NULLS" ,"QUOTE" ,"QUOTES" ,"SPACE" ,"SPACES" ,"ZERO" ,"ZEROS" ,"ZEROES"};
+    public static String[] texts = new String[]{"ALL" ,"HIGH-VALUE" ,"HIGH-VALUES" ,"LOW-VALUE" ,"LOW-VALUES" ,"NULL" ,"NULLS" ,"QUOTE" ,"QUOTES" ,"SPACE" ,"SPACES" ,"ZERO" ,"ZEROS" ,"ZEROES"};
 
     public static boolean isConstant(String id){
         if(id != null)

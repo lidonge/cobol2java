@@ -45,7 +45,7 @@ public interface IExprConvertContext extends IExprNameContext{
                 ret = calcID(value, cobolExpr, ret);
             }
         } else if (CobolConstant.isConstant(ret)) {
-            ret = "CobolConstant." + ret;
+            ret = "CobolConstant." + ret.replace("-","_");
         }
         if(!ret.startsWith("\"") && ret.indexOf("'") != -1){
             //FIX ALL'9'
@@ -85,7 +85,7 @@ public interface IExprConvertContext extends IExprNameContext{
             }
         }
         if (CobolConstant.isConstant(id))
-            return "CobolConstant." + id;
+            return "CobolConstant." + id.replace("-","_");
         String[] dims = getDimStringOfVar(cobolExpr, id);
         String dimStr = dims[1];
         String qlfName = name_qlfName(fieldName, ofId);

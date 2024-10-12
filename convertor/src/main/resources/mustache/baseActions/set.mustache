@@ -4,10 +4,10 @@
     {{%setType=obj_getVar("setType");""}}
     {{#setBy}}//TODO setBy;{{/setBy}}
     {{#setTos}}
-        {{%tosList=obj_newList();index=0;""}}
+        {{%tosList=obj_newList();tosIsAddr=obj_newList();index=0;""}}
         {{#tos}}{{#toCall}}
             {{>call}}
-            {{%obj_addToList(tosList,operand);""}}
+            {{%obj_addToList(tosList,operand);obj_addToList(tosIsAddr,isAddressOf);""}}
         {{/toCall}}{{/tos}}
         {{#values}}
             {{%valueType=obj_getVar("valueType");""}}
@@ -16,7 +16,7 @@
                 {{#call}}{{>call}}{{/call}}
                 {{%
                     targetVar = obj_getFromList(tosList,index);
-                    expr_changeAddressType(targetVar,operand);
+                    obj_getFromList(tosIsAddr,index) ? expr_changeAddressType(targetVar,operand) : null;
                 ""}}
                 {{%targetVar}}={{%operand}};
                 {{%index = index +1;""}}

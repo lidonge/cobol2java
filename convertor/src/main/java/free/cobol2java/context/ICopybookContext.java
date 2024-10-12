@@ -58,11 +58,26 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
 
     default String expr_changeAddressType(String targetVar,String operand){
         String type = getJavaQlfFieldToType().get(targetVar);
-        type = getInnerClsNameToCopybookName().get(type);
+
+        if (type == null) {
+            String[] path = targetVar.split("\\.");
+            if(path.length > 1){
+                //field in copybook
+                //FIXME
+                String fieldName = path[path.length - 1];
+                IExprNameContext context = getExprContext(fieldName,false);
+                String qlfName = context.getJavaFieldToQualifiedName().get(fieldName);
+                type = context.getJavaQlfFieldToType().get(qlfName);
+            }
+        }
+        else if(getCopybookContexts().get(type) == null) {
+            //Type is an inner name
+            type = getInnerClsNameToCopybookName().get(type);
+        }
+
         if(type != null) {
             String operandField = operand.substring(operand.lastIndexOf(".") + 1);
-            IExprNameContext context = getExprContext(
-                    operandField, false);
+            IExprNameContext context = getExprContext(operandField, false);
             String copyName = context.getCopyBookName();
             Map<String, String> copyBookMap = CopyBookManager.getDefaultManager().getCopyBookMap();
             String copyContent = copyBookMap.get(copyName);
