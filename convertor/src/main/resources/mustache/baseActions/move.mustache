@@ -17,7 +17,13 @@
             {{%setValue}};
         {{/isUseCopy}}
         {{^$isUseCopy}}
-            {{%setName}}={{%setValue}};
+            {{%shouldFixFullArraySet = value_fixFullArraySet(setName,setValue);""}}
+            {{#shouldFixFullArraySet}}
+                Util.setFullArray({{%setName}},{{%setValue}});
+            {{/shouldFixFullArraySet}}
+            {{^shouldFixFullArraySet}}
+                {{%setName}}={{%setValue}};
+            {{/shouldFixFullArraySet}}
         {{/isUseCopy}}
 
     {{/moveToStatement.receivingAreaCalls}}

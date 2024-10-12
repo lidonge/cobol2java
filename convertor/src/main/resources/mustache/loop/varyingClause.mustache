@@ -1,9 +1,19 @@
 {{#varyingPhrase}}
     {{#fromPhrase}}
-        {{#fromValueStmt.literal}}{{>literal}}{{%fromValue=operand;""}}{{/fromValueStmt.literal}}
+        {{#fromValueStmt}}
+            {{#literal}}{{>literal}}{{/literal}}
+            {{#call}}{{>call}}{{/call}}
+            {{#arithmeticExpression}}{{>arithmetic}}{{%operand=arithmeticExpression;""}}{{/arithmeticExpression}}
+            {{%fromValue=operand;""}}
+        {{/fromValueStmt}}
     {{/fromPhrase}}
     {{#byPhrase}}
-        {{#byValueStmt.literal}}{{>literal}}{{%stepValue=operand;""}}{{/byValueStmt.literal}}
+        {{#byValueStmt}}
+            {{#literal}}{{>literal}}{{/literal}}
+            {{#call}}{{>call}}{{/call}}
+            {{#arithmeticExpression}}{{>arithmetic}}{{%operand=arithmeticExpression;""}}{{/arithmeticExpression}}
+            {{%stepValue=operand;""}}
+        {{/byValueStmt}}
     {{/byPhrase}}
     {{#until}}{{>loop.until}}{{/until}}
     {{#varyingValueStmt}}

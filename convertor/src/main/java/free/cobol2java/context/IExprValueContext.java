@@ -15,6 +15,21 @@ public interface IExprValueContext extends IExprEnvContext, IExprPhysicalContext
             return "Double";
         return "Integer";
     }
+    default String value_fixFullArraySet(String setName, String setValue){
+        String ret = null;
+        if(!setName.endsWith("]")) {
+            int index = setName.lastIndexOf(".");
+            String fieldName = setName;
+            if (index != -1)
+                fieldName = setName.substring(index + 1);
+
+            Number number = getJavaFieldNameToDim().get(fieldName);
+            if (number != null && number.intValue() > 0) {
+                ret = "fix";
+            }
+        }
+        return ret;
+    }
     default String value_fix(String left, Object right) {
         String ret = right + "";
         String leftType = getTypeByQlfName(null, left);
