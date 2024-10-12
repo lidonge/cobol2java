@@ -22,14 +22,20 @@
             modifier = isInnerClass == "isInnerClass" ? "" :"public ";
             modifier = modifier +"static final "
         }}
-        {{%propType}} {{%theFieldName}}
+        {{%propType}}[] {{%theFieldName}}
     {{/isEnum}}
     {{#valueClause}}
+        =
+        {{#$isEnum}}
+            new {{%propType}}[]{
+        {{/isEnum}}
         {{#valueIntervals}}
+            {{^-first}}
+                ,
+            {{/-first}}
             {{#fromValueStmt}}
                 {{>call}}
                 {{#literal}}{{>literal}}{{/literal}}
-                =
                 {{#$dimStr}}
                     {{%array_initString(dimStr,operand)}}
                 {{/dimStr}}
@@ -37,7 +43,11 @@
                     {{%operand}}
                 {{/dimStr}}
             {{/fromValueStmt}}
-        {{/valueIntervals}};
+        {{/valueIntervals}}
+        {{#$isEnum}}
+            }
+        {{/isEnum}}
+        ;
     {{/valueClause}}
     {{#pictureClause}}{{#$curObj}}
     {{#dataDescriptionEntries}}

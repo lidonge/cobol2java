@@ -5,6 +5,7 @@ import free.cobol2java.util.ExprUtil;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -21,8 +22,10 @@ public interface IExprConvertContext extends IExprNameContext{
             refFieldName = exprContext.getJavaQlfFieldToType().get(javaFieldName);
         }
 
-        if(refFieldName != null)
-            ret = name_qlfName(refFieldName,null) +"==" +qlfName;
+        if(refFieldName != null) {
+            ret = "java.util.Arrays.asList("+qlfName+").contains("+name_qlfName(refFieldName, null)+")";
+            //ret = name_qlfName(refFieldName, null) + "==" + qlfName;
+        }
         else {
             getLogger().error("Error UNKNOW_CONDITION_REF: " + fieldName);
             ret = "UNKNOW_CONDITION_REF" + "==" + qlfName;
