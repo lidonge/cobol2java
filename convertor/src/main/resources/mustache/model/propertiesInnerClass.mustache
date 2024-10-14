@@ -27,6 +27,13 @@
                 ""}}
                 {{%modifier}} {{%innerCls)}}{{#$dimStr}}[]{{/dimStr}} {{%fieldName}}{{#$dimStr}} = new {{%innerCls}}[{{%dimStr}}]{{/dimStr}};
             {{/IsConstantCopybook}}
+            {{%
+                packName = model_getPackage(innerCls,"false");
+                curImports = obj_getFromMap(importsMap,clsName);
+                imports = curImports == null ? imports : curImports;
+                //clsName == "Pksaacn1"?println((imports==null) +"add import "+packName+"."+innerCls):"";
+                imports != null && packName !=null ?obj_addToList(imports,packName+"."+innerCls):"";
+            ""}}
         {{/ignoreProp}}
         {{%
             dimStr = null;
@@ -48,7 +55,7 @@
             //name_exitClass();
             clsContent = isInnerClass==null && IsConstantCopybook == null? must_popBuff():null;
             clsContent = orgCls == clsName ? clsContent : str_replace(clsContent+"", "class " +orgCls , "class " + clsName);
-            isInnerClass== null && IsConstantCopybook == null?obj_addToMap(innerMap,clsName, clsContent):null;
+            isInnerClass== null && IsConstantCopybook == null?obj_addToMap(innerMap,clsName,clsContent):null;
             //sInnerClass== null && IsConstantCopybook == null?println("========addto innermap:" +clsName):null;
         ""}}
     {{/pictureClause}}

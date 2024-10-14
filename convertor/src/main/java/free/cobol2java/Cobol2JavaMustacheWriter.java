@@ -3,11 +3,13 @@ package free.cobol2java;
 import free.cobol2java.context.ExprContext;
 import free.servpp.mustache.MustacheCompiler;
 import free.servpp.mustache.handler.IPartialFileHandler;
+import free.servpp.mustache.handler.MustacheListenerImpl;
 import free.servpp.mustache.handler.MustacheWriter;
 import free.servpp.mustache.model.Template;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -21,8 +23,8 @@ import static free.cobol2java.copybook.ICobol2JavaBase.LOCAL_CONTEXT;
 public class Cobol2JavaMustacheWriter extends MustacheWriter {
     private String packageName;
 
-    public Cobol2JavaMustacheWriter(Object root, String packageName, boolean lookupParent) {
-        super(root, lookupParent);
+    public Cobol2JavaMustacheWriter(URI mustacheFile, Object root, String packageName, boolean lookupParent) {
+        super(mustacheFile,root, lookupParent);
         this.packageName = packageName;
         createCobol2JavaEnvironment();
         createPartialHandler();
@@ -46,7 +48,10 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
 //                            System.out.println("Reading mustache template :" + partialName);
 
                             lastName = partialName;
-                            tmpl = mustacheCompiler.compile().getTemplate();
+                            mustacheCompiler.compileAntlr4();
+                            MustacheListenerImpl listener = new MustacheListenerImpl();
+                            mustacheCompiler.workListener(listener);
+                            tmpl = listener.getTemplate();
                             templateMap.put(partialName, tmpl);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
@@ -103,7 +108,6 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
 //                addFunction("name_setFieldClsType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_setFieldClsType((String) args[0], (String) args[1]));
                 addFunction("expr_convertExpr", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).expr_convertExpr((ParserRuleContext) args[0]));
                 addFunction("expr_conditionReference", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).expr_conditionReference((String) args[0]));
-
                 addFunction("expr_changeAddressType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).expr_changeAddressType(args[0] + "", args[1]+""));
                 addFunction("rel_getOper", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).rel_getOper(args[0] + "", args[1]+"", ""+args[2]));
                 addFunction("array_initString", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).array_initString(args[0].toString(), args[1].toString()));
@@ -113,6 +117,9 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                 addFunction("cobol_precompile", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).cobol_precompile((String) args[0]));
                 addFunction("cobol_compile", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).cobol_compile((String) args[0]));
                 addFunction("cbl_getComment", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).cbl_getComment((Integer) args[0], (String) args[1], (List<String>) args[2]));
+                addFunction("model_getPackage", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).model_getPackage( (String) args[0],(String) args[1]));
+                addFunction("model_replaceImports", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).model_replaceImports( (List) args[0],args[1]+""));
+
             }
         });
     }

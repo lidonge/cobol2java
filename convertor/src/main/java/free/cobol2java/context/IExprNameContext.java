@@ -1,6 +1,7 @@
 package free.cobol2java.context;
 
-import free.servpp.mustache.ILogable;
+
+import free.servpp.logger.ILogable;
 
 import java.util.Arrays;
 import java.util.Map;

@@ -14,6 +14,7 @@ import io.proleap.cobol.asg.params.CobolParserParams;
 import io.proleap.cobol.asg.runner.impl.CobolParserRunnerImpl;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
@@ -36,8 +37,15 @@ public interface ICobol2JavaBase extends IUrlLoader {
 
     default MustacheListenerImpl createMustacheListener(String mustache) throws URISyntaxException, IOException {
         URL url = Cobol2JavaMustacheWriter.class.getResource(mustache);
+        return createMustacheListener(url);
+    }
+
+    default MustacheListenerImpl createMustacheListener(URL url) throws URISyntaxException, IOException {
         MustacheCompiler mustacheCompiler = new MustacheCompiler(url);
-        return mustacheCompiler.compile();
+        mustacheCompiler.compileAntlr4(null);
+        MustacheListenerImpl listener = new MustacheListenerImpl();
+        mustacheCompiler.workListener(listener);
+        return listener;
     }
 
     default void convert(Map<String, Object> variables, Cobol2JavaMustacheWriter writer, MustacheListenerImpl impl) {
@@ -52,8 +60,8 @@ public interface ICobol2JavaBase extends IUrlLoader {
         writer.write(impl.getTemplate(), BaseSection.SectionType.Normal);
     }
 
-    default Cobol2JavaMustacheWriter createMustacheWriter(String packageName, Object root) {
-        return new Cobol2JavaMustacheWriter(root, packageName,false);
+    default Cobol2JavaMustacheWriter createMustacheWriter(URI mustacheFile, String packageName, Object root) {
+        return new Cobol2JavaMustacheWriter(mustacheFile,root, packageName,false);
     }
 
 }

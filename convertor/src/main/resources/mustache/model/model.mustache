@@ -18,8 +18,15 @@
             {{^$isSubCopybook}}
                 {{^$isInnerClass}}
                     {{^$isConstInnerCls}}
-                        package {{% model_package}};
-                        import free.cobol2java.java.*;
+                        {{%packageName = model_getPackage(clsName,"true");""}}
+                        package {{%packageName}};
+                        import free.cobol2java.java.CobolConstant;
+                        //#importsMark#
+                        {{%
+                            imports=obj_newList();
+                            obj_addToMap(importsMap,clsName,imports);
+                            //clsName=="Pksaacn1"?println("add import list:" +clsName):"";
+                        ""}}
                         public
                     {{/isConstInnerCls}}
                 {{/isInnerClass}}
@@ -33,11 +40,13 @@
             {{>comment}}
             {{%dimension != null ? dim_push(dimension) : dim_push(0);""}}
             {{%var_push(isSubCopybook);""}}
+            {{%var_push(clsName);""}}
             {{>model.properties}}
             {{%curObj=obj_getCurObj();""}}
             {{#$childrenCount}}{{#$curObj}}
                 {{>model.propertiesInnerClass}}
             {{/curObj}}{{/childrenCount}}
+            {{%clsName=var_pop();""}}
             {{%isSubCopybook=var_pop();""}}
             {{%dim_pop();""}}
         {{#-last}}
@@ -46,5 +55,9 @@
                 }//End model;
             {{/isSubCopybook}}
         {{/-last}}
-    {{/dataDescriptionEntries}}{{%clsName=name_exitClass();""}}
+    {{/dataDescriptionEntries}}
+    {{%
+        clsOrFieldName=name_exitClass();
+        //clsName=="Pksaacn1"?println("end class:" +clsName+", imports:"+obj_getFromMap(importsMap,clsName)):"";
+    ""}}
 {{/pictureClause}}{{/IsFiller}}

@@ -2,7 +2,7 @@ package free.cobol2java.context;
 
 import free.cobol2java.ICobolConvertor;
 import free.cobol2java.config.CobolConfig;
-import free.servpp.mustache.ILogable;
+import free.servpp.logger.ILogable;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
@@ -38,7 +38,7 @@ public interface IExprCallContext extends ILogable {
         cobolConvertor.findFiles(new File(cobolConvertor.getSourcePath()), files,
                 cobolConvertor.getSuffixes(), fileName + ".*");
         if (files.size() > 0) {
-            LoggerFactory.getLogger(IExprCallContext.class).error("Compiling sub cbl {}:{}",fileName, files);
+            LoggerFactory.getLogger(IExprCallContext.class).info("Compiling sub cbl {}:{}",fileName, files);
             fullClsName = cobolConvertor.convertAFile(files.get(0));
         } else {
 //            getLogger().error("Error can not find given callsub file: {}", fileName);

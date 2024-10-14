@@ -1,5 +1,6 @@
 {{#dataDivision}}
     {{%innerMap = obj_newMap();""}}
+    {{%importsMap = obj_newMap();""}}
     {{#workingStorageSection}}
         {{#rootDataDescriptionEntries}}
             {{#execSqlText}}//TODO execSqlText{{/execSqlText}}
@@ -13,5 +14,8 @@
             {{/curObj}}{{/execSqlText}}
         {{/rootDataDescriptionEntries}}
     {{/workingStorageSection}}
+    {{%
+        //clsName=="Pksaacn1"?println("importsMap:"+importsMap):"";
+    ""}}
 {{/dataDivision}}
 

@@ -1,7 +1,13 @@
 package {{% model_package}};
 import free.cobol2java.java.*;
-import com.dcits.*;
+//#importsMark#
+
 {{%DEBUG="program1";mainClassName=name_toClass(obj_getVar("identificationDivision.programIdParagraph.name"));""}}
+{{%
+    importsMap = obj_newMap();
+    imports=obj_newList();
+    obj_addToMap(importsMap,mainClassName,imports);
+""}}
 public class {{%mainClassName}} {
 {{#environmentDivision}}//TODO environmentDivision{{/environmentDivision}}
 {{#identificationDivision}}
@@ -45,7 +51,6 @@ public class {{%mainClassName}} {
         {{>model.unused}}
         {{#-last}}//End of linkageSection class define{{/-last}}
     {{/linkageSection.rootDataDescriptionEntries}}
-    {{@$innerMap}}{{#value}}{{this}}{{/value}}{{/innerMap}}
 {{/dataDivision}}
 {{#dataDivision}}
     {{#localStorageSection.rootDataDescriptionEntries}}

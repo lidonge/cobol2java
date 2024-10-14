@@ -1,7 +1,7 @@
 package free.cobol2java.context;
 
 import free.cobol2java.copybook.CopyBookManager;
-import free.servpp.mustache.ILogable;
+import free.servpp.logger.ILogable;
 
 import java.util.*;
 
@@ -74,6 +74,7 @@ public class ExprContext extends ExprBaseContext implements ILogable,
         this.copyBookName = copyBookName;
     }
 
+    @Override
     public String getCopyBookPath() {
         return copyBookPath;
     }

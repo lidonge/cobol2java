@@ -3,27 +3,54 @@ package free.cobol2java.context;
 import free.cobol2java.copybook.CopyBookManager;
 import free.cobol2java.parser.CobolCompiler;
 import free.cobol2java.parser.TopCompiler;
+import free.servpp.multiexpr.IEvaluatorEnvironment;
+import free.servpp.mustache.CodeFormator;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author lidong@date 2024-09-29@version 1.0
  */
-public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext{
+public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext {
+
+    default String model_replaceImports(List imports, String code){
+        return replaceImports(imports, code,true);
+    }
+
+    default String replaceImports(List imports, String code, boolean keepMark) {
+        StringBuffer sbImp = new StringBuffer();
+        for(Object imp: imports){
+            sbImp = sbImp.append("import ").append(imp).append(";\n");
+        }
+        if(keepMark){
+            code = code.replace("#imports#", "//#importsMark#");
+            code = code.replace("//#importsMark#", "//#importsMark#\n#imports#\n");
+        }
+
+        imports.clear();
+        return code.replace("#imports#", sbImp.toString());
+    }
+
+    default String model_getPackage(String modelName, String useCurrentCopybook) {
+        return CopyBookManager.getDefaultManager().getPackageNameByModelName(modelName,"true".equals(useCurrentCopybook));
+    }
+
     default IExprNameContext getOfCopyContext(String ofCopyField) {
         String qlfName = getJavaFieldToQualifiedName().get(ofCopyField);
         //Field leve is 75 or is defined in a copybook
-        if(qlfName == null)
+        if (qlfName == null)
             qlfName = ofCopyField;
 
         String ofCopyCls = getJavaQlfFieldToType().get(qlfName);
         String realCopyCls = null;
         IExprNameContext exprContext = null;
-        if(ofCopyCls == null){
+        if (ofCopyCls == null) {
             //of copy is not defined in main cobol
             exprContext = getExprContext(ofCopyField, false);
-        }else{
+        } else {
             realCopyCls = getInnerClsNameToCopybookName().get(ofCopyCls);
             exprContext = getCopybookContexts().get(realCopyCls != null ? realCopyCls : ofCopyCls);
         }
@@ -34,20 +61,20 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
         IExprNameContext value = null;
         CobolCompiler cobolCompiler = TopCompiler.currentCompiler();
         String copyBookName = getCopyBookName();
-        List<String> includes =  copyBookName == null ?cobolCompiler.getIncludes() :
+        List<String> includes = copyBookName == null ? cobolCompiler.getIncludes() :
                 cobolCompiler.getIncludesOf(copyBookName);
-        for(String copyName:includes){
+        for (String copyName : includes) {
 //            copyName = name_toClass(copyName);
             IExprNameContext ctx = getCopybookContexts().get(copyName);
-            if(ctx != null){
+            if (ctx != null) {
                 boolean match = false;
-                if(isMiddleName) {
+                if (isMiddleName) {
                     match = ctx.getCopyFieldNameToJavaFileName().get(fieldName) != null;
-                }else{
+                } else {
                     match = ctx.getJavaFieldToQualifiedName().get(fieldName) != null ||
                             ctx.getJavaFieldNameToCopyFieldName().get(fieldName) != null;
                 }
-                if(match) {
+                if (match) {
                     value = ctx;
                     break;
                 }
@@ -56,31 +83,44 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
         return value;
     }
 
-    default String expr_changeAddressType(String targetVar,String operand){
+    default String expr_changeAddressType(String targetVar, String operand) {
         String type = getJavaQlfFieldToType().get(targetVar);
 
         if (type == null) {
             String[] path = targetVar.split("\\.");
-            if(path.length > 1){
+            if (path.length > 1) {
                 //field in copybook
                 //FIXME
                 String fieldName = path[path.length - 1];
-                IExprNameContext context = getExprContext(fieldName,false);
+                IExprNameContext context = getExprContext(fieldName, false);
                 String qlfName = context.getJavaFieldToQualifiedName().get(fieldName);
                 type = context.getJavaQlfFieldToType().get(qlfName);
             }
-        }
-        else if(getCopybookContexts().get(type) == null) {
+        } else if (getCopybookContexts().get(type) == null) {
             //Type is an inner name
             type = getInnerClsNameToCopybookName().get(type);
         }
 
-        if(type != null) {
+        if (type != null) {
             String operandField = operand.substring(operand.lastIndexOf(".") + 1);
             IExprNameContext context = getExprContext(operandField, false);
             String copyName = context.getCopyBookName();
             Map<String, String> copyBookMap = CopyBookManager.getDefaultManager().getCopyBookMap();
             String copyContent = copyBookMap.get(copyName);
+            String packageName = model_getPackage(type,"true");
+            String copyPackName = model_getPackage(copyName,"false");
+            if(!packageName.equals(copyPackName)) {
+                Map map = (Map) context.getEnvironment().getVar("importsMap");
+                IEvaluatorEnvironment.MyObject myObject = (IEvaluatorEnvironment.MyObject) map.get(copyName);
+                List imports = null;
+                if(myObject != null) {
+                    imports = (List) myObject.getValue();
+                }else{
+                    imports = new ArrayList();
+                    map.put(copyName,new IEvaluatorEnvironment.MyObject(imports));
+                }
+                imports.add(packageName + "." + type);
+            }
             copyContent = copyContent.replace("Object " + operandField, type + " " + operandField);
             //copyContent = copyContent.replace("Object[] " + operandField, type + "[] " + operandField);
             copyBookMap.put(copyName, copyContent);

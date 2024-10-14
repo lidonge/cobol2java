@@ -8,6 +8,8 @@ import java.util.Stack;
  */
 public interface IExprPhysicalContext {
     String getCopyBookName();
+    String getCopyBookPath();
+
     Stack<String> getClsLevel();
     Map<String, String> getFieldToClassType();
     Map<String, String> getJavaFieldToQualifiedName();

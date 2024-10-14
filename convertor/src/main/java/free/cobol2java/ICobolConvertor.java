@@ -5,7 +5,7 @@ import free.cobol2java.copybook.CopyBookManager;
 import free.cobol2java.parser.TopCompiler;
 import free.servpp.config.IConfig;
 import free.servpp.config.hocon.HoconConfigTypeManager;
-import free.servpp.mustache.ILogable;
+import free.servpp.logger.ILogable;
 import io.proleap.cobol.preprocessor.CobolPreprocessor;
 
 import java.io.File;

@@ -45,11 +45,28 @@ public class CobolSqlVisitor extends CobolWithSqlBaseVisitor<SqlStatement> {
 
     @Override
     public SqlStatement visitSqlStatement(CobolWithSqlParser.SqlStatementContext ctx) {
-
+        SqlStatement ret = null;
         CobolWithSqlParser.SqlQueryContext sqlQuery = ctx.sqlQuery();
         if(sqlQuery != null)
-            return super.visitSqlQuery(sqlQuery);
-        return super.visitSqlCursorOperation(ctx.sqlCursorOperation());
+            ret = super.visitSqlQuery(sqlQuery);
+        if(ctx.sqlCursorOperation() != null)
+            ret = visitSqlCursorOperation(ctx.sqlCursorOperation());
+
+        if(ctx.errorHandle() != null){
+            ret = visitErrorHandle(ctx.errorHandle());
+        }
+        return ret;
+    }
+
+    @Override
+    public SqlStatement visitErrorHandle(CobolWithSqlParser.ErrorHandleContext ctx) {
+        return super.visitErrorHandle(ctx);
+    }
+
+    @Override
+    public SqlStatement visitSqlCursorOperation(CobolWithSqlParser.SqlCursorOperationContext ctx) {
+        //TODO
+        return super.visitSqlCursorOperation(ctx);
     }
 
     @Override
@@ -94,10 +111,23 @@ public class CobolSqlVisitor extends CobolWithSqlBaseVisitor<SqlStatement> {
 
     @Override
     public WhereClause visitWhereClause(CobolWithSqlParser.WhereClauseContext ctx) {
-        if(ctx == null)
-            return null;
-        ConditionExpression conditionExpression = visitConditionExpression(ctx.conditionExpression());
-        return new WhereClause(conditionExpression);
+        WhereClause ret = null;
+        if(ctx != null) {
+            if (ctx.conditionExpression() != null) {
+                ConditionExpression conditionExpression = visitConditionExpression(ctx.conditionExpression());
+                ret = new WhereClause(conditionExpression);
+            }
+            if (ctx.cursorCondition() != null) {
+                visitCursorCondition(ctx.cursorCondition());
+            }
+        }
+        return ret;
+    }
+
+    @Override
+    public SqlStatement visitCursorCondition(CobolWithSqlParser.CursorConditionContext ctx) {
+        //TODO
+        return super.visitCursorCondition(ctx);
     }
 
     @Override
@@ -182,8 +212,10 @@ public class CobolSqlVisitor extends CobolWithSqlBaseVisitor<SqlStatement> {
 
         // Extract columns
         List<String> columns = new ArrayList<>();
-        for (CobolWithSqlParser.ColumnNameContext columnCtx : ctx.columnList().columnName()) {
-            columns.add(columnCtx.getText());
+        if(ctx.columnList() != null){
+            for (CobolWithSqlParser.ColumnNameContext columnCtx : ctx.columnList().columnName()) {
+                columns.add(columnCtx.getText());
+            }
         }
         insertQuery.setColumns(columns);
 

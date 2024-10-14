@@ -16,12 +16,22 @@ beginDeclare : SQL_EXEC SQL 'BEGIN' 'DECLARE' 'SECTION' SQL_END ;
 sqlInclude : SQL_EXEC SQL 'INCLUDE' (identifier | FILE_LITERAL) SQL_END ;
 
 sqlStatement
-    : SQL_EXEC SQL (sqlQuery |sqlCursorOperation) SQL_END
+    : SQL_EXEC SQL (sqlQuery | sqlCursorOperation | errorHandle) SQL_END
     ;
 
+errorHandle: 'WHENEVER' errorType errorAction;
+
+errorAction: goToAction | 'CONTINUE';
+
+goToAction: 'GOTO' cobolVariable;
+
+errorType: 'SQLERROR' | 'SQLWARNING' |'NOT' 'FOUND';
+
 declareCursor
-    : SQL_EXEC SQL 'DECLARE' cursorName 'CURSOR' withClause? 'FOR' selectQuery forUpdateClause? SQL_END
+    : SQL_EXEC SQL 'DECLARE' cursorName 'CURSOR' withClause? 'FOR' selectQuery forUpdateClause? isolationClause? SQL_END
     ;
+
+isolationClause: 'WITH' ('UR'|'RS');
 withClause
     : 'WITH' ('HOLD' | 'ROWSET' 'POSITIONING' | 'INSENSITIVE' 'SCROLL'|'SENSITIVE' 'SCROLL')
     ;
@@ -37,7 +47,7 @@ selectQuery
     ;
 
 insertQuery
-    : 'INSERT' 'INTO' tableName '(' columnList ')' 'VALUES' '(' valueList ')'
+    : 'INSERT' 'INTO' tableName ('(' columnList ')')? 'VALUES' '(' valueList ')'
     ;
 
 updateQuery
@@ -79,8 +89,10 @@ assignmentList
     ;
 
 whereClause
-    : 'WHERE' conditionExpression
+    : 'WHERE' (conditionExpression | cursorCondition)
     ;
+
+cursorCondition: 'CURRENT' 'OF' cursorName;
 
 conditionExpression
     : condition (logicalOperator condition)*

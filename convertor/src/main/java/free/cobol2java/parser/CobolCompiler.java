@@ -47,4 +47,7 @@ public class CobolCompiler {
     public String getCobolName() {
         return cobolName;
     }
+    public String currentCopybook(){
+        return copybookStack.peek();
+    }
 }

@@ -20,6 +20,9 @@
             {{>model.copy75}}
             {{%
                 innerCls = isSubCopybook != null ? subCopyBookClsName : innerCls;
+                packName = model_getPackage(innerCls,"false");
+                imports = obj_getFromMap(importsMap,mainClassName);
+                packName !=null ?obj_addToList(imports,packName+"."+innerCls):"";
             ""}}
             private {{%innerCls)}} {{%fieldName}};
         {{/execSqlText}}
