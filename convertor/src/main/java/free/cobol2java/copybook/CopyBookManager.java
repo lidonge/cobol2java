@@ -88,6 +88,7 @@ public class CopyBookManager implements ICobol2JavaBase , ILogable {
             exprContextMap.put(name, exprContext);
             String packageName = cobolConvertor.getRootPackageName() +
                     getRelativePath(name).replace(File.separator,".");
+            packageName = ICobolConvertor.checkPackageName(packageName);
             classNameToPackageName.put(name,packageName);
 
             MustacheListenerImpl listener = createMustacheListener("/mustache/copybook.mustache");
@@ -106,7 +107,7 @@ public class CopyBookManager implements ICobol2JavaBase , ILogable {
                 }
             }
 
-            getLogger().info("Copybook:{} Loaded. ",copyBook.getName());
+//            getLogger().info("Copybook:{} Loaded. ",copyBook.getName());
         }
     }
     public String getPackageNameByModelName(String modelName, boolean useCurrentCopybook){

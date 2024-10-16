@@ -1,2 +1,8 @@
-{{#operands}}{{#operandValueStmt}}{{#literal}}{{>literal}}{{/literal}}{{#call}}{{>call}}{{/call}}{{/operandValueStmt}}{{%
-""}}{{#$operand}}{{%operand}}{{/operand}}{{^-last}},{{/-last}}{{/operands}}
+{{#operands}}
+    {{#operandValueStmt}}
+        {{#literal}}{{>literal}}{{/literal}}
+        {{#call}}{{>call}}{{/call}}
+    {{/operandValueStmt}}
+    {{#$operand}}{{%operand}}{{/operand}}
+    {{^-last}},{{/-last}}
+{{/operands}}

@@ -1,0 +1,40 @@
+{{%specRegCall=null;identifierCall=null;isAddressOf=null;""}}
+{{#delegate}}
+    {{%
+        callType = obj_getVar("callType");
+        isSpecRegCall = callType == "SPECIAL_REGISTER_CALL" ? "isSpecRegCall" : null;
+    ""}}
+    {{%curObj=obj_getCurObj();""}}
+    {{#$isSpecRegCall}}{{#$curObj}}
+        {{%
+            regType = obj_getVar("type");
+            isLengthOf = regType == "LENGTH_OF" ? "isLengthOf" :null;
+            isAddressOf = regType == "ADDRESS_OF" ? "isAddressOf":null;
+        ""}}
+        {{#identifierCall}}
+            {{%
+                var_push(isAddressOf);
+                var_push(isLengthOf);
+            ""}}
+            {{>call}}
+            {{%
+                isLengthOf =var_pop();
+                isAddressOf = var_pop();
+                identifierCall=operand;
+            ""}}
+        {{/identifierCall}}
+        {{#$isLengthOf}}
+            {{^$identifierCall}}{{>call.qlfName}}{{/identifierCall}}
+            {{%
+                qlfName = identifierCall != null ? identifierCall:qlfName;
+                specRegCall = "Util.lengthOf("+qlfName+")";
+            ""}}
+        {{/isLengthOf}}
+        {{#$isAddressOf}}
+            {{^$identifierCall}}{{>call.qlfName}}{{/identifierCall}}
+            {{%
+                specRegCall = identifierCall != null ? identifierCall:qlfName;
+            ""}}
+        {{/isAddressOf}}
+    {{/curObj}}{{/isSpecRegCall}}
+{{/delegate}}

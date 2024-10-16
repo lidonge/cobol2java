@@ -1,0 +1,17 @@
+{{%
+    c_name = obj_getVar("name");
+    //for constant set qlfName and clear c_name
+    isConstant = name_isConst(c_name) ? "isConstant":null;
+    qlfName = null;
+""}}
+{{#$isConstant}}
+    {{%qlfName="CobolConstant."+c_name;""}}
+{{/isConstant}}
+{{#$c_name}}{{^$isConstant}}
+    {{%
+        javaName = name_toField(c_name);
+        ctxOfName = obj_getVar("ctx");
+        ofCopy = ctxOfName != null ? name_ofCopy(ctxOfName):null;
+        qlfName = name_qlfName(javaName,ofCopy);
+    ""}}
+{{/isConstant}}{{/c_name}}

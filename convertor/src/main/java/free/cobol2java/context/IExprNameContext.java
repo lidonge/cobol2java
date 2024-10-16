@@ -1,6 +1,7 @@
 package free.cobol2java.context;
 
 
+import free.cobol2java.util.CobolConstant;
 import free.servpp.logger.ILogable;
 
 import java.util.Arrays;
@@ -12,11 +13,14 @@ import java.util.Map;
 public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysicalContext,
         IExprBaseContext, ICopybookContext, IExprCtxHandler,
         IExprDimensionContext{
+    default boolean name_isConst(String name){
+        return CobolConstant.isConstant(name);
+    }
     default String name_qlfName(String fieldName, String ofCopies) {
         return name_qlfName(fieldName,ofCopies,null);
     }
     default String name_qlfName(String fieldName, String ofCopies, String localOf) {
-        if(fieldName.equals("cSaPsbkDlWritten")){
+        if(fieldName.equals("SBCA-CNT")){
             debugPoint();
         }
         String ret = null;
@@ -35,8 +39,8 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
 
         //A OF B OF C
         for (int i = ofIds.length-1; i > 0; i--) {
-            String theFieldName = ofIds[i-1];
-            String theOfCopy = ofIds[i];
+            String theOfCopy = ofIds[i-1];
+            String  theFieldName = name_toField(ofIds[i]);
             String qlfName = getQlfNameWithOneOfCopy(theFieldName,theOfCopy);
             if(ret == null){
                 ret = qlfName;
@@ -215,13 +219,20 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
     }
 
     default String name_qlfUdfNameWithDim(String javaQlfName, String dimStr) {
+        if(dimStr == null || dimStr.length() == 0 ||dimStr.equals("null"))
+            return javaQlfName;
         String ret = null;
         String delegate = javaQlfName.substring(javaQlfName.lastIndexOf('.') + 1);
-        IExprNameContext exprContext = getExprContext(delegate, false);
-        if(exprContext == null){
-            debugPoint();
+        if(getJavaFieldToQualifiedName().get(delegate) == null) {
+            IExprNameContext exprContext = getExprContext(delegate, false);
+            if (exprContext == null) {
+                if (javaQlfName.startsWith("UNDEFINED_FIELD_"))
+                    return javaQlfName;
+            }
+            ret = exprContext.name_qlfNameWithDim(javaQlfName, dimStr);
+        }else {
+            ret = name_qlfNameWithDim(javaQlfName, dimStr);
         }
-        ret = exprContext.name_qlfNameWithDim(javaQlfName, dimStr);
 //        ret = nestedQualifiedName(ret);
 
         return ret;

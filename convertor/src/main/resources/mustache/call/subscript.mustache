@@ -1,0 +1,14 @@
+{{#arithmeticExpression}}
+    {{>arithmetic}}
+    {{%operand=arithmeticExpression;""}}
+{{/arithmeticExpression}}
+{{#call}}
+    {{>call}}
+{{/call}}
+{{#literal}}
+    {{>literal}}
+{{/literal}}
+{{#integerLiteral}}
+    {{%operand=obj_getVar("value");""}}
+{{/integerLiteral}}
+{{%subscript=operand;""}}

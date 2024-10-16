@@ -1,0 +1,15 @@
+{{%plusMinus=null;""}}
+{{#plusMinus}}
+    {{%var_push(plusMinus);""}}
+    {{>arith.multDivs}}
+    {{%plusMinus=var_pop();""}}
+    {{%
+        plusMinusType=obj_getVar("plusMinusType");
+    ""}}
+    {{#$plusMinusType}}
+        {{%
+            pmOper=plusMinusType=="PLUS"?"+":"-";
+            plusMinus = plusMinus == null ? pmOper+multDivs : plusMinus+pmOper+multDivs;
+        ""}}
+    {{/plusMinusType}}
+{{/plusMinus}}

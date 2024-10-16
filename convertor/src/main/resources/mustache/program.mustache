@@ -2,7 +2,11 @@ package {{% model_package}};
 import free.cobol2java.java.*;
 //#importsMark#
 
-{{%DEBUG="program1";mainClassName=name_toClass(obj_getVar("identificationDivision.programIdParagraph.name"));""}}
+{{%
+    DEBUG="program1";
+    orgMainClsName = obj_getVar("identificationDivision.programIdParagraph.name");
+    mainClassName=name_toClass(str_replace(orgMainClsName,"'",""));
+""}}
 {{%
     importsMap = obj_newMap();
     imports=obj_newList();

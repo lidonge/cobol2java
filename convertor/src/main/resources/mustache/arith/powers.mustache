@@ -1,0 +1,21 @@
+{{%powers=null;""}}
+{{#powers}}
+    {{>arith.basis}}
+    {{#powers}}
+        {{%
+            var_push(powers);
+            var_push(basis);
+        ""}}
+        {{>arith.power}}
+        {{%
+            basis=var_pop();
+            powers=var_pop();
+            powers=power == null?basis:(
+                powers==null ? "Math.pow("+basis+","+power +")" :
+                                "Math.pow("+powers+","+power +")");
+        ""}}
+    {{/powers}}
+    {{%
+        powers=powers==null ? basis : powers;
+    ""}}
+{{/powers}}

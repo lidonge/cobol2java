@@ -13,8 +13,13 @@ public class CobolConstant {
     public static String[] texts = new String[]{"ALL" ,"HIGH-VALUE" ,"HIGH-VALUES" ,"LOW-VALUE" ,"LOW-VALUES" ,"NULL" ,"NULLS" ,"QUOTE" ,"QUOTES" ,"SPACE" ,"SPACES" ,"ZERO" ,"ZEROS" ,"ZEROES","SQLCODE"};
 
     public static boolean isConstant(String id){
-        if(id != null)
-            return Arrays.stream(texts).toList().indexOf(id) != -1;
+        if(id != null) {
+            for(String text:texts){
+                if(text.equals(id)){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 }

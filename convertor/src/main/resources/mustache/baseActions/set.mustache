@@ -7,7 +7,10 @@
         {{%tosList=obj_newList();tosIsAddr=obj_newList();index=0;""}}
         {{#tos}}{{#toCall}}
             {{>call}}
-            {{%obj_addToList(tosList,operand);obj_addToList(tosIsAddr,isAddressOf);""}}
+            {{%
+                obj_addToList(tosList,operand);
+                obj_addToList(tosIsAddr,isAddressOf=="isAddressOf");
+            ""}}
         {{/toCall}}{{/tos}}
         {{#values}}
             {{%valueType=obj_getVar("valueType");""}}

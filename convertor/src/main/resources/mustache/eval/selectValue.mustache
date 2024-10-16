@@ -2,6 +2,14 @@
     {{%isArith=null;""}}
     {{#call}}{{>call}}{{/call}}
     {{#literal}}{{>literal}}{{/literal}}
+    {{^call}}
+        {{^literal}}
+            {{>arithmetic}}
+            {{%operand=arithmeticExpression;""}}
+        {{/literal}}
+    {{/call}}
     {{#multDivs}}{{%isArith="isArith";""}}{{/multDivs}}
-    {{%selOperand=isArith !=null ? expr_convertExpr(obj_getVar("ctx")):operand;""}}
+    {{%
+        selOperand=operand ;
+    ""}}
 {{/selectValueStmt}}

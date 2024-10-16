@@ -1,0 +1,12 @@
+{{%basis=null;""}}
+{{#basis}}
+    {{#basisValueStmt}}
+        {{#call}}{{>call}}{{/call}}
+        {{#literal}}{{>literal}}{{/literal}}
+        {{^call}}{{^literal}}
+            {{>arithmetic}}
+            {{%operand=arithmeticExpression;""}}
+        {{/literal}}{{/call}}
+        {{%basis=operand;""}}
+    {{/basisValueStmt}}
+{{/basis}}

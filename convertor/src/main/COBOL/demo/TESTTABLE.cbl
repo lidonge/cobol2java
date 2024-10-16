@@ -12,6 +12,11 @@
              10 WS-C1 OCCURS 5 TIMES INDEXED BY J.
                 15 WS-D1 PIC X(6) VALUE ALL 'A'.
     PROCEDURE DIVISION.
+       IF TFT-DRW-TYP(1:1) = C-SA-DRW-BY-PSBK
+       THEN
+          MOVE '0801'               TO AIF-REFERENCE-TYPE
+          MOVE TFT-PSBK-PRT-NO1     TO AIF-REFERENCE-NO
+       END-IF.
        DISPLAY "ONE-D TABLE : "WS-A(1).
        DISPLAY "TWO-D TABLE : "WS-TABLE1.
        Finished.
@@ -36,7 +41,7 @@
              MOVE 'EN005'              TO WS-A(2)
            END-IF.
        TODO-SET.
-          SET ADDRESS OF WS-SRCH     TO WS-SRCH1.
+          SET ADDRESS OF WS-SRCH     TO WS-SRCH1.ƒ
           SET I J TO 1 2.
           DISPLAY WS-C1(I,J).
           SET I J UP BY 1.

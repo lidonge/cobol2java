@@ -29,6 +29,7 @@
                10 WS-MATRIX-ROW OCCURS 5 TIMES.
                    15 WS-MATRIX-CELL OCCURS 4 TIMES PIC 9(3) VALUE 0.
        PROCEDURE DIVISION.
+           DISPLAY 'Matrix Cell [1][1]: ' WS-MATRIX-CELL (1,1)
            DISPLAY 'Number: ' WS-NUMBER
            DISPLAY 'Text: ' WS-TEXT OF WS-VARIABLES
            DISPLAY 'Counter: ' WS-COUNTER
@@ -36,7 +37,6 @@
            DISPLAY 'Result: ' WS-RESULT
            DISPLAY 'Temp: ' WS-TEMP
            DISPLAY 'Array Item 1: ' WS-NUMBER-ITEM (1)
-           DISPLAY 'Matrix Cell [1][1]: ' WS-MATRIX-CELL (1,1)
 
 
            STOP RUN.

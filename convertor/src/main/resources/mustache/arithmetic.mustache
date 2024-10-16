@@ -1,19 +1,12 @@
 {{%
-    arithmeticExpression=expr_convertExpr(obj_getVar("ctx"));
+    arithmeticExpression = null;
+    //arithmeticExpression=expr_convertExpr(obj_getVar("ctx"));
     //println("====ctx=" +obj_getVar("ctx.text")+",arithmeticExpression=" +arithmeticExpression);
 ""}}
-{{!--#multDivs}}
-    {{#powers}}
-        {{#basis}}
-            {{#basisValueStmt}}
-                {{#call}}{{>call}}{{/call}}
-                {{#literal}}{{>literal}}{{/literal}}
-            {{/basisValueStmt}}
-        {{/basis}}
-        {{*powers}}
-    {{/powers}}
-    {{*multDivs}}
-{{/multDivs}}
-{{#plusMinus}}
-
-{{/plusMinus--}}
+{{>arith.multDivs}}
+{{%var_push(multDivs);""}}
+{{>arith.plusMinus}}
+{{%
+    multDivs=var_pop();
+    arithmeticExpression=plusMinus==null?multDivs:multDivs+plusMinus;
+""}}

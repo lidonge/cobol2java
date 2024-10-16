@@ -18,4 +18,5 @@ public class CobolConstant {
     public static final Integer ZERO = 0;
     public static final String ZEROS = "";
     public static final String ZEROES = "";
+    public static final String SQLCODE = "";
 }

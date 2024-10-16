@@ -1,0 +1,14 @@
+{{%funcCall=null;""}}
+{{#delegate}}
+    {{#arguments}}
+        {{>call.argument}}
+        {{%arguments = arguments == null?argument+"":arguments+","+argument;""}}
+    {{/arguments}}
+    {{%
+        callType = obj_getVar("callType");
+        isFunction = callType == "FUNCTION_CALL" ? "isFunction" : null;
+    ""}}
+    {{#$isFunction}}
+        {{%funcCall = "Function."+ name_toField(obj_getVar("name")) +"("+arguments+")";""}}
+    {{/isFunction}}
+{{/delegate}}

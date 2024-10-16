@@ -4,7 +4,7 @@ application {
     version = "1.0"
     dirs {
         sourcePath = "/Users/lidong/gitspace/cobol2java/convertor/src/main/COBOL/demo"
-        targetPath = "/Users/lidong/gitspace/cobol2java/convertor/target/generated-sources"
+        targetPath = "/Users/lidong/test/cbodjava/src/main/java"
         copyDir ="*"
     }
     rootPackageName = "com.dcits"

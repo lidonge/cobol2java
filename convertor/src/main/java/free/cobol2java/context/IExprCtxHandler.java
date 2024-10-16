@@ -8,18 +8,27 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.proleap.cobol.CobolLexer.*;
+
 /**
  * @author lidong@date 2024-09-29@version 1.0
  */
 public interface IExprCtxHandler extends IExprEnvContext{
     String LENGTHOF = "LENGTHOF";
+    String FUNCTION = "FUNCTION";
     record PropOfField(String id, List<String> ofId) {
     }
 
     default String name_ofCopy(Object o) {
-        if (!(o instanceof CobolParser.QualifiedDataNameContext))
+        if (!(o instanceof CobolParser.QualifiedDataNameContext) &&
+            !(o instanceof CobolParser.QualifiedDataNameFormat1Context)&&
+                !(o instanceof CobolParser.QualifiedDataNameFormat2Context)&&
+                !(o instanceof CobolParser.QualifiedDataNameFormat3Context)&&
+                !(o instanceof CobolParser.QualifiedDataNameFormat4Context)
+        )
             return null;
-        CobolParser.QualifiedDataNameContext ctx = (CobolParser.QualifiedDataNameContext) o;
+        ParserRuleContext ctx = (ParserRuleContext) o;
+
         List<TerminalNode> list = new ArrayList<>();
         IExprBaseContext.getAllTerm(ctx, list);
         boolean isOf = false;
@@ -79,10 +88,14 @@ public interface IExprCtxHandler extends IExprEnvContext{
         boolean isOf = false;
         String prevNode = null;
         boolean isLengthOf = false;
+        boolean isFunction = false;
         for (TerminalNode node : list) {
             String text = node.getText();
             int symbolType = node.getSymbol().getType();
             switch (symbolType) {
+                case CobolLexer.FUNCTION:
+                    isFunction = true;
+                    break;
                 case CobolLexer.OF: {
                     if (!isLengthOf)
                         isOf = true;
@@ -109,20 +122,34 @@ public interface IExprCtxHandler extends IExprEnvContext{
                         prevNode = null;
                         continue;
                     } else if (prevNode != null) {
+                        if (isFunction) {
+                            isFunction = false;
+                            text = FUNCTION + text;
+                        }
                         if (isLengthOf) {
                             isLengthOf = false;
-                            text = LENGTHOF + node.getText();
+                            text = LENGTHOF + text;
                         }
                         ofIds.add(prevNode);
                     }else{
+                        if (isFunction) {
+                            isFunction = false;
+                            text = FUNCTION + text;
+                        }
                         if (isLengthOf) {
                             isLengthOf = false;
-                            text = LENGTHOF + node.getText();
+                            text = LENGTHOF + text;
                         }
                     }
                     prevNode = text;
                     break;
                 }
+                case NONNUMERICLITERAL:
+                case INTEGERLITERAL:
+                case NUMERICLITERAL:
+                    ofIds.add(prevNode);
+                    prevNode = null;
+                    break;
             }
         }
         if (prevNode != null)

@@ -11,7 +11,7 @@ public interface IExprEnvContext {
     default void debugPoint() {
         if (getEnvironment() != null) {
             String debug = (String) getEnvironment().getVar("DEBUG");
-            if ("program1".equals(debug))
+            if ("specRegCall".equals(debug))
                 debug = debug;
         }
     }

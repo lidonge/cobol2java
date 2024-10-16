@@ -1,0 +1,30 @@
+{{%tableCall=null;""}}
+{{#delegate}}
+    {{%
+        subscripts=null;
+        var_push(qlfName);
+    ""}}
+    {{#subscripts}}
+        {{#subscriptValueStmt}}
+            {{>call.subscript}}
+            {{%
+                subscripts = subscripts == null?subscript:subscripts+","+subscript;
+            ""}}
+        {{/subscriptValueStmt}}
+    {{/subscripts}}
+    {{%
+        qlfName = var_pop();
+        callType = obj_getVar("callType");
+        isTable = callType == "TABLE_CALL" ? "isTable":null;
+    ""}}
+    {{#$isTable}}
+        {{^$subscripts}}{{>call.qlfName}}{{/subscripts}}
+        {{%
+            //FIXME the bug of (1,1)
+            dimString = subscripts == null ?dim_udfCall(obj_getVar("ctx.text")):subscripts+"";
+        //dimString != null && str_indexOf(qlfName,"pccmdat1.iCmdateFunc") != -1 ?
+          //  println("=======qlfName:"+qlfName+",dimString:"+dimString):null;
+            tableCall=name_qlfNameWithDim(qlfName, dimString);
+        ""}}
+    {{/isTable}}
+{{/delegate}}

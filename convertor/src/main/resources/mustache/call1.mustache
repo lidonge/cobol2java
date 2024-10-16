@@ -1,0 +1,16 @@
+{{%
+    dimString = null;
+    callType = obj_getVar("callType");
+    isTable = callType == "TABLE_CALL";
+    isLengthOf = callType == "SPECIAL_REGISTER_CALL" && obj_getVar("type") == "LENGTH_OF";
+    isAddressOf = callType == "SPECIAL_REGISTER_CALL" && obj_getVar("type") == "ADDRESS_OF";
+    isFunction = callType == "FUNCTION_CALL";
+    isIndexCall = callType == "INDEX_CALL";
+    operand = isLengthOf ? "Util.lengthOf("+operand+")": (isAddressOf ? operand :
+    isFunction ? "Function."+ name_toField(obj_getVar("name")) +"("+expr_convertFuncParam(obj_getVar("ctx"))+")":
+    expr_convertExpr(obj_getVar("ctx")));
+    operand= (callType != "DATA_DESCRIPTION_ENTRY_CALL" &&
+    callType != "UNDEFINED_CALL" &&callType != "INDEX_CALL" &&
+    !isTable && !isLengthOf && !isAddressOf && !isFunction) ? "//TODO " + obj_getVar("delegate.ctx.text"):
+    operand;
+""}}

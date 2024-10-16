@@ -5,51 +5,58 @@ import free.cobol2java.util.ExprUtil;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author lidong@date 2024-09-29@version 1.0
  */
-public interface IExprConvertContext extends IExprNameContext{
-    default String expr_conditionReference(String fieldName){
+public interface IExprConvertContext extends IExprNameContext {
+    default String expr_convertExpr(ParserRuleContext ctx) {
+        return convertExpr(ctx, false);
+    }
+
+    default String expr_convertFuncParam(ParserRuleContext ctx) {
+        return convertExpr(ctx, true);
+    }
+
+    default String expr_conditionReference(String fieldName) {
         String javaFieldName = name_toField(fieldName);
         String ret = "";
-        String qlfName=name_qlfName(javaFieldName,null);
+        String qlfName = name_qlfName(javaFieldName, null);
         String refFieldName = getJavaQlfFieldToType().get(javaFieldName);
-        if(refFieldName == null){
-            IExprNameContext exprContext = getExprContext(javaFieldName,false);
+        if (refFieldName == null) {
+            IExprNameContext exprContext = getExprContext(javaFieldName, false);
             refFieldName = exprContext.getJavaQlfFieldToType().get(javaFieldName);
         }
 
-        if(refFieldName != null) {
-            ret = "java.util.Arrays.asList("+qlfName+").contains("+name_qlfName(refFieldName, null)+")";
+        if (refFieldName != null) {
+            ret = "java.util.Arrays.asList(" + qlfName + ").contains(" + name_qlfName(refFieldName, null) + ")";
             //ret = name_qlfName(refFieldName, null) + "==" + qlfName;
-        }
-        else {
+        } else {
             getLogger().error("Error UNKNOW_CONDITION_REF: " + fieldName);
             ret = "UNKNOW_CONDITION_REF" + "==" + qlfName;
         }
         return ret;
     }
-    default String expr_convertExpr(ParserRuleContext ctx) {
-        if (ctx.getText().indexOf("DBI-SEGMENT-NAME") != -1) {
-            debugPoint();
-        }
+
+    private String convertExpr(ParserRuleContext ctx, boolean isParameter) {
         List<Object> ofIds = new ArrayList<>();
         String cobolExpr = getCtxText(ctx, ofIds);
-
+        if (isParameter) {
+            cobolExpr = cobolExpr.substring(cobolExpr.indexOf("(") + 1, cobolExpr.length() - 1);
+            ofIds.remove(0);
+        }
         String ret = cobolExpr.replace("**", "^");
         if (ofIds.size() != 0) {
             for (Object value : ofIds) {
                 ret = calcID(value, cobolExpr, ret);
             }
         } else if (CobolConstant.isConstant(ret)) {
-            ret = "CobolConstant." + ret.replace("-","_");
+            ret = "CobolConstant." + ret.replace("-", "_");
         }
-        if(!ret.startsWith("\"") && ret.indexOf("'") != -1){
+        if (!ret.startsWith("\"") && ret.indexOf("'") != -1) {
             //FIX ALL'9'
-            ret ="\"" +ret + "\"";
+            ret = "\"" + ret + "\"";
         }
         return ret.indexOf('^') != -1 ? ExprUtil.convertExpression(ret) : ret;
 
@@ -60,6 +67,7 @@ public interface IExprConvertContext extends IExprNameContext{
         String fieldName = null;
         String ofId = null;
         boolean isLengthOf = false;
+        boolean isFunction = false;
         if (value instanceof String) {
             id = (String) value;
         } else {
@@ -71,6 +79,10 @@ public interface IExprConvertContext extends IExprNameContext{
         if (id.startsWith(LENGTHOF)) {
             realId = id.substring(LENGTHOF.length());
             isLengthOf = true;
+        }
+        if (realId.startsWith(FUNCTION)) {
+            realId = realId.substring(FUNCTION.length());
+            isFunction = true;
         }
         fieldName = name_toField(realId);
         if (!(value instanceof String)) {
@@ -85,30 +97,38 @@ public interface IExprConvertContext extends IExprNameContext{
             }
         }
         if (CobolConstant.isConstant(id))
-            return "CobolConstant." + id.replace("-","_");
+            return "CobolConstant." + id.replace("-", "_");
         String[] dims = getDimStringOfVar(cobolExpr, id);
         String dimStr = dims[1];
-        String qlfName = name_qlfName(fieldName, ofId);
+        String qlfName = null;
+        if(isFunction){
+
+        }else{
+            qlfName = name_qlfName(fieldName, ofId);
+        }
         if (dimStr == null) {
             String sExpr = qlfName;
+            if(isFunction){
+                sExpr = "Function." + qlfName;
+            }
             if (isLengthOf) {
                 sExpr = "Util.sizeof(" + qlfName + ")";
             }
-            if(sExpr == null){
+            if (sExpr == null) {
                 debugPoint();
             }
             //Whole word replace
-            ret = ret.replaceAll("\\b"+id+"\\b", sExpr);
+            ret = ret.replaceAll("\\b" + id + "\\b", sExpr);
         } else {
-            if(dimStr.indexOf(":") == -1) {
+            if (dimStr.indexOf(":") == -1) {
                 String qlfNameWithDims = null;
                 if (getJavaQlfNameWithLeaf(qlfName) != null)
                     qlfNameWithDims = name_qlfNameWithDim(qlfName, dimStr);
                 else
                     qlfNameWithDims = name_qlfUdfNameWithDim(qlfName, dimStr);
                 ret = dims[0] + qlfNameWithDims + dims[2];
-            }else{
-                ret = dims[0] + qlfName+"("+dimStr+")" + dims[2];
+            } else {
+                ret = dims[0] + qlfName + "(" + dimStr + ")" + dims[2];
             }
         }
         int index = ret.indexOf(":");
@@ -116,9 +136,8 @@ public interface IExprConvertContext extends IExprNameContext{
             int right = ret.indexOf(')', index);
             int left = ret.lastIndexOf('(', index);
             String range = ret.substring(left + 1, right);
-            ret = "Util.subvalue(" + ret.substring(0,left) + ",\"" + range.replace(':',',') + "\")";
+            ret = "Util.subvalue(" + ret.substring(0, left) + ",\"" + range.replace(':', ',') + "\")";
         }
         return ret;
     }
-
 }

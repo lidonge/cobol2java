@@ -2,12 +2,26 @@
 {{%curObj=obj_getCurObj();""}}
 {{#$DIVIDE}}{{#$curObj}}
     {{%divideOpand=null;remainder=null;""}}
-    {{#operandValueStmt}}{{#literal}}{{>literal}}{{/literal}}
-    {{#call}}{{>call}}{{/call}}{{%divideOpand = operand;""}}{{/operandValueStmt}}
-    {{#remainder}}{{#remainderCall}}{{>call}}{{%remainder=operand;""}}{{/remainderCall}}{{/remainder}}
-    {{#divideIntoStatement}}{{>baseActions.divideinto}}{{/divideIntoStatement}}
-    {{#divideIntoGivingStatement}}{{>baseActions.divideinto}}{{/divideIntoGivingStatement}}
-    {{#divideByGivingStatement}}{{>baseActions.divideinto}}{{/divideByGivingStatement}}
+    {{#operandValueStmt}}
+        {{#literal}}{{>literal}}{{/literal}}
+        {{#call}}{{>call}}{{/call}}
+        {{%divideOpand = operand;""}}
+    {{/operandValueStmt}}
+    {{#remainder}}
+        {{#remainderCall}}
+            {{>call}}
+            {{%remainder=operand;""}}
+        {{/remainderCall}}
+    {{/remainder}}
+    {{#divideIntoStatement}}
+        {{>baseActions.divideinto}}
+    {{/divideIntoStatement}}
+    {{#divideIntoGivingStatement}}
+        {{>baseActions.divideinto}}
+    {{/divideIntoGivingStatement}}
+    {{#divideByGivingStatement}}
+        {{>baseActions.divideinto}}
+    {{/divideByGivingStatement}}
     {{#notOnSizeErrorPhrase}}//TODO DIVIDE notOnSizeErrorPhrase{{/notOnSizeErrorPhrase}}
     {{#onSizeErrorPhrase}}//TODO DIVIDE onSizeErrorPhrase{{/onSizeErrorPhrase}}
 {{/curObj}}{{/DIVIDE}}

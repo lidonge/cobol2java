@@ -139,7 +139,7 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
                 }
             } catch (final IOException | URISyntaxException e) {
                 result = null;
-//                LOG.warn(e.getMessage());
+                getLogger(getClass()).error("Error when parse COPYBOOK:{} with IOException", copyBook.getName(),e);
             } catch (CopybookException e) {
                 //not data copybook
             }catch(CobolPreprocessorException ex){

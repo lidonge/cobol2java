@@ -1,0 +1,22 @@
+{{%multDivs=null;""}}
+{{#multDivs}}
+    {{%var_push(multDivs);""}}
+    {{>arith.powers}}
+    {{%multDivs=var_pop();""}}
+    {{#multDivs}}
+        {{%
+            var_push(multDivs);
+            var_push(powers);
+        ""}}
+        {{>arith.multiDiv}}
+        {{%
+            powers = var_pop();
+            multDivs=var_pop();
+            multDivs=multDiv ==null ? powers :(
+                    multDivs == null?
+                        "("+powers+")"+ mdOper+multDiv:
+                        multDivs+ mdOper+multDiv);
+        ""}}
+    {{/multDivs}}
+    {{%multDivs=multDivs == null?powers:multDivs;""}}
+{{/multDivs}}

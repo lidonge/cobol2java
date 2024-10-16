@@ -10,6 +10,9 @@ public interface IExprDimensionContext extends IExprPhysicalContext, IExprEnvCon
         //use max name access array, there is an ambiguity here, but can not avoid
         String javaQlfName = getJavaQlfNameWithLeaf(theJavaQlfName);
         String[] theNames = theJavaQlfName.split("\\.");
+        if(javaQlfName == null){
+            debugPoint();
+        }
         String[] names = javaQlfName.split("\\.");
         int dimIndex = 0;
         for (int i = 0;i<names.length;i++) {

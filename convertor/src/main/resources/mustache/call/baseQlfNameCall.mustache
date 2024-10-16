@@ -1,0 +1,19 @@
+{{%
+    callType = obj_getVar("callType");
+    isDataCall = callType == "DATA_DESCRIPTION_ENTRY_CALL" ? "isDataCall" : null;
+    isUndefinedCall = callType == "UNDEFINED_CALL" ? "IsUndefinedCall":null;
+    isQlfCall = callType == "DATA_DESCRIPTION_ENTRY_CALL"||callType == "UNDEFINED_CALL" ? "isQlfCall":null;
+""}}
+{{#$isQlfCall}}
+    {{>call.qlfName}}
+    {{#$isUndefinedCall}}{{^$isConstant}}
+        {{%
+            dimString = dim_udfCall(obj_getVar("ctx.text"));
+            qlfName=dimString != null?name_qlfUdfNameWithDim(qlfName, dimString):qlfName;
+        ""}}
+    {{/isConstant}}{{/isUndefinedCall}}
+    {{%qlfNameCall=qlfName;""}}
+{{/isQlfCall}}
+{{^$isQlfCall}}
+    //TODO in qlfNameCall {{%callType}};
+{{/isQlfCall}}

@@ -1,8 +1,9 @@
 {{#intos}}
     {{#givingCall}}
         {{%rounded = (obj_getVar("rounded") +"") == "true" ? "yes":null;""}}
-        {{>call}}{{%intoValue = operand;"")}}
-        {{%delegate}} = {{#$rounded}}Math.round({{/rounded}}{{%intoValue}} / {{%divideOpand}}{{#$rounded}}){{/rounded}};
+        {{>call}}
+        {{%intoValue = operand;"")}}
+        {{%operand}} = {{#$rounded}}Math.round({{/rounded}}{{%intoValue}} / {{%divideOpand}}{{#$rounded}}){{/rounded}};
         {{#$remainder}}{{%remainder}}={{%intoValue}} % {{%divideOpand}};{{/remainder}}
     {{/givingCall}}
 {{/intos}}
@@ -20,7 +21,7 @@
     {{#givings}}
         {{%rounded = (obj_getVar("rounded") +"") == "true" ? "yes":null;""}}
         {{#givingCall}}{{>call}}{{%delegate = operand;""}}{{/givingCall}}
-        {{%delegate}} = {{#$rounded}}Math.round({{/rounded}}{{%intoValue}} / {{%divideOpand}}{{#$rounded}}){{/rounded}};
+        {{%operand}} = {{#$rounded}}Math.round({{/rounded}}{{%intoValue}} / {{%divideOpand}}{{#$rounded}}){{/rounded}};
         {{#$remainder}}{{%remainder}}={{%intoValue}} % {{%divideOpand}};{{/remainder}}
     {{/givings}}
 {{/givingPhrase}}

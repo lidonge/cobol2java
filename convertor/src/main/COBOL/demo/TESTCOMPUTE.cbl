@@ -30,13 +30,14 @@
              10 WS-C1 OCCURS 5 TIMES.
                 15 WS-D1 PIC X(6).
        PROCEDURE DIVISION.
-
+           COMPUTE Average = WS-C OF WS-Cls.
+           COMPUTE Average = (WS-Score1 + Score2 + Score3) / 3.
+           COMPUTE Total1 =  FUNCTION MOD(Price1, 5)+WS-D1(2, 1).
+           COMPUTE Total1 = LENGTH OF FUNCTION MOD(Price1 5) + 3+WS-D1(2, 1).
            COMPUTE Total1 = 3+WS-NUMBER-ITEM(4) * Quantity1 - 6.
            COMPUTE Total1 = 3+Price1 * Quantity1 - 6.
-           COMPUTE Average = (Score1 + Score2 + Score3) / 3.
            COMPUTE Total1 WS-Score1 = 3 +(5 - Price1) ** 6 + 3**6.
            COMPUTE RoundedTotal ROUNDED = Total1 * TaxRate .
-           COMPUTE Total1 = 3+WS-D1(2,1).
            COMPUTE LargeResult = WS-A * WS-C OF WS-Cls ON SIZE ERROR DISPLAY "Error: Size exceeded".
 *           COMPUTE Total1 = Price1 * Quantity1, Total2 = Price2 * Quantity2.
 
