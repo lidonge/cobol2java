@@ -139,11 +139,11 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
                 }
             } catch (final IOException | URISyntaxException e) {
                 result = null;
-                getLogger(getClass()).error("Error when parse COPYBOOK:{} with IOException", copyBook.getName(),e);
+                getLogger(getClass()).error("Error when parse COPYBOOK:{} with IOException", copyBook.getName(), e);
             } catch (CopybookException e) {
                 //not data copybook
-            }catch(CobolPreprocessorException ex){
-                getLogger(getClass()).error("Error when parse COPYBOOK:{} with exception {}", copyBook.getName(),ex.getMessage());
+            }catch(CobolPreprocessorException ex) {
+                getLogger(getClass()).error("Error when parse COPYBOOK:{} with exception {}", copyBook.getName(), ex.getMessage());
                 result = null;
             }finally {
                 cobolCompiler.exitCopybook(copyName);
@@ -173,7 +173,7 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
                 String copyText = ctx.copySource().getText();
                 line = line.replace('\t',' ');
 
-                if(line.substring(line.lastIndexOf(' ')+1).equals(copyText+".")){
+                if(line.substring(line.lastIndexOf(' ') + 1).equals(copyText + ".")) {
                     sameNameCopy = true;
                 }
             }

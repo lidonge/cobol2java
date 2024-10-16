@@ -23,6 +23,7 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
         if(fieldName.equals("SBCA-CNT")){
             debugPoint();
         }
+
         String ret = null;
         boolean isInCopy = ofCopies != null && ofCopies.length() != 0 && !"null".equals(ofCopies);
         if (isInCopy) {
@@ -39,8 +40,8 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
 
         //A OF B OF C
         for (int i = ofIds.length-1; i > 0; i--) {
-            String theOfCopy = ofIds[i-1];
-            String  theFieldName = name_toField(ofIds[i]);
+            String theOfCopy = ofIds[i];
+            String  theFieldName = name_toField(ofIds[i-1]);
             String qlfName = getQlfNameWithOneOfCopy(theFieldName,theOfCopy);
             if(ret == null){
                 ret = qlfName;
@@ -116,7 +117,7 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
         IExprNameContext exprContext = getExprContext(fieldName,isMiddleName);
         if(exprContext == null){
             getLogger().error("Error Undefined middle({}) field:{}", isMiddleName, fieldName);
-            return "UNDEFINED_FIELD_"+fieldName;
+            return fieldName;
         }
         String theFieldName = exprContext.getCopyFieldNameToJavaFileName().get(fieldName);
         if(!isMiddleName || theFieldName == null){
@@ -221,6 +222,10 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
     default String name_qlfUdfNameWithDim(String javaQlfName, String dimStr) {
         if(dimStr == null || dimStr.length() == 0 ||dimStr.equals("null"))
             return javaQlfName;
+        if (dimStr.indexOf(":") != -1) {
+            String dim = dimStr.replace(":", ",");
+            return "Util.subvalue("+javaQlfName+","+ toQlfDims(dim) +")";
+        }
         String ret = null;
         String delegate = javaQlfName.substring(javaQlfName.lastIndexOf('.') + 1);
         if(getJavaFieldToQualifiedName().get(delegate) == null) {
@@ -229,12 +234,30 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
                 if (javaQlfName.startsWith("UNDEFINED_FIELD_"))
                     return javaQlfName;
             }
-            ret = exprContext.name_qlfNameWithDim(javaQlfName, dimStr);
+            String qlfDims = toQlfDims(dimStr);
+            ret = exprContext.name_qlfNameWithDim(javaQlfName, qlfDims);
         }else {
             ret = name_qlfNameWithDim(javaQlfName, dimStr);
         }
 //        ret = nestedQualifiedName(ret);
 
+        return ret;
+    }
+
+    private String toQlfDims(String dimStr){
+        String[] dims = dimStr.split(",");
+        String ret = null;
+        for(String dim:dims){
+            if(!dim.matches("-?\\d+")){
+                //FIXME if dim is a complex arithmetic, should merge copybook to main to fix.
+                dim = name_qlfName(name_toField(dim),null);
+            }
+            if(ret == null){
+                ret = dim;
+            }else{
+                ret += ","+dim;
+            }
+        }
         return ret;
     }
 
@@ -244,7 +267,11 @@ public interface IExprNameContext extends ILogable, IExprEnvContext,IExprPhysica
         if (dimStr == null) {
             ret = theJavaQlfName;
         } else {
-            ret = addDimToQlfName(theJavaQlfName, dimStr);
+            if(dimStr.indexOf(":") != -1){
+                String dim = dimStr.replace(":", ",");
+                ret = "Util.subvalue("+theJavaQlfName+","+ dim +")";
+            }else
+                ret = addDimToQlfName(theJavaQlfName, dimStr);
         }
 //        ret = nestedQualifiedName(ret);
 

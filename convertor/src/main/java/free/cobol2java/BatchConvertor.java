@@ -6,6 +6,7 @@ import free.cobol2java.context.IExprCallContext;
 import free.cobol2java.copybook.CopyBookManager;
 import free.servpp.multiexpr.ReflectTool;
 import free.servpp.mustache.CodeFormator;
+import io.proleap.cobol.asg.metamodel.impl.ProgramUnitElementImpl;
 import io.proleap.cobol.preprocessor.CobolPreprocessor;
 
 import java.io.File;
@@ -23,6 +24,7 @@ public class BatchConvertor extends BaseConvertor {
 
     public static void main(String[] args) throws IOException {
 //        ReflectTool.DEBUG=true;
+        ProgramUnitElementImpl.IGNORE_UNDEFINED_ERROR = true;
         BatchConvertor batchConvertor = new BatchConvertor();
         CobolConfig.setCobolConvertor(batchConvertor);
         if(args.length == 0){

@@ -11,6 +11,16 @@
             ""}}
         {{/subscriptValueStmt}}
     {{/subscripts}}
+    {{#referenceModifier}}
+        {{#characterPosition}}
+            {{>arithmetic}}
+            {{%c_characterPosition=arithmeticExpression;""}}
+        {{/characterPosition}}
+        {{#length}}
+            {{>arithmetic}}
+            {{%c_length=arithmeticExpression;""}}
+        {{/length}}
+    {{/referenceModifier}}
     {{%
         callType = obj_getVar("callType");
         isTable = callType == "TABLE_CALL" ? "isTable":null;
@@ -19,7 +29,7 @@
         {{>call.qlfName}}
         {{%
             //FIXME the bug of (1,1)
-            dimString = subscripts == null ?dim_udfCall(obj_getVar("ctx.text")):subscripts+"";
+            dimString = subscripts == null ?(c_characterPosition+":"+c_length):subscripts+"";
             tableCall=name_qlfNameWithDim(qlfName, dimString);
         ""}}
     {{/isTable}}

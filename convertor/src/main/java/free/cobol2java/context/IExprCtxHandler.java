@@ -44,6 +44,8 @@ public interface IExprCtxHandler extends IExprEnvContext{
                     else
                         ret += "." + node.getText();
                 }
+            }else{
+                break;
             }
         }
         return ret;

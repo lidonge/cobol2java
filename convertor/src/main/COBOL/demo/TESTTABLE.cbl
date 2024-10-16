@@ -41,7 +41,7 @@
              MOVE 'EN005'              TO WS-A(2)
            END-IF.
        TODO-SET.
-          SET ADDRESS OF WS-SRCH     TO WS-SRCH1.ƒ
+          SET ADDRESS OF WS-SRCH     TO WS-SRCH1.
           SET I J TO 1 2.
           DISPLAY WS-C1(I,J).
           SET I J UP BY 1.

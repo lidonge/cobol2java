@@ -86,7 +86,7 @@ public class CopyBookManager implements ICobol2JavaBase , ILogable {
             exprContext.setCopyBookName(name);
             exprContext.setCopyBookPath(copyBook.getAbsolutePath());
             exprContextMap.put(name, exprContext);
-            String packageName = cobolConvertor.getRootPackageName() +
+            String packageName = cobolConvertor.getRootPackageName() + ".models"+
                     getRelativePath(name).replace(File.separator,".");
             packageName = ICobolConvertor.checkPackageName(packageName);
             classNameToPackageName.put(name,packageName);

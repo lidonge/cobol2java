@@ -9,10 +9,18 @@ public interface IExprDimensionContext extends IExprPhysicalContext, IExprEnvCon
         String[] dims = dimStr.split(",");
         //use max name access array, there is an ambiguity here, but can not avoid
         String javaQlfName = getJavaQlfNameWithLeaf(theJavaQlfName);
-        String[] theNames = theJavaQlfName.split("\\.");
         if(javaQlfName == null){
-            debugPoint();
+            //in copy book
+            String javaFieldName = theJavaQlfName.substring(0,theJavaQlfName.indexOf("."));
+            String copybookClsName = getJavaQlfFieldToType().get(javaFieldName);
+            String copyFieldName = getJavaFieldNameToCopyFieldName().get(javaFieldName);
+            if(copyFieldName != null){
+                copybookClsName = getJavaQlfFieldToType().get(copyFieldName);
+            }
+            IExprNameContext exprNameContext = getCopybookContexts().get(copybookClsName);
+            return exprNameContext.addDimToQlfName(theJavaQlfName,dimStr);
         }
+        String[] theNames = theJavaQlfName.split("\\.");
         String[] names = javaQlfName.split("\\.");
         int dimIndex = 0;
         for (int i = 0;i<names.length;i++) {

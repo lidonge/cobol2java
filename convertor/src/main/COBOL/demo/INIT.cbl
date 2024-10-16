@@ -13,7 +13,7 @@
        INITIALIZE WS-NAME, WS-ADDRESS.
        INITIALIZE WS-ID REPLACING NUMERIC DATA BY 12345.
        INITIALIZE WS-COUNTRY REPLACING ALPHABETIC DATA BY 'USA'.
-       DISPLAY "My name is   : "WS-NAME.
+       DISPLAY "My name is   : "WS-NAME(1:5).
        DISPLAY "My ID is     : "WS-ID.
        DISPLAY "Address      : "WS-ADDRESS.
        DISPLAY "House Number : "WS-HOUSE-NUMBER.

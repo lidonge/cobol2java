@@ -39,6 +39,6 @@ public class Util {
         return 0;
     }
 
-    public static <T> void copyObject(T src, Object target, String targetRange) {
+    public static <T> void copyObject(T src, Object target, int start, int length) {
     }
 }
