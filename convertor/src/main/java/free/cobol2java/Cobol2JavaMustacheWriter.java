@@ -49,7 +49,7 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
 
                             lastName = partialName;
                             mustacheCompiler.compileAntlr4();
-                            MustacheListenerImpl listener = new MustacheListenerImpl();
+                            MustacheListenerImpl listener = new MustacheListenerImpl(url.toURI());
                             mustacheCompiler.workListener(listener);
                             tmpl = listener.getTemplate();
                             templateMap.put(partialName, tmpl);

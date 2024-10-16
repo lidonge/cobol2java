@@ -43,7 +43,7 @@ public interface ICobol2JavaBase extends IUrlLoader {
     default MustacheListenerImpl createMustacheListener(URL url) throws URISyntaxException, IOException {
         MustacheCompiler mustacheCompiler = new MustacheCompiler(url);
         mustacheCompiler.compileAntlr4(null);
-        MustacheListenerImpl listener = new MustacheListenerImpl();
+        MustacheListenerImpl listener = new MustacheListenerImpl(url.toURI());
         mustacheCompiler.workListener(listener);
         return listener;
     }
