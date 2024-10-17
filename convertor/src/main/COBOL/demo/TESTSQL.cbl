@@ -38,7 +38,7 @@
            :STUDENT
        END-EXEC
        IF SQLCODE = 0
-          DISPLAY WS-STUDENT-RECORD
+          DISPLAY WS-STUDENT-REC
        ELSE DISPLAY 'Error'
        END-IF.
     STOP RUN.

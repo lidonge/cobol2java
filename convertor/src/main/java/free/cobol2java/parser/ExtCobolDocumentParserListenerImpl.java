@@ -111,7 +111,7 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
         return getCopyBookContent("             75 " + copySource.getText() + ".", copyBook, params, true);
     }
 
-    private String getCopyBookContent(final String copySource, final File copyBook, final CobolParserParams params, boolean normalCopyBook) {
+    private String getCopyBookContent( String copySource, final File copyBook, final CobolParserParams params, boolean normalCopyBook) {
         String result = null;
 
         if (copyBook == null) {
@@ -131,7 +131,8 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
                 result = new ExtCobolPreprocessorImpl().process(copyBook, params);
                 CopyBookManager defaultManager = CopyBookManager.getDefaultManager();
                 if (normalCopyBook && defaultManager.isCopybookManage()) {
-                    defaultManager.loadCopyBook(copyBook, params, result);
+                    String dclSource = defaultManager.loadCopyBook(copyBook, params, result);
+                    copySource = dclSource == null ? copySource :dclSource;
                     if(!copySource.endsWith("CONST."))
                         result = copySource;
                     else
