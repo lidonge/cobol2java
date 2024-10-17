@@ -28,8 +28,14 @@ public interface IExprCallContext extends ILogable {
         return compile(fileName);
     }
 
+    static String getFullClassNameOfCobolFile(String fileName){
+        return compiledCobol.get(fileName);
+    }
+    static void saveFullClassNameOfCobolFile(String fileName, String fullClsName){
+        compiledCobol.put(fileName, fullClsName);
+    }
     private static String compile(String fileName) {
-        String fullClsName = compiledCobol.get(fileName);
+        String fullClsName = getFullClassNameOfCobolFile(fileName);
         if (fullClsName != null) {
             return fullClsName;
         }
@@ -38,13 +44,16 @@ public interface IExprCallContext extends ILogable {
         cobolConvertor.findFiles(new File(cobolConvertor.getSourcePath()), files,
                 cobolConvertor.getSuffixes(), fileName + ".*");
         if (files.size() > 0) {
-            LoggerFactory.getLogger(IExprCallContext.class).info("Compiling sub cbl {}:{}",fileName, files);
+            if(files.size() > 1)
+                LoggerFactory.getLogger(IExprCallContext.class).warn("Compiling sub duplicate cbl {}:{}",fileName, files);
+            else
+                LoggerFactory.getLogger(IExprCallContext.class).info("Compiling sub cbl {}:{}",fileName, files.get(0));
             fullClsName = cobolConvertor.convertAFile(files.get(0));
         } else {
 //            getLogger().error("Error can not find given callsub file: {}", fileName);
             fullClsName = "UNDEFINED";
         }
-        compiledCobol.put(fileName, fullClsName);
+        saveFullClassNameOfCobolFile(fileName, fullClsName);
         return fullClsName;
     }
 

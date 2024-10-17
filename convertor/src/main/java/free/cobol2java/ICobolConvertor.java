@@ -1,12 +1,14 @@
 package free.cobol2java;
 
 import com.typesafe.config.Config;
+import free.cobol2java.context.IExprCallContext;
 import free.cobol2java.copybook.CopyBookManager;
 import free.cobol2java.parser.TopCompiler;
 import free.servpp.config.IConfig;
 import free.servpp.config.hocon.HoconConfigTypeManager;
 import free.servpp.logger.ILogable;
 import io.proleap.cobol.preprocessor.CobolPreprocessor;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -162,31 +164,38 @@ public interface ICobolConvertor extends ILogable {
         String relativeParent = new File(relativePath).getParent();
         relativeParent = relativeParent == null ? "" : relativeParent;
         String fileName = file.getName();
-        String className = fileName.substring(0, fileName.lastIndexOf("."));
-        className = className.substring(0, 1).toUpperCase() + className.substring(1).toLowerCase();
-        String rootPackageName = checkPackageName(getRootPackageName());
-        String relativePackageName = checkPackageName(relativeParent.replace(File.separator, "."));
-        String outputFilePath = getTargetPath() + File.separator +
-                rootPackageName.replace(".", File.separator) + File.separator +
-                (relativePackageName.length() == 0 ?"":relativePackageName.replace(".",File.separator) +File.separator) +
-                className + ".java";
-        String packageName = rootPackageName +
-                (!relativeParent.equals("") ? "." + relativePackageName : "");
-        // Call the convert function and get the result as a string
-        TopCompiler.enterCobol(fileName,file.toURI());
-        try {
-            String convertedContent = convert(file, packageName);
+        String fullClsName = IExprCallContext.getFullClassNameOfCobolFile(fileName);
+        if (fullClsName == null) {
+            getLogger(ICobolConvertor.class).info("Compiling main cbl {}:{}",fileName, file);
 
-            // Write the result to the target file
-            writeToFile(outputFilePath, convertedContent);
-            CopyBookManager.getDefaultManager().writeCopyBook();
-            return packageName+"."+className;
-        } catch (Throwable t) {
-            getLogger().error("Error while convert file {}",file.getName(),t);
-            return "ERRORCLS";
-        }finally {
-            TopCompiler.exitCobol();
+            String className = fileName.substring(0, fileName.lastIndexOf("."));
+            className = className.substring(0, 1).toUpperCase() + className.substring(1).toLowerCase();
+            String rootPackageName = checkPackageName(getRootPackageName());
+            String relativePackageName = checkPackageName(relativeParent.replace(File.separator, "."));
+            String outputFilePath = getTargetPath() + File.separator +
+                    rootPackageName.replace(".", File.separator) + File.separator +
+                    (relativePackageName.length() == 0 ? "" : relativePackageName.replace(".", File.separator) + File.separator) +
+                    className + ".java";
+            String packageName = rootPackageName +
+                    (!relativeParent.equals("") ? "." + relativePackageName : "");
+            // Call the convert function and get the result as a string
+            TopCompiler.enterCobol(fileName, file.toURI());
+            try {
+                String convertedContent = convert(file, packageName);
+
+                // Write the result to the target file
+                writeToFile(outputFilePath, convertedContent);
+                CopyBookManager.getDefaultManager().writeCopyBook();
+                fullClsName = packageName + "." + className;
+                IExprCallContext.saveFullClassNameOfCobolFile(fileName,fullClsName);
+            } catch (Throwable t) {
+                getLogger().error("Error while convert file {}", file.getName(), t);
+                return "ERRORCLS";
+            } finally {
+                TopCompiler.exitCobol();
+            }
         }
+        return fullClsName;
     }
 
     public static String checkPackageName(String packageName){
