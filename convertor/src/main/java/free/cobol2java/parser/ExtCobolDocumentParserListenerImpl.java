@@ -4,7 +4,7 @@ import free.cobol2java.antlr.CobolWithSqlLexer;
 import free.cobol2java.antlr.CobolWithSqlParser;
 import free.cobol2java.copybook.CopyBookManager;
 import free.cobol2java.copybook.CopybookException;
-import free.cobol2java.sql.SqlInclude;
+import free.cobol2java.sql.models.SqlInclude;
 import free.cobol2java.sql.handler.CobolSqlVisitor;
 import free.servpp.logger.ILogable;
 import io.proleap.cobol.CobolPreprocessorParser;

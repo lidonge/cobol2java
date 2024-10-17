@@ -173,7 +173,7 @@ public interface ICobolConvertor extends ILogable {
         String packageName = rootPackageName +
                 (!relativeParent.equals("") ? "." + relativePackageName : "");
         // Call the convert function and get the result as a string
-        TopCompiler.enterCobol(fileName);
+        TopCompiler.enterCobol(fileName,file.toURI());
         try {
             String convertedContent = convert(file, packageName);
 

@@ -1,6 +1,6 @@
 {{%
     sql=obj_getVar("execSqlText");
-    sqlstmt=sql_exec(sql);
+    sqlstmt=sql_exec(sql, obj_getVar("ctx.start.line"));
 ""}}
 //TODO SQL: {{%sql}};
 {{#$sqlstmt}}

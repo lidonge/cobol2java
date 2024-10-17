@@ -1,6 +1,4 @@
-package free.cobol2java.sql;
-
-import java.util.List;
+package free.cobol2java.sql.models;
 
 // SQL DELETE statement object
 public class DeleteQuery extends WhereQuery {

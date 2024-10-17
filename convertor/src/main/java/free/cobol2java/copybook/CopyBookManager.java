@@ -59,6 +59,8 @@ public class CopyBookManager implements ICobol2JavaBase , ILogable {
                              CobolParserParams params,
                              String copyText) throws URISyntaxException, IOException, CopybookException {
         String name = copyBook.getName();
+
+        name = name.replace(".","-");
         name = IExprBaseContext.toClassName(name);
 
         String copyBookJavaText = copyBookMap.get(name);

@@ -1,5 +1,7 @@
 package free.cobol2java.parser;
 
+import java.io.File;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -10,9 +12,9 @@ import java.util.Stack;
 public class TopCompiler {
     static Stack<String> cobolStack = new Stack<>();
     static Map<String, CobolCompiler> copybookStruct = new HashMap<>();
-    public static void enterCobol(String cobolName){
+    public static void enterCobol(String cobolName, URI file){
         cobolStack.push(cobolName);
-        copybookStruct.put(cobolName,new CobolCompiler(cobolName));
+        copybookStruct.put(cobolName,new CobolCompiler(cobolName,file));
     }
 
     public static CobolCompiler getCobolCompiler(String name){

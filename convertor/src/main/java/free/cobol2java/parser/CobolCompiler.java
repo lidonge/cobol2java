@@ -2,6 +2,7 @@ package free.cobol2java.parser;
 
 import free.cobol2java.context.IExprBaseContext;
 
+import java.net.URI;
 import java.util.*;
 
 /**
@@ -9,12 +10,14 @@ import java.util.*;
  */
 public class CobolCompiler {
     private String cobolName;
+    private URI file;
     private List<String> includes = new ArrayList<>();
     private Stack<String> copybookStack = new Stack<>();
     private Map<String,List<String>> copybookIncludes = new HashMap<>();
 
-    public CobolCompiler(String cobolName) {
+    public CobolCompiler(String cobolName, URI file) {
         this.cobolName = cobolName;
+        this.file = file;
     }
 
     public void enterCopybook(String copyName){
@@ -49,5 +52,9 @@ public class CobolCompiler {
     }
     public String currentCopybook(){
         return copybookStack.peek();
+    }
+
+    public URI getFile() {
+        return file;
     }
 }

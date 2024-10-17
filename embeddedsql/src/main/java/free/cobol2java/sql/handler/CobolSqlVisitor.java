@@ -7,7 +7,7 @@ package free.cobol2java.sql.handler;
 import free.cobol2java.antlr.CobolWithSqlBaseVisitor;
 import free.cobol2java.antlr.CobolWithSqlLexer;
 import free.cobol2java.antlr.CobolWithSqlParser;
-import free.cobol2java.sql.*;
+import free.cobol2java.sql.models.*;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;

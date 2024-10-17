@@ -1,4 +1,4 @@
-package free.cobol2java.sql;
+package free.cobol2java.sql.models;
 
 import java.util.List;
 
