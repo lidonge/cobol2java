@@ -28,7 +28,11 @@ public interface IExprSetContext extends IExprPhysicalContext,IExprEnvContext{
     }
     private String createFullClassName(String type){
         String ret = null;
-        if(getClsLevel().size() != 0){
+        if(getCopybookContexts().get(type) != null ||
+                getCopybookContexts().get(getInnerClsNameToCopybookName().get(type))!= null)
+        {
+        }
+        else if(getClsLevel().size() != 0){
             for(String path:getClsLevel()) {
                 path = IExprBaseContext.capitalizeFirstLetter(path);
                 if(type.equals(getInnerClsNameToCopybookName().get(path))){
