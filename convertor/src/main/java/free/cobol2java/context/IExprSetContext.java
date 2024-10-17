@@ -20,9 +20,6 @@ public interface IExprSetContext extends IExprPhysicalContext,IExprEnvContext{
      * @return
      */
     default String name_setFieldType(String fieldName, String type) {
-        if(fieldName.equals("pceccii4")){
-            debugPoint();
-        }
         String fullClsName = createFullClassName(type);
         if(fullClsName != null){
             getFieldToClassType().put(fieldName, fullClsName+"."+type);

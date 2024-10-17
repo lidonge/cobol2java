@@ -23,7 +23,7 @@ public interface IExprConvertContext extends IExprNameContext, IExprRelContext {
         String javaFieldName = name_toField(fieldName);
         String ret = "";
         String qlfName = name_qlfName(javaFieldName, null);
-        String refFieldName = getJavaQlfFieldToType().get(javaFieldName);
+        String refFieldName = getJavaQlfFieldToType().get(qlfName);
         if (refFieldName == null) {
             IExprNameContext exprContext = getExprContext(javaFieldName, false);
             refFieldName = exprContext.getJavaQlfFieldToType().get(javaFieldName);

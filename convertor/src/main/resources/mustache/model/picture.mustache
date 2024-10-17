@@ -4,5 +4,6 @@
     theFieldName=name_toField(obj_getVar("name"));
     theQlfName=name_putInnerField(theFieldName);
     dim_putFieldDim(theFieldName,dimension == null? 0:dimension);
-    name_setFieldType(theQlfName == null ? theFieldName : theQlfName,propType);
+    setFieldName = theQlfName == null ? theFieldName : theQlfName;
+    name_setFieldType(setFieldName,propType);
 ""}}

@@ -6,6 +6,7 @@
     {{%isEnum = obj_getVar("levelNumber") == 88 ? "isEnum" : null;""}}
     {{#pictureClause}}
         {{>model.picture}}
+        @FieldInfo(cobolType = "{{%sType}}", levelNumber = {{%obj_getVar("levelNumber")}})
         {{%
             modifier = isInnerClass == "isInnerClass" ? "" :"public ";
             modifier = modifier +(IsConstantCopybook != null ? "static final " :"")
@@ -18,7 +19,7 @@
     {{#$isEnum}}
         {{>model.picture}}
         {{%
-            name_setFieldType(theFieldName,referFieldName);
+            name_setFieldType(setFieldName,referFieldName);
             modifier = isInnerClass == "isInnerClass" ? "" :"public ";
             modifier = modifier +"static final "
         }}
