@@ -45,10 +45,13 @@ public interface IExprCallContext extends ILogable {
                 cobolConvertor.getSuffixes(), fileName + ".*");
         if (files.size() > 0) {
             if(files.size() > 1)
-                LoggerFactory.getLogger(IExprCallContext.class).warn("Compiling sub duplicate cbl {}:{}",fileName, files);
-            else
-                LoggerFactory.getLogger(IExprCallContext.class).info("Compiling sub cbl {}:{}",fileName, files.get(0));
-            fullClsName = cobolConvertor.convertAFile(files.get(0));
+                LoggerFactory.getLogger(IExprCallContext.class).warn("Compiling sub cbl duplicate {}:{}",fileName, files);
+            File file = files.get(0);
+            if(!file.getName().endsWith(".c")) {
+                fullClsName = cobolConvertor.convertAFile(file);
+            }else{
+                fullClsName = file.getName().replace(".","_");
+            }
         } else {
 //            getLogger().error("Error can not find given callsub file: {}", fileName);
             fullClsName = "UNDEFINED";

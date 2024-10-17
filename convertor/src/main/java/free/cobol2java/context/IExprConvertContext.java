@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author lidong@date 2024-09-29@version 1.0
  */
-public interface IExprConvertContext extends IExprNameContext {
+public interface IExprConvertContext extends IExprNameContext, IExprRelContext {
     default String expr_convertExpr(ParserRuleContext ctx) {
         return convertExpr(ctx, false);
     }
@@ -29,12 +29,31 @@ public interface IExprConvertContext extends IExprNameContext {
             refFieldName = exprContext.getJavaQlfFieldToType().get(javaFieldName);
         }
 
-        if (refFieldName != null) {
+        if (refFieldName != null && !isBaseType(refFieldName)) {
             ret = "java.util.Arrays.asList(" + qlfName + ").contains(" + name_qlfName(refFieldName, null) + ")";
             //ret = name_qlfName(refFieldName, null) + "==" + qlfName;
         } else {
-            getLogger().error("Error UNKNOW_CONDITION_REF: " + fieldName);
-            ret = "UNKNOW_CONDITION_REF" + "==" + qlfName;
+            String isEnum = ""+getEnvironment().getVar("isEnum");
+            if(isEnum.equals("isEnum")) {
+                getLogger().error("Error UNKNOW_CONDITION_REF: " + fieldName);
+                ret = "UNKNOW_CONDITION_REF" + "==" + qlfName;
+            }else {
+                String left = "" + getEnvironment().getVar("left");
+                String relationalOperatorType = "" + getEnvironment().getVar("relationalOperatorType");
+                ret = rel_getOper(relationalOperatorType,left,qlfName);
+            }
+        }
+        return ret;
+    }
+
+    private boolean isBaseType(String sType){
+        boolean ret = false;
+        switch (sType){
+            case "Integer":
+            case "Double":
+            case "String":
+                ret = true;
+                break;
         }
         return ret;
     }

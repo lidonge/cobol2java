@@ -166,7 +166,8 @@ public interface ICobolConvertor extends ILogable {
         String fileName = file.getName();
         String fullClsName = IExprCallContext.getFullClassNameOfCobolFile(fileName);
         if (fullClsName == null) {
-            getLogger(ICobolConvertor.class).info("Compiling main cbl {}:{}",fileName, file);
+            getLogger(ICobolConvertor.class).info("Compiling cbl {}:{}",fileName, file);
+            long startTime = System.currentTimeMillis();
 
             String className = fileName.substring(0, fileName.lastIndexOf("."));
             className = className.substring(0, 1).toUpperCase() + className.substring(1).toLowerCase();
@@ -188,6 +189,8 @@ public interface ICobolConvertor extends ILogable {
                 CopyBookManager.getDefaultManager().writeCopyBook();
                 fullClsName = packageName + "." + className;
                 IExprCallContext.saveFullClassNameOfCobolFile(fileName,fullClsName);
+                getLogger(ICobolConvertor.class).info("Compiled cbl {} cost : {} seconds.",fileName,
+                        (System.currentTimeMillis() - startTime)/1000);
             } catch (Throwable t) {
                 getLogger().error("Error while convert file {}", file.getName(), t);
                 return "ERRORCLS";
