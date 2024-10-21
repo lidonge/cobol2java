@@ -195,11 +195,11 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
         final CobolPreprocessorParser.CopySourceContext copySource = ctx.copySource();
         String copyBookContent = null;
         if(normalCopyBook){
-            if(sameNameCopy){
-                copyBookContent = getCopyBookContent("", findCopyBook(copySource, params), params, true);
-            }else {
+//            if(sameNameCopy){
+//                copyBookContent = getCopyBookContent("", findCopyBook(copySource, params), params, true);
+//            }else {
                 copyBookContent = getCopyBookContent(copySource, params);
-            }
+//            }
         }else {
             copyBookContent = getCopyBookContent("", findCopyBook(copySource, params), params, false);
         }

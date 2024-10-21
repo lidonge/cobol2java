@@ -53,9 +53,6 @@ public interface IExprCtxHandler extends IExprEnvContext{
 
     default String getCtxText(ParserRuleContext ctx, List<Object> ofIds) {
         getPropOfIds(ctx, ofIds);
-        if(ctx.getText().equals("WS-C1(I,J)")){
-            debugPoint();
-        }
         String ret = "";
         int begTable = -1;
         for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -85,8 +82,6 @@ public interface IExprCtxHandler extends IExprEnvContext{
     private void getPropOfIds(ParserRuleContext ctx, List<Object> ofIds) {
         List<TerminalNode> list = new ArrayList<>();
         IExprBaseContext.getAllTerm(ctx, list);
-        if (ctx.getText().indexOf("ARL-DATA-LL+ASR-DATA-LL+LENGTHOFWK-ASR-AREA") != -1)
-            debugPoint();
         boolean isOf = false;
         String prevNode = null;
         boolean isLengthOf = false;

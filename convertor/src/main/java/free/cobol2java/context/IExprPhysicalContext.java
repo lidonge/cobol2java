@@ -11,14 +11,14 @@ public interface IExprPhysicalContext {
     String getCopyBookPath();
 
     Stack<String> getClsLevel();
-    Map<String, String> getFieldToClassType();
+    Map<String, String> getJavaQlfFieldToFullType();
     Map<String, String> getJavaFieldToQualifiedName();
     Map<String, String> getJavaFieldToQlfNameWithLeaf();
-    Map<String, String> getJavaQlfFieldToType();
+    Map<String, String> getJavaQlfFieldToSimpleType();
 
     Map<String, Number> getJavaFieldNameToDim();
     Map<String, String> getInnerClsNameToCopybookName();
     Map<String, ExprContext> getCopybookContexts();
-    Map<String, String> getJavaFieldNameToCopyFieldName();
-    Map<String, String> getCopyFieldNameToJavaFileName();
+    Map<String, String> getQlfNameToCopyFieldName();
+    Map<String, String> getCopyFieldNameToQlfName();
 }

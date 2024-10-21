@@ -115,7 +115,7 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                 addFunction("array_initString", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).array_initString(args[0].toString(), args[1].toString()));
                 addFunction("type_getType", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).type_getType((String) args[0]));
                 addFunction("setInnerClsNameToCopyName", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).setInnerClsNameToCopyName((String) args[0],(String) args[1]));
-                addFunction("setFieldNameToCopyFieldName", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).setFieldNameToCopyFieldName((String) args[0],(String) args[1]));
+                addFunction("setQlfNameToCopyFieldName", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).setQlfNameToCopyFieldName((String) args[0],(String) args[1]));
                 addFunction("cobol_precompile", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).cobol_precompile((String) args[0]));
                 addFunction("cobol_compile", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).cobol_compile((String) args[0]));
                 addFunction("cbl_getComment", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).cbl_getComment((Integer) args[0], (String) args[1], (List<String>) args[2]));

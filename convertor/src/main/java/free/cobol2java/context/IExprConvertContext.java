@@ -23,13 +23,13 @@ public interface IExprConvertContext extends IExprNameContext, IExprRelContext {
         String javaFieldName = name_toField(fieldName);
         String ret = "";
         String qlfName = name_qlfName(javaFieldName, null);
-        String refFieldName = getJavaQlfFieldToType().get(qlfName);
+        String refFieldName = getJavaQlfFieldToSimpleType().get(qlfName);
         if (refFieldName == null) {
             IExprNameContext exprContext = getExprContext(javaFieldName, false);
-            refFieldName = exprContext.getJavaQlfFieldToType().get(javaFieldName);
+            refFieldName = exprContext.getJavaQlfFieldToSimpleType().get(qlfName);
         }
 
-        if (refFieldName != null && !isBaseType(refFieldName)) {
+        if (refFieldName != null && !IExprBaseContext.isBaseType(refFieldName)) {
             ret = "java.util.Arrays.asList(" + qlfName + ").contains(" + name_qlfName(refFieldName, null) + ")";
             //ret = name_qlfName(refFieldName, null) + "==" + qlfName;
         } else {
@@ -42,18 +42,6 @@ public interface IExprConvertContext extends IExprNameContext, IExprRelContext {
                 String relationalOperatorType = "" + getEnvironment().getVar("relationalOperatorType");
                 ret = rel_getOper(relationalOperatorType,left,qlfName);
             }
-        }
-        return ret;
-    }
-
-    private boolean isBaseType(String sType){
-        boolean ret = false;
-        switch (sType){
-            case "Integer":
-            case "Double":
-            case "String":
-                ret = true;
-                break;
         }
         return ret;
     }
@@ -106,9 +94,6 @@ public interface IExprConvertContext extends IExprNameContext, IExprRelContext {
         fieldName = name_toField(realId);
         if (!(value instanceof String)) {
             IExprCtxHandler.PropOfField propOfField = ((IExprCtxHandler.PropOfField) value);
-            if (propOfField.ofId().size() > 1) {
-                debugPoint();
-            }
             ofId = propOfField.ofId().get(propOfField.ofId().size() - 1);
             id = propOfField.id();
             for (String of : propOfField.ofId()) {
@@ -132,9 +117,6 @@ public interface IExprConvertContext extends IExprNameContext, IExprRelContext {
             }
             if (isLengthOf) {
                 sExpr = "Util.sizeof(" + qlfName + ")";
-            }
-            if (sExpr == null) {
-                debugPoint();
             }
             //Whole word replace
             ret = ret.replaceAll("\\b" + id + "\\b", sExpr);

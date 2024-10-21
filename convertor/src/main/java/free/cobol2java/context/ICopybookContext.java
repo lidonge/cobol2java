@@ -4,9 +4,7 @@ import free.cobol2java.copybook.CopyBookManager;
 import free.cobol2java.parser.CobolCompiler;
 import free.cobol2java.parser.TopCompiler;
 import free.servpp.multiexpr.IEvaluatorEnvironment;
-import free.servpp.mustache.CodeFormator;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +18,7 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
         return replaceImports(imports, code,true);
     }
 
-    default String replaceImports(List imports, String code, boolean keepMark) {
+    static String replaceImports(List imports, String code, boolean keepMark) {
         StringBuffer sbImp = new StringBuffer();
         for(Object imp: imports){
             sbImp = sbImp.append("import ").append(imp).append(";\n");
@@ -38,25 +36,6 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
         return CopyBookManager.getDefaultManager().getPackageNameByModelName(modelName,"true".equals(useCurrentCopybook));
     }
 
-    default IExprNameContext getOfCopyContext(String ofCopyField) {
-        String qlfName = getJavaFieldToQualifiedName().get(ofCopyField);
-        //Field leve is 75 or is defined in a copybook
-        if (qlfName == null)
-            qlfName = ofCopyField;
-
-        String ofCopyCls = getJavaQlfFieldToType().get(qlfName);
-        String realCopyCls = null;
-        IExprNameContext exprContext = null;
-        if (ofCopyCls == null) {
-            //of copy is not defined in main cobol
-            exprContext = getExprContext(ofCopyField, false);
-        } else {
-            realCopyCls = getInnerClsNameToCopybookName().get(ofCopyCls);
-            exprContext = getCopybookContexts().get(realCopyCls != null ? realCopyCls : ofCopyCls);
-        }
-        return exprContext;
-    }
-
     default IExprNameContext getExprContext(String fieldName, boolean isMiddleName) {
         IExprNameContext value = null;
         CobolCompiler cobolCompiler = TopCompiler.currentCompiler();
@@ -69,10 +48,10 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
             if (ctx != null) {
                 boolean match = false;
                 if (isMiddleName) {
-                    match = ctx.getCopyFieldNameToJavaFileName().get(fieldName) != null;
+                    match = ctx.getCopyFieldNameToQlfName().get(fieldName) != null;
                 } else {
                     match = ctx.getJavaFieldToQualifiedName().get(fieldName) != null ||
-                            ctx.getJavaFieldNameToCopyFieldName().get(fieldName) != null;
+                            ctx.getQlfNameToCopyFieldName().get(fieldName) != null;
                 }
                 if (match) {
                     value = ctx;
@@ -84,7 +63,7 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
     }
 
     default String expr_changeAddressType(String targetVar, String operand) {
-        String type = getJavaQlfFieldToType().get(targetVar);
+        String type = getJavaQlfFieldToSimpleType().get(targetVar);
 
         if (type == null) {
             String[] path = targetVar.split("\\.");
@@ -94,7 +73,7 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
                 String fieldName = path[path.length - 1];
                 IExprNameContext context = getExprContext(fieldName, false);
                 String qlfName = context.getJavaFieldToQualifiedName().get(fieldName);
-                type = context.getJavaQlfFieldToType().get(qlfName);
+                type = context.getJavaQlfFieldToSimpleType().get(qlfName);
             }
         } else if (getCopybookContexts().get(type) == null) {
             //Type is an inner name

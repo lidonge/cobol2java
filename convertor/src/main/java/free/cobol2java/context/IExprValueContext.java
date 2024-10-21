@@ -62,11 +62,11 @@ public interface IExprValueContext extends IExprEnvContext, IExprPhysicalContext
     }
 
     private String getTypeByQlfName(String parent, String left) {
-        String ret = getJavaQlfFieldToType().get(left);
+        String ret = getJavaQlfFieldToSimpleType().get(left);
         int index = left.indexOf(".");
         if (ret == null && index != -1) {
             String clsFieldName = left.substring(0, index);
-            String clsType = getJavaQlfFieldToType().get(parent == null ? clsFieldName : parent + "." + clsFieldName);
+            String clsType = getJavaQlfFieldToSimpleType().get(parent == null ? clsFieldName : parent + "." + clsFieldName);
 
             String innerClsName = getInnerClsNameToCopybookName().get(clsType);
             if (innerClsName == null) {
@@ -77,7 +77,7 @@ public interface IExprValueContext extends IExprEnvContext, IExprPhysicalContext
             if (exprContext != null) {
                 String fieldName = innerClsName.substring(0, 1).toLowerCase() + innerClsName.substring(1);
                 String qlfNameInContext = left.replace(clsFieldName, fieldName);
-                ret = exprContext.getJavaQlfFieldToType().get(qlfNameInContext);
+                ret = exprContext.getJavaQlfFieldToSimpleType().get(qlfNameInContext);
             } else {
                 ret = getTypeByQlfName(clsFieldName, left.substring(index + 1));
             }

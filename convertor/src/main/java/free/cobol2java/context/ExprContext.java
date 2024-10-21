@@ -20,16 +20,22 @@ public class ExprContext extends ExprBaseContext implements ILogable,
     private Map<String, ExprContext> copybookContexts = CopyBookManager.getDefaultManager().getGlobalFunc();
     /**
      * Set when field defined(PIC or 01 FIELD-NAME.)
+     * Or if the field is a condition reference, type will be the enum value name of the erference.
      */
-    private Map<String, String> javaQlfFieldToType = new HashMap<>();
-    private Map<String, String> fieldToClassType = new HashMap<>();
+    private Map<String, String> javaQlfFieldToSimpleType = new HashMap<>();
+    /**
+     * If the field is not a base type, store the full class name.
+     */
+    private Map<String, String> javaQlfFieldToFullType = new HashMap<>();
     /**
      * Put when field defined(PIC A(10)..., or 01 FIELD-NAME. COPY COPYBOOK.)
-     * If field level is 75, set QlfName = null
+     * If field level is 75, use super field name
+     * There maybe ambiguous, a field name match more-then one qlfName, so use '|' to separate them.
      */
     private Map<String, String> javaFieldToQualifiedName = new HashMap<>();
     /**
      * Put when qlf_name is creating, each level name all point to qlf_name
+     * Maybe ambiguous as #javaFieldToQualifiedName
      */
     private Map<String, String> javaFieldToQlfNameWithLeaf = new HashMap<>();
     /**
@@ -38,10 +44,14 @@ public class ExprContext extends ExprBaseContext implements ILogable,
     private Map<String, Number> javaFieldNameToDim = new HashMap<>();
     /**
      * If field level is 75,means inner class name should be the copybook name.
-     * Set when copy75, the key is fieldName in the copybook, and value is fieldName in main cbl.
+     * Set when copy75, the key is qlfName in the copybook, and value is fieldName in main cbl.
+     * There maybe ambiguous, a field name match more-then one qlfName, so use '|' to separate them.
      */
-    private Map<String, String> javaFieldNameToCopyFieldName = new HashMap<>();
-    private Map<String, String> copyFieldNameToJavaFileName = new HashMap<>();
+    private Map<String, String> copyFieldNameToQlfName = new HashMap<>();
+    /**
+     * If a field is a copybook, the map store the qlfName of the field to the copyFieldName.
+     */
+    private Map<String, String> qlfNameToCopyFieldName = new HashMap<>();
     /**
      * If field level is 75,means inner class name should be the copybook name.
      * Set when copy75, the key is innerClassName in main cbl, and value is copybook class name.
@@ -92,18 +102,18 @@ public class ExprContext extends ExprBaseContext implements ILogable,
     }
 
     @Override
-    public Map<String, String> getCopyFieldNameToJavaFileName() {
-        return copyFieldNameToJavaFileName;
+    public Map<String, String> getCopyFieldNameToQlfName() {
+        return copyFieldNameToQlfName;
     }
 
     @Override
-    public Map<String, String> getJavaFieldNameToCopyFieldName() {
-        return javaFieldNameToCopyFieldName;
+    public Map<String, String> getQlfNameToCopyFieldName() {
+        return qlfNameToCopyFieldName;
     }
 
     @Override
-    public Map<String, String> getFieldToClassType() {
-        return fieldToClassType;
+    public Map<String, String> getJavaQlfFieldToFullType() {
+        return javaQlfFieldToFullType;
     }
 
     @Override
@@ -122,8 +132,8 @@ public class ExprContext extends ExprBaseContext implements ILogable,
     }
 
     @Override
-    public Map<String, String> getJavaQlfFieldToType() {
-        return javaQlfFieldToType;
+    public Map<String, String> getJavaQlfFieldToSimpleType() {
+        return javaQlfFieldToSimpleType;
     }
 
     @Override

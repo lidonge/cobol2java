@@ -1,5 +1,7 @@
 package free.cobol2java.context;
 
+import static free.cobol2java.context.IExprBaseContext.toClassName;
+
 /**
  * @author lidong@date 2024-09-29@version 1.0
  */
@@ -12,10 +14,10 @@ public interface IExprDimensionContext extends IExprPhysicalContext, IExprEnvCon
         if(javaQlfName == null){
             //in copy book
             String javaFieldName = theJavaQlfName.substring(0,theJavaQlfName.indexOf("."));
-            String copybookClsName = getJavaQlfFieldToType().get(javaFieldName);
-            String copyFieldName = getJavaFieldNameToCopyFieldName().get(javaFieldName);
+            String copybookClsName = getJavaQlfFieldToSimpleType().get(javaFieldName);
+            String copyFieldName = getQlfNameToCopyFieldName().get(javaFieldName);
             if(copyFieldName != null){
-                copybookClsName = getJavaQlfFieldToType().get(copyFieldName);
+                copybookClsName = toClassName(copyFieldName);
             }
             IExprNameContext exprNameContext = getCopybookContexts().get(copybookClsName);
             return exprNameContext.addDimToQlfName(theJavaQlfName,dimStr);
@@ -50,9 +52,6 @@ public interface IExprDimensionContext extends IExprPhysicalContext, IExprEnvCon
         int index = cobolExpr.indexOf(var);
 
         String sub = cobolExpr.substring(index + var.length()).trim();
-        if(index == -1){
-            debugPoint();
-        }
         ret[0] = cobolExpr.substring(0, index);
         ret[2] = sub;
         if (sub.length() != 0 && sub.charAt(0) == '(') {

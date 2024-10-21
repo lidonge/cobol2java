@@ -20,6 +20,17 @@ public interface IExprBaseContext extends IExprPhysicalContext{
         return digitalStart(ret);
     }
 
+    static boolean isBaseType(String sType){
+        boolean ret = false;
+        switch (sType){
+            case "Integer":
+            case "Double":
+            case "String":
+                ret = true;
+                break;
+        }
+        return ret;
+    }
     private static String digitalStart(String name) {
         if (name != null && name.length() > 0 && name.charAt(0) >= '0' && name.charAt(0) <= '9')
             return "m_" + name;

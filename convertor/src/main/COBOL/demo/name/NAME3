@@ -1,0 +1,9 @@
+       05 CB-SIMPLE3 PIC 9(2).
+       05 CP-SIMPC2.
+          10 CB-SIMPC2-A PIC 9(2).
+          10 CB-SIMPC2-B PIC 9(2).
+       05 CP-SIMP3.
+          10 CB-SIMP3-A.
+                15 CB-SIMPC3-AB PIC 9(2).
+          10 CB-SIMP3-B.
+                15 CB-SIMP3-BA PIC 9(2).

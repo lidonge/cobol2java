@@ -3,6 +3,7 @@ package free.cobol2java.copybook;
 import free.cobol2java.Cobol2JavaMustacheWriter;
 import free.cobol2java.ICobolConvertor;
 import free.cobol2java.context.ExprContext;
+import free.cobol2java.context.ICopybookContext;
 import free.cobol2java.context.IExprBaseContext;
 import free.cobol2java.parser.TopCompiler;
 import free.servpp.logger.ILogable;
@@ -17,9 +18,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author lidong@date 2024-09-10@version 1.0
@@ -43,6 +44,8 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
 
     private ICobolConvertor cobolConvertor;
     Map<String, String> copyBookMap = new HashMap<>();
+    Map<String, Boolean> copyBookWritten = new HashMap<>();
+    Map<String, List<String>> dupCopyBook = new HashMap<>();
     Map<String, ExprContext> exprContextMap = new HashMap<>();
     //    Map<String,String> subNameToCopybook = new HashMap<>();
     Map<String, String> classNameToPackageName = new HashMap<>();
@@ -57,7 +60,6 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
     }
 
     /**
-     *
      * @param copyBook
      * @param params
      * @param copyText
@@ -67,8 +69,8 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
      * @throws CopybookException
      */
     public String loadCopyBook(File copyBook,
-                             CobolParserParams params,
-                             String copyText) throws URISyntaxException, IOException, CopybookException {
+                               CobolParserParams params,
+                               String copyText) throws URISyntaxException, IOException, CopybookException {
         String dclRet = null;
         String name = copyBook.getName();
         boolean isDcl = name.endsWith(".dcl");
@@ -119,24 +121,144 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
                 String cobolName = entry.getName();
                 String clsName = IExprBaseContext.toClassName(cobolName);
                 copyBookMap.remove(name);
+                name = clsName;
                 copyBookMap.put(clsName, prog);
                 classNameToPackageName.put(clsName, packageName);
                 exprContextMap.put(clsName, exprContext);
                 dclRet = "01 " + cobolName + ".";
             }
             Map<String, Object> copyBookCls = (Map<String, Object>) writer.getExprEvaluator().getEnvironment().getVar("innerMap");
-            for (Map.Entry<String, Object> entry : copyBookCls.entrySet()) {
-                String string = entry.getValue().toString();
-                if (string.trim().length() != 0) {
-                    copyBookMap.put(entry.getKey(), string);
-                    classNameToPackageName.put(entry.getKey(), packageName);
+            List<String> keys = new ArrayList<>(copyBookCls.keySet());
+            for (String key : keys) {
+                String clsText = CodeFormator.formatCode(copyBookCls.get(key).toString());
+                if (clsText.trim().length() != 0) {
+                    copyBookCls.put(key,clsText);
+                    String oldClsText = copyBookMap.get(key);
+                    if (oldClsText != null) {
+                        String oldKey = key;
+                        if (compareClassContent(oldClsText, clsText)) {
+                            copyBookCls.remove(key);
+                            importClass(key, copyBookCls);
+                        } else {
+                            List<String> dupKeys = dupCopyBook.get(key);
+                            if(dupKeys == null){
+                                dupKeys = new ArrayList<>();
+                                dupCopyBook.put(key,dupKeys);
+                            }
+                            boolean isDupCls = false;
+                            for(String dupKey:dupKeys){
+                                oldClsText = copyBookMap.get(dupKey);
+                                if (compareClassContent(oldClsText, clsText)) {
+                                    copyBookCls.remove(key);
+                                    importClass(dupKey, copyBookCls);
+                                    isDupCls = true;
+                                    break;
+                                }
+                            }
+                            if(!isDupCls) {
+                                key = getUniqueClassName(key);
+                                dupKeys.add(key);
+                                String target = "\\b" + oldKey + "\\b";
+                                clsText = clsText.replaceAll(target, key);
+                                copyBookCls.remove(oldKey);
+                                copyBookCls.put(key, clsText);
+                                prog = prog.replaceAll(target, key);
+                                copyBookMap.put(name, prog);
+                                replaceAllCopy(copyBookCls, oldKey, key);
+                                getLogger().warn("Warning: Duplicate inner class {} of copybook:{}, change to new class {}.", oldKey, copyBook, key);
+                            }
+                        }
+                    }
+                } else {
+                    copyBookCls.remove(key);
                 }
+            }
+            for (String key : copyBookCls.keySet()) {
+                String clsText = copyBookCls.get(key).toString();
+                copyBookMap.put(key, clsText);
+                classNameToPackageName.put(key, packageName);
             }
 
 //            getLogger().info("Copybook:{} Loaded. ",copyBook.getName());
         }
         return dclRet;
     }
+
+    private static boolean compareClassContent(String oldContent, String contentClsText) {
+        contentClsText = contentClsText.substring(contentClsText.indexOf("{"));
+        oldContent = oldContent.substring(oldContent.indexOf("{"));
+        contentClsText = removeLinesStartingWith(contentClsText,new String[]{"@FieldInfo","//"});
+        oldContent = removeLinesStartingWith(oldContent,new String[]{"@FieldInfo","//"});
+        return oldContent.equals(contentClsText);
+    }
+    private static String removeLinesStartingWith(String input, String[] prefixes) {
+        // 按行拆分输入字符串
+        String[] lines = input.split("\n");
+
+        // 使用 StringBuilder 构建结果
+        StringBuilder result = new StringBuilder();
+
+        // 遍历每一行
+        for (String line : lines) {
+            boolean shouldRemove = false;
+
+            // 检查当前行是否以任意前缀开头
+            for (String prefix : prefixes) {
+                if (line.trim().startsWith(prefix)) {
+                    shouldRemove = true; // 如果匹配前缀，标记为要去除的行
+                    break;
+                }
+            }
+
+            // 如果行不匹配任何前缀，则添加到结果中
+            if (!shouldRemove) {
+                result.append(line).append("\n");
+            }
+        }
+
+        // 返回去除指定行后的字符串，去掉最后一个多余的换行符
+        return result.toString().trim();
+    }
+    private void importClass(String oldKey, Map<String, Object> copyBookCls) {
+        String oldPackage = classNameToPackageName.get(oldKey);
+        List<String> imports = new ArrayList<>();
+        imports.add(oldPackage + "." + oldKey);
+        String regex = "\\b" + oldKey + "\\b";
+        Pattern pattern = Pattern.compile(regex);
+        for (String key : copyBookCls.keySet()) {
+            String clsText = copyBookCls.get(key).toString();
+            Matcher matcher = pattern.matcher(clsText);
+            if (matcher.find() && !oldPackage.equals(classNameToPackageName.get(key))) {
+                clsText = ICopybookContext.replaceImports(new ArrayList(imports), clsText, true);
+                copyBookCls.put(key, clsText);
+            }
+        }
+    }
+
+    //FIXME should replace with whole word
+    private void replaceAllCopy(Map<String, Object> copyBookCls, String oldCls, String newCls) {
+        String target = "\\b" + oldCls + "\\b";
+        for (String key : copyBookCls.keySet()) {
+            if (!newCls.equals(key)) {
+                String clsText = copyBookCls.get(key).toString();
+                if (clsText.trim().length() != 0) {
+                    clsText = clsText.replaceAll(oldCls, newCls);
+                    copyBookCls.put(key, clsText);
+                }
+            }
+
+        }
+    }
+
+    private String getUniqueClassName(String key) {
+        String clsExists = null;
+        int index = 0;
+        while ((clsExists = copyBookMap.get(key)) != null) {
+            key = key + "_" + index++;
+        }
+        return key;
+    }
+
 
     public String getPackageNameByModelName(String modelName, boolean useCurrentCopybook) {
         String ret = classNameToPackageName.get(modelName);
@@ -154,7 +276,7 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
     public void writeCopyBook() {
         for (String key : copyBookMap.keySet()) {
             String text = copyBookMap.get(key);
-            if (!"WRITED".equals(text)) {
+            if (copyBookWritten.get(key) == null) {
                 String packageName = classNameToPackageName.get(key);
                 String relativePath = packageName.replace(".", File.separator);
                 File outFile = new File(cobolConvertor.getTargetPath(), relativePath);
@@ -167,7 +289,7 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
                     List imports = null;
                     if (myObject != null) {
                         imports = (List) myObject.getValue();
-                        text = exprContext.replaceImports(imports, text, true);
+                        text = ICopybookContext.replaceImports(imports, text, true);
                         copyBookMap.put(key, text);
                     }
 
@@ -175,7 +297,7 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
                 String content = CodeFormator.formatCode(text + "");
                 cobolConvertor.writeToFile(outputFilePath, content);
                 if (content.indexOf("public Object ") == -1 /*|| content.indexOf("public Object[] ") == -1*/)
-                    copyBookMap.put(key, "WRITED");
+                    copyBookWritten.put(key, true);
             }
         }
     }
