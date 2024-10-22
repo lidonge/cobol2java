@@ -96,7 +96,7 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                 addFunction("name_exitClass", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_exitClass());
                 addFunction("name_putInnerField", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_putInnerField((String) args[0]));
                 addFunction("name_putInnerField1", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_putInnerField1((String) args[0],(String) args[1]));
-                addFunction("name_ofCopy", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_ofCopy((Object) args[0]));
+//                addFunction("name_ofCopy", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_ofCopy((Object) args[0]));
                 addFunction("name_qlfName", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_qlfName((String) args[0], (String) args[1]));
                 addFunction("name_isConst", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_isConst((String) args[0]));
                 addFunction("name_qlfNameWithDim", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_qlfNameWithDim((String) args[0], (String) args[1]));

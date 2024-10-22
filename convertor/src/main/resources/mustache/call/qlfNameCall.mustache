@@ -1,10 +1,28 @@
-{{%qlfNameCall=null;""}}
+{{%qlfNameCall=null;ofCopies = null;IsOF=null;""}}
 {{#delegate}}
-    {{%qlfNameCall=null;""}}
     {{#delegate}}
+        {{#qualifiedInData}}
+            {{%IsOF = obj_getVar("type") == "OF";""}}
+            {{#call}}
+                {{>call}}
+            {{/call}}
+            {{%
+                ofCopy = IsOF ? operand:null;
+                ofCopies = ofCopies == null ? ofCopy :
+                    (ofCopy == null ? ofCopies : ofCopies+"." +ofCopy);
+            ""}}
+        {{/qualifiedInData}}
+        {{%IsOF = null;""}}
         {{>call.baseQlfNameCall}}
     {{/delegate}}
     {{^$qlfNameCall}}
         {{>call.baseQlfNameCall}}
     {{/qlfNameCall}}
+    {{#$ofCopies}}
+        {{#$tableCall}}
+            {{%
+                qlfNameCall=name_qlfNameWithDim(qlfNameCall,dimString);
+            ""}}
+        {{/tableCall}}
+    {{/ofCopies}}
 {{/delegate}}

@@ -19,38 +19,6 @@ public interface IExprCtxHandler extends IExprEnvContext{
     record PropOfField(String id, List<String> ofId) {
     }
 
-    default String name_ofCopy(Object o) {
-        if (!(o instanceof CobolParser.QualifiedDataNameContext) &&
-            !(o instanceof CobolParser.QualifiedDataNameFormat1Context)&&
-                !(o instanceof CobolParser.QualifiedDataNameFormat2Context)&&
-                !(o instanceof CobolParser.QualifiedDataNameFormat3Context)&&
-                !(o instanceof CobolParser.QualifiedDataNameFormat4Context)
-        )
-            return null;
-        ParserRuleContext ctx = (ParserRuleContext) o;
-
-        List<TerminalNode> list = new ArrayList<>();
-        IExprBaseContext.getAllTerm(ctx, list);
-        boolean isOf = false;
-        String ret = null;
-        for (TerminalNode node : list) {
-            String text = node.getText();
-            if ("OF".equals(text)) {
-                isOf = true;
-            } else if (node.getSymbol().getType() == CobolLexer.IDENTIFIER) {
-                if (isOf) {
-                    if (ret == null)
-                        ret = node.getText();
-                    else
-                        ret += "." + node.getText();
-                }
-            }else{
-                break;
-            }
-        }
-        return ret;
-    }
-
     default String getCtxText(ParserRuleContext ctx, List<Object> ofIds) {
         getPropOfIds(ctx, ofIds);
         String ret = "";

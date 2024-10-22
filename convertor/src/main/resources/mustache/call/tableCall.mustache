@@ -30,7 +30,7 @@
         {{%
             //FIXME the bug of (1,1)
             dimString = subscripts == null ?(c_characterPosition+":"+c_length):subscripts+"";
-            tableCall=name_qlfNameWithDim(qlfName, dimString);
+            tableCall=IsOF ? qlfName : name_qlfNameWithDim(qlfName, dimString);
         ""}}
     {{/isTable}}
 {{/delegate}}

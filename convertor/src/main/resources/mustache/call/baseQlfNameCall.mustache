@@ -6,12 +6,6 @@
 ""}}
 {{#$isQlfCall}}
     {{>call.qlfName}}
-    {{#$isUndefinedCall}}{{^$isConstant}}
-        {{%
-            dimString = dim_udfCall(obj_getVar("ctx.text"));
-            qlfName=dimString != null?name_qlfUdfNameWithDim(qlfName, dimString):qlfName;
-        ""}}
-    {{/isConstant}}{{/isUndefinedCall}}
     {{%qlfNameCall=qlfName;""}}
 {{/isQlfCall}}
 {{^$isQlfCall}}

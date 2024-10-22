@@ -10,8 +10,6 @@
 {{#$c_name}}{{^$isConstant}}
     {{%
         javaName = name_toField(c_name);
-        ctxOfName = obj_getVar("ctx");
-        ofCopy = ctxOfName != null ? name_ofCopy(ctxOfName):null;
-        qlfName = name_qlfName(javaName,ofCopy);
+        qlfName = IsOF ? javaName : name_qlfName(javaName,ofCopies);
     ""}}
 {{/isConstant}}{{/c_name}}
