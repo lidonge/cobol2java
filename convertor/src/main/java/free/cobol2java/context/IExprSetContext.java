@@ -88,7 +88,7 @@ public interface IExprSetContext extends IExprPhysicalContext, IExprEnvContext {
         String oldQlfName = javaFieldToQualifiedName.get(fieldName);
         if (oldQlfName == null || oldQlfName.equals(qualifiedName)) {
             oldQlfName = qualifiedName;
-        } else {
+        } else if(oldQlfName.indexOf(qualifiedName) == -1){
             oldQlfName += "|" + qualifiedName;
         }
         javaFieldToQualifiedName.put(fieldName, oldQlfName);
@@ -98,13 +98,48 @@ public interface IExprSetContext extends IExprPhysicalContext, IExprEnvContext {
         String[] names = qlfName.split("\\.");
         for (String name : names) {
             String lastName = getJavaFieldToQlfNameWithLeaf().get(name);
-            if (lastName == null || lastName.length() < qlfName.length()) {
-//                getJavaFieldToQlfNameWithLeaf().put(name, qlfName);
-                createMultiQlfName(name, getJavaFieldToQlfNameWithLeaf(), qlfName);
+            if (lastName == null ) {
+                getJavaFieldToQlfNameWithLeaf().put(name, qlfName);
+            }else{
+                String[] leafs = lastName.split("\\|");
+                String newLastName = null;
+                boolean isDeal = false;
+                for(String leaf:leafs){
+                    if(!isDeal) {
+                        int lastLevel = countCharacter(leaf, '.') + 1;
+                        if (lastLevel < names.length) {
+                            if (qlfName.indexOf(leaf) != -1) {
+                                //change the leaf to the qlfName
+                                leaf = qlfName;
+                                isDeal = true;
+                            }
+                        } else if (lastLevel == names.length) {
+
+                            if(newLastName == null)
+                                newLastName = qlfName;
+                            else
+                                newLastName += "|" + qlfName;
+                            isDeal = true;
+                        }
+                    }
+                    if(newLastName == null)
+                        newLastName = leaf;
+                    else
+                        newLastName += "|" + leaf;
+                }
+                getJavaFieldToQlfNameWithLeaf().put(name, newLastName);
             }
         }
     }
-
+    private static int countCharacter(String input, char character) {
+        int count = 0;
+        for (int i = 0; i < input.length(); i++) {
+            if (input.charAt(i) == character) {
+                count++;
+            }
+        }
+        return count;
+    }
     private String createQualifiedName(String fieldName) {
         String ret = null;
         boolean needLast = fieldName.length() != 0;

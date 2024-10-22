@@ -73,8 +73,8 @@ public interface IExprCallContext extends ILogable {
         if (files.size() > 0) {
             fullClsName = getFullClassName(files.get(0));
         } else {
-            getLogger().error("Error can not find given callsub file: {}", fileName);
-            fullClsName = "UNDEFINED";
+            getLogger().error("Error can not find given call sub file: {}", fileName);
+            fullClsName = "UNDEFINED_"+fileName;
         }
         unCompiledCobol.put(fileName, fullClsName);
         return fullClsName;
