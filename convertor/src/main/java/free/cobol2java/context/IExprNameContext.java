@@ -29,7 +29,7 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
     }
     private String getQlfNameWithOfCopies(String fieldName, String ofCopies) {
         String ret = null;
-        String[] ofIds = getOfIds(fieldName, ofCopies);
+        String[] ofIds = (fieldName + "." + ofCopies).split("\\.");
         //A OF B OF C = C.B.A =
         // qlfName include C and end with a fieldName of a copybook BOOK1 +
         // qlfName include B start with BOOK1(should be remove) and end with fieldName of BOOk2 +
@@ -58,14 +58,6 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
             prev = caq;
         }
         return ret;
-    }
-
-    private String[] getOfIds(String fieldName, String ofCopies) {
-        String[] ofIds = (fieldName + "." + ofCopies).split("\\.");
-        for (int i = 1; i < ofIds.length; i++) {
-            ofIds[i] = name_toField(ofIds[i]);
-        }
-        return ofIds;
     }
 
     //A of B = (-copyName)...A
@@ -221,15 +213,19 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
 
     default String name_qlfNameWithDim(String theJavaQlfName, String dimStr) {
         String ret = null;
-
-        if (dimStr == null) {
+        if(theJavaQlfName.indexOf("UNDEFINED_")!=-1){
+            //FIXME the cobol error
             ret = theJavaQlfName;
-        } else {
-            if (dimStr.indexOf(":") != -1) {
-                String dim = dimStr.replace(":", ",");
-                ret = "Util.subvalue(" + theJavaQlfName + "," + dim + ")";
-            } else
-                ret = addDimToQlfName(theJavaQlfName, dimStr);
+        }else {
+            if (dimStr == null) {
+                ret = theJavaQlfName;
+            } else {
+                if (dimStr.indexOf(":") != -1) {
+                    String dim = dimStr.replace(":", ",");
+                    ret = "Util.subvalue(" + theJavaQlfName + "," + dim + ")";
+                } else
+                    ret = addDimToQlfName(theJavaQlfName, dimStr);
+            }
         }
 //        ret = nestedQualifiedName(ret);
 

@@ -5,7 +5,14 @@
     ""}}
     {{#subscripts}}
         {{#subscriptValueStmt}}
+            {{%
+                var_push(IsOF);
+                IsOF = null;
+            ""}}
             {{>call.subscript}}
+            {{%
+                IsOF  = var_pop();
+            ""}}
             {{%
                 subscripts = subscripts == null?subscript:subscripts+","+subscript;
             ""}}

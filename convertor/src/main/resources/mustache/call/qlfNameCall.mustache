@@ -1,18 +1,39 @@
-{{%qlfNameCall=null;ofCopies = null;IsOF=null;""}}
+{{%qlfNameCall=null;ofCopies = null;""}}
 {{#delegate}}
     {{#delegate}}
+        {{%hasQualifiedInData = null;""}}
         {{#qualifiedInData}}
-            {{%IsOF = obj_getVar("type") == "OF";""}}
-            {{#call}}
-                {{>call}}
-            {{/call}}
-            {{%
-                ofCopy = IsOF ? operand:null;
-                ofCopies = ofCopies == null ? ofCopy :
-                    (ofCopy == null ? ofCopies : ofCopies+"." +ofCopy);
-            ""}}
+            {{#-first}}
+                {{%hasQualifiedInData = "hasQualifiedInData";""}}
+            {{/-first}}
+            {{#$hasQualifiedInData}}
+                {{%
+                    IsOF = obj_getVar("type") == "OF";
+                //println("######IsOF:"+IsOF);
+                    var_push(IsOF);
+                    var_push(ofCopies);
+                ""}}
+            {{/hasQualifiedInData}}
+            {{%var_push(hasQualifiedInData);""}}
+            {{#call}}{{>call}}{{/call}}
+            {{%hasQualifiedInData=var_pop();""}}
+            {{#$hasQualifiedInData}}
+                {{%
+                    ofCopies = var_pop();
+                    IsOF = var_pop();
+                    ofCopy = IsOF ? operand:null;
+                    ofCopies = ofCopies == null ? ofCopy :
+                        (ofCopy == null ? ofCopies : ofCopies+"." +ofCopy);
+                //println(IsOF+"******ofCopy:"+ofCopy);
+                ""}}
+            {{/hasQualifiedInData}}
         {{/qualifiedInData}}
-        {{%IsOF = null;""}}
+        {{#$hasQualifiedInData}}
+            {{%
+                //println(obj_getVar("ctx.text")+"======ofCopies:"+ofCopies);
+                IsOF = null;
+            ""}}
+        {{/hasQualifiedInData}}
         {{>call.baseQlfNameCall}}
     {{/delegate}}
     {{^$qlfNameCall}}
@@ -24,5 +45,6 @@
                 qlfNameCall=name_qlfNameWithDim(qlfNameCall,dimString);
             ""}}
         {{/tableCall}}
+        {{%ofCopies=null;""}}
     {{/ofCopies}}
 {{/delegate}}
