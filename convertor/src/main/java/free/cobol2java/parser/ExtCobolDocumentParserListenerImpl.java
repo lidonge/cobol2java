@@ -133,10 +133,7 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
                 if (normalCopyBook && defaultManager.isCopybookManage()) {
                     String dclSource = defaultManager.loadCopyBook(copyBook, params, result);
                     copySource = dclSource == null ? copySource :dclSource;
-                    if(!copySource.endsWith("CONST."))
-                        result = copySource;
-                    else
-                        result = "";
+                    result = copySource;
                 }
             } catch (final IOException | URISyntaxException e) {
                 result = null;

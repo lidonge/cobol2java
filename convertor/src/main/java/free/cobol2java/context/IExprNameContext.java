@@ -34,12 +34,12 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
         // qlfName include C and end with a fieldName of a copybook BOOK1 +
         // qlfName include B start with BOOK1(should be remove) and end with fieldName of BOOk2 +
         // qlfName start with BOOK2(should be remove) and end with A
-        ContextAndQlfName prev = null;
+        ContextAndQlfName prev = new ContextAndQlfName(null,this);
         for (int i = ofIds.length - 1; i > 0; i--) {
             String field = ofIds[i - 1];
             String ofField = ofIds[i];
             //get name_Field_In_ofField(-ofField)
-            ContextAndQlfName caq = prev != null && prev.context != null ? prev.context.getQlfNameOf(field, ofField) : getQlfNameOf(field, ofField);
+            ContextAndQlfName caq = prev.context.getQlfNameOf(field, ofField);
             String qlfName = caq.qlfName;
             if(qlfName.indexOf("|") != -1){
                 qlfName = getQlfNameFromMultiNames(ofField,qlfName);
@@ -169,48 +169,6 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
 
 
     //===================================
-    default String name_qlfUdfNameWithDim(String javaQlfName, String dimStr) {
-        if (dimStr == null || dimStr.length() == 0 || dimStr.equals("null"))
-            return javaQlfName;
-        if (dimStr.indexOf(":") != -1) {
-            String dim = dimStr.replace(":", ",");
-            return "Util.subvalue(" + javaQlfName + "," + toQlfDims(dim) + ")";
-        }
-        String ret = null;
-        String delegate = javaQlfName.substring(javaQlfName.lastIndexOf('.') + 1);
-        if (getJavaFieldToQualifiedName().get(delegate) == null) {
-            IExprNameContext exprContext = getExprContext(delegate, false);
-            if (exprContext == null) {
-                if (javaQlfName.startsWith("UNDEFINED_FIELD_"))
-                    return javaQlfName;
-            }
-            String qlfDims = toQlfDims(dimStr);
-            ret = exprContext.name_qlfNameWithDim(javaQlfName, qlfDims);
-        } else {
-            ret = name_qlfNameWithDim(javaQlfName, dimStr);
-        }
-//        ret = nestedQualifiedName(ret);
-
-        return ret;
-    }
-
-    private String toQlfDims(String dimStr) {
-        String[] dims = dimStr.split(",");
-        String ret = null;
-        for (String dim : dims) {
-            if (!dim.matches("-?\\d+")) {
-                //FIXME if dim is a complex arithmetic, should merge copybook to main to fix.
-                dim = name_qlfName(name_toField(dim), null);
-            }
-            if (ret == null) {
-                ret = dim;
-            } else {
-                ret += "," + dim;
-            }
-        }
-        return ret;
-    }
-
     default String name_qlfNameWithDim(String theJavaQlfName, String dimStr) {
         String ret = null;
         if(theJavaQlfName.indexOf("UNDEFINED_")!=-1){
@@ -235,12 +193,15 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
     default String name_getFullFieldType(String fieldName) {
         String ret = getJavaQlfFieldToFullType().get(fieldName);
         if (ret == null) {
-            ret = name_getFieldType(fieldName);
+            ret = _getFieldType(fieldName,true);
         }
         return ret;
     }
 
     default String name_getFieldType(String fieldName) {
+        return _getFieldType(fieldName,false);
+    }
+    default String _getFieldType(String fieldName, boolean fullPath) {
         String ret = getJavaQlfFieldToSimpleType().get(fieldName);
         if (ret != null && getInnerClsNameToCopybookName().get(ret) != null) {
             ret = getInnerClsNameToCopybookName().get(ret);
@@ -249,12 +210,24 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
             ret = name_getFieldClsType(fieldName);
             if (ret == null) {
                 int index = fieldName.lastIndexOf('.');
+                String shortName = fieldName;
                 if (index != -1) {
-                    fieldName = fieldName.substring(index + 1);
+                    shortName = fieldName.substring(index + 1);
                 }
-                IExprNameContext exprContext = getExprContext(fieldName, false);
-                if (exprContext != null)
-                    ret = exprContext.name_getFieldType(exprContext.name_qlfName(fieldName, null));
+                IExprNameContext exprContext = getExprContext(shortName, false);
+                if (exprContext != null) {
+                    ret = exprContext.name_getFieldType(exprContext.name_qlfName(shortName, null));
+                    if(fullPath) {
+                        if(!IExprBaseContext.isBaseType(ret)) {
+                            String pack = exprContext.model_getPackage(
+                                    name_toClass(fieldName.substring(0, fieldName.indexOf("."))),
+                                    "false");
+                            if (pack != null) {
+                                ret = pack + "." + ret;
+                            }
+                        }
+                    }
+                }
             }
         }
         return ret;

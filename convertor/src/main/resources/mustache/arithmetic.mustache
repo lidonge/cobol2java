@@ -1,12 +1,6 @@
+{{%arithmeticExpression = null;""}}
+{{>arith.multDivs[multDivs]}}
+{{>arith.plusMinus[plusMinus]}}
 {{%
-    arithmeticExpression = null;
-    //arithmeticExpression=expr_convertExpr(obj_getVar("ctx"));
-    //println("====ctx=" +obj_getVar("ctx.text")+",arithmeticExpression=" +arithmeticExpression);
-""}}
-{{>arith.multDivs}}
-{{%var_push(multDivs);""}}
-{{>arith.plusMinus}}
-{{%
-    multDivs=var_pop();
     arithmeticExpression=plusMinus==null?multDivs:multDivs+plusMinus;
 ""}}

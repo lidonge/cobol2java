@@ -19,6 +19,7 @@
             {{%
                 indexName=name_toField(obj_getVar("name"));
                 name_putInnerField(indexName);
+                name_setFieldType(indexName,"Integer");
             ""}}
             int {{%indexName}} = 0;
         {{/indices}}

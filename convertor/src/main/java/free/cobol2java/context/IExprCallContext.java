@@ -69,11 +69,14 @@ public interface IExprCallContext extends ILogable {
         ICobolConvertor cobolConvertor = CobolConfig.getCobolConvertor();
         List<File> files = new ArrayList<>();
         cobolConvertor.findFiles(new File(cobolConvertor.getSourcePath()), files,
-                cobolConvertor.getSuffixes(), fileName + "*");
+                cobolConvertor.getSuffixes(), fileName + ".*");
         if (files.size() > 0) {
             fullClsName = getFullClassName(files.get(0));
+            if(files.size() > 1){
+                getLogger(IExprCallContext.class).warn("Warning duplicate sub file is found: {}", files);
+            }
         } else {
-            getLogger().error("Error can not find given call sub file: {}", fileName);
+            getLogger(IExprCallContext.class).error("Error can not find given call sub file: {}", fileName);
             fullClsName = "UNDEFINED_"+fileName;
         }
         unCompiledCobol.put(fileName, fullClsName);

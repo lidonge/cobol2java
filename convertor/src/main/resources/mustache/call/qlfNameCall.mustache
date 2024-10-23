@@ -9,18 +9,11 @@
             {{#$hasQualifiedInData}}
                 {{%
                     IsOF = obj_getVar("type") == "OF";
-                //println("######IsOF:"+IsOF);
-                    var_push(IsOF);
-                    var_push(ofCopies);
                 ""}}
             {{/hasQualifiedInData}}
-            {{%var_push(hasQualifiedInData);""}}
-            {{#call}}{{>call}}{{/call}}
-            {{%hasQualifiedInData=var_pop();""}}
+            {{#call}}{{>call(IsOF)[operand,tableCall,subscripts,dimString]}}{{/call}}
             {{#$hasQualifiedInData}}
                 {{%
-                    ofCopies = var_pop();
-                    IsOF = var_pop();
                     ofCopy = IsOF ? operand:null;
                     ofCopies = ofCopies == null ? ofCopy :
                         (ofCopy == null ? ofCopies : ofCopies+"." +ofCopy);
@@ -41,9 +34,12 @@
     {{/qlfNameCall}}
     {{#$ofCopies}}
         {{#$tableCall}}
-            {{%
-                qlfNameCall=name_qlfNameWithDim(qlfNameCall,dimString);
-            ""}}
+            {{#$subscripts}}
+                {{%qlfNameCall=name_qlfNameWithDim(qlfNameCall,subscripts);""}}
+            {{/subscripts}}
+            {{#$dimString}}
+                {{%qlfNameCall=name_qlfNameWithDim(qlfNameCall,dimString);""}}
+            {{/dimString}}
         {{/tableCall}}
         {{%ofCopies=null;""}}
     {{/ofCopies}}

@@ -13,8 +13,8 @@
     {{#relationCondition}}
         {{#signCondition}}//TODO signCondition{{/signCondition}}
         {{#arithmeticComparison}}
-            {{#arithmeticExpressionLeft}}{{>arithmetic}}{{%left=arithmeticExpression;""}}{{/arithmeticExpressionLeft}}
-            {{#arithmeticExpressionRight}}{{>arithmetic}}{{%right=arithmeticExpression;""}}{{/arithmeticExpressionRight}}
+            {{#arithmeticExpressionLeft}}{{>arithmetic[arithmeticExpression]}}{{%left=arithmeticExpression;""}}{{/arithmeticExpressionLeft}}
+            {{#arithmeticExpressionRight}}{{>arithmetic[arithmeticExpression]}}{{%right=arithmeticExpression;""}}{{/arithmeticExpressionRight}}
             {{>ifelse.reloper}}
             {{%condition=relOperStr;""}}
         {{/arithmeticComparison}}
