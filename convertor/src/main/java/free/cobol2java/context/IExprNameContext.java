@@ -4,6 +4,9 @@ package free.cobol2java.context;
 import free.cobol2java.util.CobolConstant;
 import free.servpp.logger.ILogable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author lidong@date 2024-09-29@version 1.0
  */
@@ -89,9 +92,10 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
         } else {
             //fieldB not defined in main, to find qlfName of fieldB in copybook
             //004-COPY-OF-ONE. DISPLAY CB-SIMP2-B OF CP-SIMP2.
-            exprContext =getExprContext(fieldB,false);
+            List<String> copyPath = new ArrayList<>();
+            exprContext =getExprContext(fieldB,copyPath);
             String fieldAQlfNameInCopy = exprContext.getQlfNameInMain(fieldA);
-            qlfName = changeCopyFieldNameToFieldName(fieldAQlfNameInCopy);
+            qlfName = changeCopyFieldNameToFieldName(fieldAQlfNameInCopy,copyPath);
         }
         return new ContextAndQlfName(qlfName,exprContext);
     }
@@ -108,7 +112,8 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
             ret = qlfFieldA;
         } else {
             //the fieldA is in copyfile not specified, get the context that fieldA exists
-            IExprNameContext exprContext = getExprContext(fieldA, false);
+            List<String> copyPath = new ArrayList<>();
+            IExprNameContext exprContext = getExprContext(fieldA,copyPath);
             //get the qlfName of fieldA in its context.
             //FIXME the field defined in filler
             if(exprContext == null){
@@ -116,13 +121,13 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
                 getLogger(IExprNameContext.class).error("Error can not find field {} defined in copybook {}.", fieldA,this.getCopyBookName());
             }else {
                 String qlfNameInCopy = exprContext.getJavaFieldToQualifiedName().get(fieldA);
-                ret = changeCopyFieldNameToFieldName(qlfNameInCopy);
+                ret = changeCopyFieldNameToFieldName(qlfNameInCopy,copyPath);
             }
         }
         return ret;
     }
 
-    private String changeCopyFieldNameToFieldName(String qlfNameInCopy) {
+    private String changeCopyFieldNameToFieldName(String qlfNameInCopy, List<String> copyPath) {
         String ret;
         if(Character.isUpperCase(qlfNameInCopy.charAt(0))){
             //Constant copybook
@@ -133,6 +138,14 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
             String copyFileName = qlfNameInCopy.substring(0, index);
             //find the field defined in main cbl, it should only one instance of the class
             String javaFieldNameOfCopy = getCopyFieldNameToQlfName().get(copyFileName);
+            if(javaFieldNameOfCopy == null) {
+                for (String copyName : copyPath) {
+                    if (javaFieldNameOfCopy == null)
+                        javaFieldNameOfCopy = copyName;
+                    else
+                        javaFieldNameOfCopy = copyName + "." + javaFieldNameOfCopy;
+                }
+            }
             ret = javaFieldNameOfCopy + qlfNameInCopy.substring(index);
         }
         return ret;
@@ -214,7 +227,7 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
                 if (index != -1) {
                     shortName = fieldName.substring(index + 1);
                 }
-                IExprNameContext exprContext = getExprContext(shortName, false);
+                IExprNameContext exprContext = getExprContext(shortName);
                 if (exprContext != null) {
                     ret = exprContext.name_getFieldType(exprContext.name_qlfName(shortName, null));
                     if(fullPath) {

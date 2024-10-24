@@ -36,7 +36,10 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
         return CopyBookManager.getDefaultManager().getPackageNameByModelName(modelName,"true".equals(useCurrentCopybook));
     }
 
-    default IExprNameContext getExprContext(String fieldName, boolean isMiddleName) {
+    default IExprNameContext getExprContext(String fieldName) {
+        return getExprContext(fieldName,null);
+    }
+    default IExprNameContext getExprContext(String fieldName, List<String> copyPath) {
         IExprNameContext value = null;
         CobolCompiler cobolCompiler = TopCompiler.currentCompiler();
         String copyBookName = getCopyBookName();
@@ -46,15 +49,32 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
 //            copyName = name_toClass(copyName);
             IExprNameContext ctx = getCopybookContexts().get(copyName);
             if (ctx != null) {
-                boolean match = false;
-                if (isMiddleName) {
-                    match = ctx.getCopyFieldNameToQlfName().get(fieldName) != null;
-                } else {
-                    match = ctx.getJavaFieldToQualifiedName().get(fieldName) != null ||
+                boolean match = ctx.getJavaFieldToQualifiedName().get(fieldName) != null ||
                             ctx.getQlfNameToCopyFieldName().get(fieldName) != null;
-                }
                 if (match) {
                     value = ctx;
+                    String copyFieldName = getCopyFieldNameToQlfName().get(IExprBaseContext.lowerFirstLetter(copyName));
+                    if(this.getCopyBookName() != null){
+                        copyFieldName = copyFieldName.substring(this.getCopyBookName().length()+1);
+                    }
+                    copyPath.add(copyFieldName);
+                    break;
+                }
+            }
+        }
+        if (value == null) {
+            for (String copyName : includes) {
+//            copyName = name_toClass(copyName);
+                IExprNameContext ctx = getCopybookContexts().get(copyName);
+                value = ctx.getExprContext(fieldName, copyPath);
+                if(value != null) {
+                    if(copyPath != null) {
+                        String copyFieldName = getCopyFieldNameToQlfName().get(IExprBaseContext.lowerFirstLetter(copyName));
+                        if(this.getCopyBookName() != null){
+                            copyFieldName = copyFieldName.substring(this.getCopyBookName().length()+1);
+                        }
+                        copyPath.add(copyFieldName);
+                    }
                     break;
                 }
             }
@@ -71,7 +91,7 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
                 //field in copybook
                 //FIXME
                 String fieldName = path[path.length - 1];
-                IExprNameContext context = getExprContext(fieldName, false);
+                IExprNameContext context = getExprContext(fieldName);
                 String qlfName = context.getJavaFieldToQualifiedName().get(fieldName);
                 type = context.getJavaQlfFieldToSimpleType().get(qlfName);
             }
@@ -82,7 +102,7 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
 
         if (type != null) {
             String operandField = operand.substring(operand.lastIndexOf(".") + 1);
-            IExprNameContext context = getExprContext(operandField, false);
+            IExprNameContext context = getExprContext(operandField);
             String copyName = context.getCopyBookName();
             Map<String, String> copyBookMap = CopyBookManager.getDefaultManager().getCopyBookMap();
             String copyContent = copyBookMap.get(copyName);

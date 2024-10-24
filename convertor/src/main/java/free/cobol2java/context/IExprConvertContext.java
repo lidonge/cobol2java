@@ -17,7 +17,7 @@ public interface IExprConvertContext extends IExprNameContext, IExprRelContext {
         String qlfName = name_qlfName(javaFieldName, null);
         String refFieldName = getJavaQlfFieldToSimpleType().get(qlfName);
         if (refFieldName == null) {
-            IExprNameContext exprContext = getExprContext(javaFieldName, false);
+            IExprNameContext exprContext = getExprContext(javaFieldName);
             refFieldName = exprContext.getJavaQlfFieldToSimpleType().get(qlfName);
         }
 

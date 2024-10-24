@@ -16,17 +16,14 @@
        01 WS-LOWER-STRING       PIC X(20).
 
        PROCEDURE DIVISION.
-           DISPLAY 'Original String A: ' WS-STRING-A.
-           DISPLAY 'Original String B: ' WS-STRING-B.
-
-* STRING
-           STRING WS-STRING-A WS-STRING-A DELIMITED BY ' '
-                  WS-STRING-B WS-STRING-B DELIMITED BY '#'
+	   TEST-STRING.
+           STRING WS-STRING-A WS-STRING-A DELIMITED BY SIZE
+                  WS-STRING-B WS-STRING-B DELIMITED BY 5
                   INTO WS-CONCATENATED
            END-STRING
            DISPLAY 'Concatenated String: ' WS-CONCATENATED.
 
-* UNSTRING
+	   TEST-UNSTRING.
            UNSTRING WS-STRING-A
                DELIMITED BY ','
                INTO WS-EXTRACTED-PART1 WS-EXTRACTED-PART2
@@ -34,25 +31,25 @@
            DISPLAY 'Extracted Part 1: ' WS-EXTRACTED-PART1
            DISPLAY 'Extracted Part 2: ' WS-EXTRACTED-PART2.
 
-* INSPECT
+	   TEST-INSPECT.
            INSPECT WS-STRING-B TALLYING WS-SEARCH-RESULT
                FOR ALL WS-SEARCH-STRING BEFORE INITIAL 'X'
            DISPLAY 'Occurrences of "COBOL" in String B: ' WS-SEARCH-RESULT.
 
-* INSPECT with REPLACING
+	   INSPECT-with-REPLACING.
            MOVE WS-STRING-B TO WS-REPLACED-STRING
            INSPECT WS-REPLACED-STRING
                REPLACING FIRST 'COBOL' BY 'JAVA'
            DISPLAY 'Replaced String: ' WS-REPLACED-STRING.
 
-* COMPARE
+	   TEST-COMPARE.
            IF WS-STRING-A = WS-STRING-B
                DISPLAY 'Strings are equal.'
            ELSE
                DISPLAY 'Strings are not equal.'
            END-IF.
 
-* CASE
+	   TEST-CASE.
            MOVE FUNCTION UPPER-CASE(WS-STRING-A) TO WS-UPPER-STRING
            MOVE FUNCTION LOWER-CASE(WS-STRING-A) TO WS-LOWER-STRING
            DISPLAY 'Uppercase String A: ' WS-UPPER-STRING

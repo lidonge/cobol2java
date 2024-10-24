@@ -1,15 +1,32 @@
 {{%statementType=obj_getVar("statementType");STRING = statementType == "STRING" ? "STRING" : null;""}}
-{{%curObj=obj_getCurObj();""}}
-{{#$STRING}}{{#$curObj}}
-    {{#intoPhrase}}{{#intoCall}}{{>call}}{{%intoName=operand;""}}{{/intoCall}}{{/intoPhrase}}
-    {{#sendings}}{{%
-    ""}}{{#delimitedByPhrase}}{{#charactersValueStmt}}{{#literal}}{{>literal}}{{/literal}}{{%
-            delimitedBy=operand;""}}{{/charactersValueStmt}}{{/delimitedByPhrase}}{{%
-    ""}}{{#-first}}{{%intoName}} = {{/-first}}{{%
-        ""}}{{#sendingValueStmts}}{{#call}}{{>call}}{{/call}}{{%operand}}{{^-last}} + {{%delimitedBy}} + {{/-last}}{{/sendingValueStmts}}{{%
-        ""}}{{#sendingForPhrase}}//TODO sendingForPhrase{{/sendingForPhrase}}{{%
-        ""}}{{^-last}} + {{%delimitedBy}} + {{/-last}}{{#-last}};{{/-last}}{{/sendings}}
+{{#$STRING}}{{#$obj_currentObj}}
+    {{#intoPhrase}}
+        {{#intoCall}}{{>call}}{{/intoCall}}
+        {{%intoName=operand;""}}
+    {{/intoPhrase}}
+    {{#sendings}}
+        {{#delimitedByPhrase}}
+            {{#charactersValueStmt}}
+                {{#literal}}{{>literal}}{{/literal}}
+                {{#call}}{{>call}}{{/call}}
+            {{/charactersValueStmt}}
+            {{%
+                delimitedByType = obj_getVar("delimitedByType");
+                delimitedBy=delimitedByType == "SIZE" ? "-1":operand;
+            ""}}
+        {{/delimitedByPhrase}}
+        {{#-first}}
+            {{%intoName}} =
+        {{/-first}}
+        {{^-first}} + {{/-first}}
+        {{#sendingValueStmts}}
+            {{#call}}{{>call}}{{/call}}
+            {{^-first}} + {{/-first}}Util.substring({{%operand}},{{%delimitedBy}})
+        {{/sendingValueStmts}}
+        {{#sendingForPhrase}}//TODO sendingForPhrase{{/sendingForPhrase}}
+        {{#-last}};{{/-last}}
+    {{/sendings}}
     {{#onOverflowPhrase}}//TODO onOverflowPhrase{{/onOverflowPhrase}}
     {{#notOnOverflowPhrase}}//TODO notOnOverflowPhrase{{/notOnOverflowPhrase}}
     {{#withPointerPhrase}}//TODO withPointerPhrase{{/withPointerPhrase}}
-{{/curObj}}{{/STRING}}
+{{/obj_currentObj}}{{/STRING}}

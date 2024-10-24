@@ -19,10 +19,9 @@ public class Util {
         return "";
     }
 
-    public static <T> T subvalue(T wsNum1, String s) {
+    public static <T> T subvalue(T wsNum1, Integer start, Integer len) {
         return null;
     }
-
     public static Integer sizeof(Object obj) {
         return 0;
     }
@@ -40,5 +39,9 @@ public class Util {
     }
 
     public static <T> void copyObject(T src, Object target, int start, int length) {
+    }
+
+    public static String substring(Object wsStringA, int size) {
+        return null;
     }
 }
