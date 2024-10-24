@@ -37,7 +37,8 @@
             {{/isSubCopybook}}
             {{%childrenCount=1;""}}
         {{/-first}}
-            {{>dimstr}}
+            {{%annotationNeed = "annotationNeed";""}}
+            {{>dimstr(annotationNeed)[dimStr,dimension]}}
             {{>comment}}
             {{%dimension != null ? dim_push(dimension) : dim_push(0);""}}
             {{%var_push(isSubCopybook);""}}

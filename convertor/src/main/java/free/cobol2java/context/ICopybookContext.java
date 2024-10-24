@@ -67,6 +67,10 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
             for (String copyName : includes) {
 //            copyName = name_toClass(copyName);
                 IExprNameContext ctx = getCopybookContexts().get(copyName);
+                if(ctx == null){
+                    //not a data copy book
+                    continue;
+                }
                 value = ctx.getExprContext(fieldName, copyPath);
                 if(value != null) {
                     if(copyPath != null) {

@@ -8,12 +8,6 @@
             dimLevelStr = dim_value();
         ""}}
     {{/from}}
-    {{#to}}
-        //TODO occurse to;
-    {{/to}}
-    {{#occursDepending}}
-        //TODO occursDepending;
-    {{/occursDepending}}
     {{#occursIndexed}}
         {{#indices}}
             {{%
@@ -24,7 +18,38 @@
             int {{%indexName}} = 0;
         {{/indices}}
     {{/occursIndexed}}
+    {{#to}}
+        {{%maxLength=obj_getVar("value");""}}
+    {{/to}}
+    {{#occursDepending}}
+        {{#dependingOnCall}}
+            {{%dependingName=name_toField(obj_getVar("delegate.name"));""}}
+        {{/dependingOnCall}}
+    {{/occursDepending}}
     {{#occursSorts}}
-        //TODO occursSorts;
+        {{%
+            sortOrder= obj_getVar("order");
+            sortFields = null;
+        ""}}
+        {{#keyCalls}}
+            {{%
+                sortField=name_toField(obj_getVar("delegate.name"));
+                sortFields=sortFields == null ? sortField:sortFields +","+sortField;
+            ""}}
+        {{/keyCalls}}
     {{/occursSorts}}
+    {{%
+        tempNeed = maxLength != null || dependingName != null ||
+            sortFields != null ? "needAnnotation":null;
+        annotationNeed = annotationNeed == null ? null : tempNeed;
+    ""}}
+    {{#$annotationNeed}}
+        @ArrayInfo(//-
+            {{#$maxLength}}maxLength = {{%maxLength}}, {{/maxLength}}
+            {{#$dependingName}}dependOn = "{{%dependingName}}", {{/dependingName}}
+            {{#$sortFields}}sortFields = "{{%sortFields}}", {{/sortFields}}
+            {{#$sortOrder}}order = "{{%sortOrder}}",{{/sortOrder}}
+            end="end"
+        )//for Array;
+    {{/annotationNeed}}
 {{/occursClauses}}
