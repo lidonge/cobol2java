@@ -21,7 +21,7 @@
         {{^-first}} + {{/-first}}
         {{#sendingValueStmts}}
             {{#call}}{{>call}}{{/call}}
-            {{^-first}} + {{/-first}}Util.substring({{%operand}},{{%delimitedBy}})
+            {{^-first}} + {{/-first}}StringUtil.substring({{%operand}},{{%delimitedBy}})
         {{/sendingValueStmts}}
         {{#sendingForPhrase}}//TODO sendingForPhrase{{/sendingForPhrase}}
         {{#-last}};{{/-last}}

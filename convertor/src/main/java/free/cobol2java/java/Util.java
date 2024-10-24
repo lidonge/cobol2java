@@ -40,8 +40,4 @@ public class Util {
 
     public static <T> void copyObject(T src, Object target, int start, int length) {
     }
-
-    public static String substring(Object wsStringA, int size) {
-        return null;
-    }
 }

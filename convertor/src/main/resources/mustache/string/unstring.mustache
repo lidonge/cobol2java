@@ -1,5 +1,57 @@
 {{%statementType=obj_getVar("statementType");UNSTRING = statementType == "UNSTRING" ? "UNSTRING" : null;""}}
-{{%curObj=obj_getCurObj();""}}
-{{#$UNSTRING}}{{#$curObj}}
-//TODO UNSTRING
-{{/curObj}}{{/UNSTRING}}
+{{#$UNSTRING}}{{#$obj_currentObj}}
+    {{#intoPhrase}}
+        {{%intosString = null;""}}
+        {{#intos}}
+            {{#countIn}}
+                {{#countInCall}}{{>call}}{{/countInCall}}
+                {{%countInName=operand;""}}
+            {{/countIn}}
+            {{#delimiterIn}}
+                //TODO UNSTRING delimiterIn
+                {{%delimiterInName=null;""}}
+            {{/delimiterIn}}
+            {{#intoCall}}
+                {{>call}}
+                {{%intoCallName=operand;""}}
+            {{/intoCall}}
+            {{%
+                countObj = countInCallName != null ? "(value)->"+countInCallName+"=value":null;
+                delimiterObj = delimiterInName != null ? "(value)->"+delimiterInName+"=value":null;
+                into = "new UnstringInto("+
+                    "(value)->"+intoCallName+"=value, " +
+                    countObj +"," +
+                    delimiterObj +
+               ")";
+                intosString = intosString == null ? into : intosString +"," + into;
+            ""}}
+        {{/intos}}
+
+    {{/intoPhrase}}
+    {{#sending}}
+        {{#delimitedByPhrase}}
+            {{#delimitedByValueStmt}}
+                {{#literal}}{{>literal}}{{/literal}}
+                {{#intoCall}}{{>call}}{{/intoCall}}
+                {{%delimitedByValue=operand;""}}
+            {{/delimitedByValueStmt}}
+        {{/delimitedByPhrase}}
+        {{#orAlls}}
+            {{#-first}}
+                {{%hasOrAlls="hasOrAlls";""}}
+                //TODO UNSTRING orAlls
+            {{/-first}}
+        {{/orAlls}}
+        {{#sendingCall}}{{>call}}{{/sendingCall}}
+        {{%sendingCallName=operand;""}}
+    {{/sending}}
+    {{#tallyingPhrase}}
+        //TODO UNSTRING tallyingPhrase
+    {{/tallyingPhrase}}
+    {{#withPointerPhrase}}
+        //TODO UNSTRING withPointerPhrase
+    {{/withPointerPhrase}}
+    {{#onOverflowPhrase}}//TODO UNSTRING onOverflowPhrase{{/onOverflowPhrase}}
+    {{#notOnOverflowPhrase}}//TODO UNSTRING notOnOverflowPhrase{{/notOnOverflowPhrase}}
+    StringUtil.unstring({{%sendingCallName}},{{%delimitedByValue}},{{%intosString}});
+{{/obj_currentObj}}{{/UNSTRING}}

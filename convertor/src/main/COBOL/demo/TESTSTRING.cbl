@@ -27,6 +27,8 @@
            UNSTRING WS-STRING-A
                DELIMITED BY ','
                INTO WS-EXTRACTED-PART1 WS-EXTRACTED-PART2
+               COUNT IN WS-SEARCH-RESULT
+               ON OVERFLOW CONTINUE
            END-UNSTRING
            DISPLAY 'Extracted Part 1: ' WS-EXTRACTED-PART1
            DISPLAY 'Extracted Part 2: ' WS-EXTRACTED-PART2.
