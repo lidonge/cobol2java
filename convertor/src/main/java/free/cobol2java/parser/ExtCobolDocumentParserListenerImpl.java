@@ -123,7 +123,7 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
         } else {
             String copyName = copyBook.getName();
             CobolCompiler cobolCompiler = TopCompiler.currentCompiler();
-            cobolCompiler.enterCopybook(copyName);
+            boolean isEnterCopybook = false;
             try {
                 File parent = copyBook.getParentFile();
                 List<File> copyBookDirectories = params.getCopyBookDirectories();
@@ -131,6 +131,8 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
                 result = new ExtCobolPreprocessorImpl().process(copyBook, params);
                 CopyBookManager defaultManager = CopyBookManager.getDefaultManager();
                 if (normalCopyBook && defaultManager.isCopybookManage()) {
+                    cobolCompiler.enterCopybook(copyName);
+                    isEnterCopybook = true;
                     String dclSource = defaultManager.loadCopyBook(copyBook, params, result);
                     copySource = dclSource == null ? copySource :dclSource;
                     result = copySource;
@@ -144,7 +146,8 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
                 getLogger(getClass()).error("Error when parse COPYBOOK:{} with exception {}", copyBook.getName(), ex.getMessage());
                 result = null;
             }finally {
-                cobolCompiler.exitCopybook(copyName);
+                if(isEnterCopybook)
+                    cobolCompiler.exitCopybook(copyName);
             }
         }
 

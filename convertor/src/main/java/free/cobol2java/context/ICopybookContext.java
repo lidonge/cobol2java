@@ -57,7 +57,8 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
                     if(this.getCopyBookName() != null){
                         copyFieldName = copyFieldName.substring(this.getCopyBookName().length()+1);
                     }
-                    copyPath.add(copyFieldName);
+                    if(copyPath != null)
+                        copyPath.add(copyFieldName);
                     break;
                 }
             }
