@@ -1,8 +1,9 @@
 {{%IsFiller=null;""}}
 {{#filler}} {{%IsFiller="IsFiller";""}}{{/filler}}
-{{^$IsFiller}}{{^pictureClause}}
+{{!--^$IsFiller--}}
+    {{^pictureClause}}
     {{%
-        orgName = obj_getVar("name");
+        orgName = IsFiller != null ? "FILLER" : obj_getVar("name");
         clsName=name_toClass(orgName);
         //println(obj_getVar("levelNumber")+"****model enter class:" + clsName);
 
@@ -32,25 +33,26 @@
                     {{/isConstInnerCls}}
                 {{/isInnerClass}}
                 {{%isConstInnerCls != null? "public static ":""}}
-                {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel+1;""}}
+                {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel+1;fillerCount = 0;""}}
                 class {{%clsName}} {
             {{/isSubCopybook}}
             {{%childrenCount=1;""}}
         {{/-first}}
-            {{%annotationNeed = "annotationNeed";""}}
-            {{>dimstr(annotationNeed)[dimStr,dimension]}}
-            {{>comment}}
-            {{%dimension != null ? dim_push(dimension) : dim_push(0);""}}
-            {{%var_push(isSubCopybook);""}}
-            {{%var_push(clsName);""}}
-            {{>model.properties}}
-            {{%curObj=obj_getCurObj();""}}
-            {{#$childrenCount}}{{#$curObj}}
-                {{>model.propertiesInnerClass}}
-            {{/curObj}}{{/childrenCount}}
-            {{%clsName=var_pop();""}}
-            {{%isSubCopybook=var_pop();""}}
-            {{%dim_pop();""}}
+        {{>model.redefine[redefinedName]}}
+        {{%annotationNeed = "annotationNeed";""}}
+        {{>dimstr(annotationNeed)[dimStr,dimension]}}
+        {{>comment}}
+        {{%dimension != null ? dim_push(dimension) : dim_push(0);""}}
+        {{%var_push(isSubCopybook);""}}
+        {{%var_push(clsName);""}}
+        {{>model.properties}}
+        {{%curObj=obj_getCurObj();""}}
+        {{#$childrenCount}}{{#$curObj}}
+            {{>model.propertiesInnerClass}}
+        {{/curObj}}{{/childrenCount}}
+        {{%clsName=var_pop();""}}
+        {{%isSubCopybook=var_pop();""}}
+        {{%dim_pop();""}}
         {{#-last}}
             {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel - 1;""}}
             {{^$isSubCopybook}}
@@ -62,4 +64,5 @@
         clsOrFieldName=name_exitClass();
         //clsName=="Pksaacn1"?println("end class:" +clsName+", imports:"+obj_getFromMap(importsMap,clsName)):"";
     ""}}
-{{/pictureClause}}{{/IsFiller}}
+    {{/pictureClause}}
+{{!--/IsFiller--}}

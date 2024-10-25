@@ -1,17 +1,20 @@
+
 {{%valueClause=obj_getCurVar("valueClause");""}}
 {{%IsFiller=null;""}}
 {{#filler}} {{%IsFiller="IsFiller";"//====IsFiller"}}{{/filler}}
 {{%curObj=obj_getCurObj();""}}
-{{^$IsFiller}}{{#$curObj}}
+{{!--^$IsFiller--}}
+    {{#$curObj}}
     {{%isEnum = obj_getVar("levelNumber") == 88 ? "isEnum" : null;""}}
+    {{>model.pointer}}
     {{#pictureClause}}
         {{>model.picture}}
-        @FieldInfo(cobolType = "{{%sType}}", levelNumber = {{%obj_getVar("levelNumber")}})
+        @FieldInfo(cobolType = "{{%sType}}", {{#$usageClauseType}}usageType= "{{%usageClauseType}}", {{/usageClauseType}}levelNumber = {{%obj_getVar("levelNumber")}})
         {{%
             modifier = isInnerClass == "isInnerClass" ? "" :"public ";
             modifier = modifier +(IsConstantCopybook != null ? "static final " :"")
         }}
-        {{%propType}} {{#$dimStr}}[]{{/dimStr}} {{%theFieldName}}
+        {{%propType}} {{#$dimStr}}[]{{/dimStr}} {{%theFieldName}}{{#$IsFiller}}_{{%fillerCount = fillerCount + 1}}{{/IsFiller}}
         {{^$valueClause}}
             {{#$dimStr}} = new {{%propType}}[{{%dimStr}}]{{/dimStr}};
         {{/valueClause}}
@@ -56,4 +59,5 @@
         {{>model.properties}}
     {{/dataDescriptionEntries}}
     {{/curObj}}{{/pictureClause}}
-{{/curObj}}{{/IsFiller}}
+    {{/curObj}}
+{{!--/IsFiller--}}

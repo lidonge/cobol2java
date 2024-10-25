@@ -11,4 +11,5 @@ public @interface FieldInfo {
     String cobolType() default "9";
     int levelNumber() default 1;
     String description() default ""; // 字段描述
+    String usageType() default "";
 }

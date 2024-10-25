@@ -60,6 +60,9 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
             }
             prev = caq;
         }
+        if (ret.indexOf("|") != -1) {
+            getLogger(IExprNameContext.class).error("Error Ambiguous name {}:{}", fieldName, ret);
+        }
         return ret;
     }
 
@@ -106,9 +109,6 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
         String qlfFieldA = getJavaFieldToQualifiedName().get(fieldA);
         if (qlfFieldA != null) {
             //the field defined in the main cbl
-            if (qlfFieldA.indexOf("|") != -1) {
-                getLogger(IExprNameContext.class).error("Error Ambiguous name {}:{}", fieldA, ret);
-            }
             ret = qlfFieldA;
         } else {
             //the fieldA is in copyfile not specified, get the context that fieldA exists

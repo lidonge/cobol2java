@@ -1,7 +1,8 @@
 {{%
     sType=obj_getVar("pictureString");
     propType=type_getType(sType);
-    theFieldName=name_toField(obj_getVar("name"));
+    orgName = IsFiller != null ? "FILLER" : obj_getVar("name");
+    theFieldName=name_toField(orgName);
     theQlfName=name_putInnerField(theFieldName);
     dim_putFieldDim(theFieldName,dimension == null? 0:dimension);
     setFieldName = theQlfName == null ? theFieldName : theQlfName;

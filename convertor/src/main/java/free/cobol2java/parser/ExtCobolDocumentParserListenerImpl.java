@@ -128,11 +128,13 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
                 File parent = copyBook.getParentFile();
                 List<File> copyBookDirectories = params.getCopyBookDirectories();
                 params.setCopyBookDirectories(copyBookDirectories);
+                if(copySource.length() != 0) {
+                    cobolCompiler.enterCopybook(copyName);
+                    isEnterCopybook = true;
+                }
                 result = new ExtCobolPreprocessorImpl().process(copyBook, params);
                 CopyBookManager defaultManager = CopyBookManager.getDefaultManager();
                 if (normalCopyBook && defaultManager.isCopybookManage()) {
-                    cobolCompiler.enterCopybook(copyName);
-                    isEnterCopybook = true;
                     String dclSource = defaultManager.loadCopyBook(copyBook, params, result);
                     copySource = dclSource == null ? copySource :dclSource;
                     result = copySource;

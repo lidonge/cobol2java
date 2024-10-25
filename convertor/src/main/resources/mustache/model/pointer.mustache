@@ -1,8 +1,7 @@
-{{%IsPointer= null;""}}
+{{%IsPointer= null;usageClauseType=null;""}}
 {{#usageClause}}
     {{%
-    usageClauseType=obj_getVar("usageClauseType");
-    IsPointer=usageClauseType=="POINTER"?"IsPointer":null;
+        usageClauseType=obj_getVar("usageClauseType");
+        IsPointer=usageClauseType=="POINTER"?"IsPointer":null;
     ""}}
-    {{^$IsPointer}}//TODO usageClause type is : {{%usageClauseType}} {{/IsPointer}}
 {{/usageClause}}

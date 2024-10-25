@@ -1,5 +1,5 @@
 {{%
-    orgName = obj_getVar("name");
+    orgName = IsFiller != null ? "FILLER" : obj_getVar("name");
     innerCls = name_toClass(orgName);
     fieldName = name_toField(orgName);
     theQlfName=name_putInnerField1(fieldName, isSubCopybook);
