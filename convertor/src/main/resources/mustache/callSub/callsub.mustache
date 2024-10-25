@@ -33,9 +33,10 @@
         {{%givingName}} =
     {{/givingName}}
         new {{%calleeClass}}().procedure(
-    {{%parameters = null;""}}
+    {{%parameters=null;paramList = obj_newList();""}}
     {{#usingPhrase.usingParameters}}
-        {{>callSub.parameter}}
+        {{>callSub.parameter(parameters)[parameters,param]}}
+        {{%obj_addToList(paramList,param);""}}
     {{/usingPhrase.usingParameters}}
     {{%parameters == null ? "":parameters}});
     {{#notOnExceptionClause}}

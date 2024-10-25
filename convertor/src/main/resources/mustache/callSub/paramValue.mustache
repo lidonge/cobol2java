@@ -8,7 +8,7 @@
     {{>literal}}
 {{/valueStmt.literal}}
 {{#$subparameters}}
-    {{>callSub.linkageParam}}
+    {{%operandType=name_getFieldType(operand);""}}
 {{/subparameters}}
 {{%
     param = operand;

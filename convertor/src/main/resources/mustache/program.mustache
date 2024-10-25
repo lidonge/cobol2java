@@ -89,7 +89,7 @@ class {{%mainClassName}}Handler{
         {{#-last}}//End of localStorageSection fields define{{/-last}}
     {{/dataDivision.localStorageSection.rootDataDescriptionEntries}}
     {{#procedureDivision}}
-        {{>callSub.funcparam}}
+        {{>callSub.funcparam[func_parameters,func_initStmt]}}
         {{%mainClassName}}Handler({{%func_parameters}}){
             {{%func_initStmt}}
         }
@@ -97,7 +97,6 @@ class {{%mainClassName}}Handler{
     {{>procedure}}
 }
 {{#procedureDivision}}
-    {{>callSub.funcparam}}
     {{>defaultProcedure}}
 {{/procedureDivision}}
 
