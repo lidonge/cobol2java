@@ -38,7 +38,8 @@
             {{#$c_characterPosition}}
                 {{%
                     dimString = c_characterPosition+":"+c_length;
-                    tableCall=name_qlfNameWithDim(tableCall, dimString);
+                    tableCall=name_qlfNameWithDim(
+                            tableCall == null ? qlfName:tableCall, dimString);
                 ""}}
             {{/c_characterPosition}}
         {{/InOf}}

@@ -1,0 +1,27 @@
+{{#receivingAreaCalls}}
+    {{>call[operand]}}
+    {{%
+        setName=operand;
+        setValue=value_fix(setName,sendValue);
+        isUseCopy = str_indexOf(setValue,"Util.copy") != -1 ? "isUseCopy": null;
+    ""}}
+    {{#$isUseCopy}}
+        {{#$leftIsBase}}
+            {{%setName}}={{%setValue}};
+        {{/leftIsBase}}
+        {{^$leftIsBase}}
+            {{%setValue}};
+        {{/leftIsBase}}
+    {{/isUseCopy}}
+    {{^$isUseCopy}}
+        {{%shouldFixFullArraySet = value_fixFullArraySet(setName,setValue);""}}
+        {{#shouldFixFullArraySet}}
+            Util.setFullArray({{%setName}},{{%setValue}});
+        {{/shouldFixFullArraySet}}
+        {{^shouldFixFullArraySet}}
+            {{#$leftIsBase}}
+                {{%setName}}={{%setValue}};
+            {{/leftIsBase}}
+        {{/shouldFixFullArraySet}}
+    {{/isUseCopy}}
+{{/receivingAreaCalls}}

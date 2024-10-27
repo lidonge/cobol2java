@@ -23,6 +23,7 @@ import java.util.Map;
 public class BatchConvertor extends BaseConvertor {
 
     public static void main(String[] args) throws IOException {
+        long startTime = System.currentTimeMillis();
 //        ReflectTool.DEBUG=true;
         ProgramUnitElementImpl.IGNORE_UNDEFINED_ERROR = true;
         BatchConvertor batchConvertor = new BatchConvertor();
@@ -42,6 +43,8 @@ public class BatchConvertor extends BaseConvertor {
 
         batchConvertor.convertAll();
         IExprCallContext.compileAllSub();
+//        batchConvertor.getLogger(BaseConvertor.class).info("Compile All cost:{}s", (System.currentTimeMillis()-startTime)/1000 );
+        System.out.println("Compile All cost:"+ (System.currentTimeMillis()-startTime)/1000 +" seconds.");
     }
 
     private void initCopybookManager() {

@@ -11,7 +11,7 @@
         pictureString = obj_getVar("delegate.delegate.dataDescriptionEntry.pictureClause.pictureString");
         pictureString = pictureString == null ? null : "\""+pictureString + "\"";
         type = name_getFullFieldType(setName);
-        setValue=byValue == null ? "("+type+")Util.init(\""+type+"\","+pictureString + ");":byValue+";" ;
+        setValue=byValue == null ? "("+type+")Util.init("+type+".class,"+pictureString + ");":byValue+";" ;
     ""}}
         {{%setName}}={{%setValue}}{{/dataItemCalls}}
 {{/curObj}}{{/INITIALIZE}}

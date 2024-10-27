@@ -10,10 +10,8 @@
     parameters = null;
     initStmt = null;
 ""}}
-{{%paramList = obj_newList();""}}
 {{#usingClause.usingParameters}}
     {{>callSub.parameter(subparameters,parametersWithoutType,parameters,initStmt)[parameters,parametersWithoutType,initStmt,param,operandType]}}
-    {{%obj_addToList(paramList,param);""}}
 {{/usingClause.usingParameters}}
 {{%
     func_parameters=parameters == null ? "":parameters;

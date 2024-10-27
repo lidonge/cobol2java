@@ -29,16 +29,16 @@
         //operand = var_pop();
         //println("end convert call sub : " + operand);
     ""}}
+    {{%parameters=null;""}}
+    {{#usingPhrase.usingParameters}}
+        {{>callSub.parameter(parameters)[parameters,param]}}
+    {{/usingPhrase.usingParameters}}
     {{#$givingName}}
         {{%givingName}} =
     {{/givingName}}
-        new {{%calleeClass}}().procedure(
-    {{%parameters=null;paramList = obj_newList();""}}
-    {{#usingPhrase.usingParameters}}
-        {{>callSub.parameter(parameters)[parameters,param]}}
-        {{%obj_addToList(paramList,param);""}}
-    {{/usingPhrase.usingParameters}}
-    {{%parameters == null ? "":parameters}});
+        ServiceManager.getService({{%calleeClass}}.class).
+            procedure( {{%parameters == null ? "":parameters}});
+        //new {{%calleeClass}}().procedure({{%parameters == null ? "":parameters}});
     {{#notOnExceptionClause}}
         {{>statements}}
     {{/notOnExceptionClause}}

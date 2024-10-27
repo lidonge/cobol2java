@@ -1,31 +1,23 @@
 {{%statementType=obj_getVar("statementType");MOVE = statementType == "MOVE" ? "MOVE" : null;""}}
 {{%curObj=obj_getCurObj();""}}
 {{#$MOVE}}{{#$curObj}}
-    {{#moveToStatement.moveToSendingArea.sendingAreaValueStmt}}
-        {{#literal}}{{>literal}}{{/literal}}
-        {{#call}}{{>call}}{{/call}}
-        {{%sendValue=operand;""}}
-    {{/moveToStatement.moveToSendingArea.sendingAreaValueStmt}}
-    {{#moveToStatement.receivingAreaCalls}}
-        {{>call}}
-        {{%
-            setName=operand;
-            setValue=value_fix(setName,sendValue);
-            isUseCopy = str_indexOf(setValue,"Util.copyObject(") != -1 ? "isUseCopy": null;
-        ""}}
-        {{#$isUseCopy}}
-            {{%setValue}};
-        {{/isUseCopy}}
-        {{^$isUseCopy}}
-            {{%shouldFixFullArraySet = value_fixFullArraySet(setName,setValue);""}}
-            {{#shouldFixFullArraySet}}
-                Util.setFullArray({{%setName}},{{%setValue}});
-            {{/shouldFixFullArraySet}}
-            {{^shouldFixFullArraySet}}
-                {{%setName}}={{%setValue}};
-            {{/shouldFixFullArraySet}}
-        {{/isUseCopy}}
-
-    {{/moveToStatement.receivingAreaCalls}}
-    {{#moveCorrespondingToStatement}}//TODO moveCorrespondingToStatement{{/moveCorrespondingToStatement}}
+    {{%
+        moveType=obj_getVar("moveType");
+        IsCorrMove = moveType == "MOVE_CORRESPONDING" ? "IsCorrMove":null;
+    ""}}
+    {{#moveCorrespondingToStatement}}
+        {{#moveToCorrespondingSendingArea.sendingAreaCall}}
+            {{>call[operand]}}
+            {{%sendValue=operand;""}}
+        {{/moveToCorrespondingSendingArea.sendingAreaCall}}
+        {{>baseActions.moveReceiving}}
+    {{/moveCorrespondingToStatement}}
+    {{#moveToStatement}}
+        {{#moveToSendingArea.sendingAreaValueStmt}}
+            {{#literal}}{{>literal[operand]}}{{/literal}}
+            {{#call}}{{>call[operand]}}{{/call}}
+            {{%sendValue=operand;""}}
+        {{/moveToSendingArea.sendingAreaValueStmt}}
+        {{>baseActions.moveReceiving}}
+    {{/moveToStatement}}
 {{/curObj}}{{/MOVE}}

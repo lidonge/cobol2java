@@ -1,9 +1,11 @@
 package free.cobol2java.context;
 
+import free.cobol2java.java.CobolConstant;
+
 /**
  * @author lidong@date 2024-09-29@version 1.0
  */
-public interface IExprValueContext extends IExprEnvContext, IExprPhysicalContext{
+public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
 
 
     default String type_getType(String cblType) {
@@ -15,9 +17,10 @@ public interface IExprValueContext extends IExprEnvContext, IExprPhysicalContext
             return "Double";
         return "Integer";
     }
-    default String value_fixFullArraySet(String setName, String setValue){
+
+    default String value_fixFullArraySet(String setName, String setValue) {
         String ret = null;
-        if(!setName.endsWith("]")) {
+        if (!setName.endsWith("]")) {
             int index = setName.lastIndexOf(".");
             String fieldName = setName;
             if (index != -1)
@@ -30,58 +33,140 @@ public interface IExprValueContext extends IExprEnvContext, IExprPhysicalContext
         }
         return ret;
     }
-    default String value_fix(String left, Object right) {
-        String ret = right + "";
-        String leftType = getTypeByQlfName(null, left);
-        String rightType = getTypeByQlfName(null, ret);
-        if (leftType == null) {
-            debugPoint();
-            leftType = "";
-        }
-        if (rightType == null) {
-            debugPoint();
-            rightType = "";
-        }
-        if (isBaseType(leftType) && isBaseType(rightType)) {
-            if (!leftType.equals("String") && ret.indexOf("\"") != -1) {
-                ret = ret.replace("\"", "");
-            } else if (leftType.equals("Double") && ret.indexOf(".") == -1) {
-                ret = right + "d";
-            }
+
+    private String getRightConstType(String oper) {
+        String ret = null;
+        if (oper.indexOf("\"") != -1) {
+            ret = "String";
+        } else if (isInteger(oper)) {
+            ret = "Integer";
         } else {
-            if(left.startsWith("Util.subvalue(")){
-                left = left.substring("Util.subvalue(".length(), left.length()-1);
-                int idx = left.indexOf(",");
-                String var = left.substring(0,idx);
-                String rang = left.substring(idx+1);
-                ret = "Util.copyObject(" + right + "," + var+","+rang + ")";
-            }else
-                ret = "Util.copyObject(" + right + "," + left + ")";
+            if (isDouble(oper)) {
+                ret = "Double";
+            }
         }
         return ret;
     }
 
-    private String getTypeByQlfName(String parent, String left) {
-        String ret = getJavaQlfFieldToSimpleType().get(left);
-        int index = left.indexOf(".");
-        if (ret == null && index != -1) {
-            String clsFieldName = left.substring(0, index);
-            String clsType = getJavaQlfFieldToSimpleType().get(parent == null ? clsFieldName : parent + "." + clsFieldName);
+    static boolean isDouble(String s) {
+        try {
+            Double.parseDouble(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 
-            String innerClsName = getInnerClsNameToCopybookName().get(clsType);
-            if (innerClsName == null) {
-                //type and field same name
-                innerClsName = clsType;
-            }
-            ExprContext exprContext = getCopybookContexts().get(innerClsName);
-            if (exprContext != null) {
-                String fieldName = innerClsName.substring(0, 1).toLowerCase() + innerClsName.substring(1);
-                String qlfNameInContext = left.replace(clsFieldName, fieldName);
-                ret = exprContext.getJavaQlfFieldToSimpleType().get(qlfNameInContext);
+    static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    default String value_fix(String left, Object right) {
+        String ret = null;
+        String sRight = right+"";
+
+        getEnvironment().setVar("leftIsBase","null");
+        if (left.startsWith("Util.subvalue(")) {
+            ret = fixSubvalue(left, right);
+        } else {
+            String leftType = name_getFullFieldType(removeDim(left));
+            sRight = removeDim(sRight);
+            boolean isRightLengthOf = sRight.startsWith("Util.lengthOf(");
+            boolean isConstant = sRight.startsWith("CobolConstant.");
+            boolean isSubvalue = sRight.startsWith("Util.subvalue(");
+            boolean isUndefined = sRight.startsWith("UNDEFINED_");
+            String rightType = isRightLengthOf ? "Integer":
+                    isConstant ? "CobolConstant" :
+                    isSubvalue ? "String":
+                    isUndefined ? "Object":getRightConstType(sRight);
+            if (rightType == null)
+                rightType = name_getFullFieldType(sRight);
+
+            if (leftType.equals(rightType)) {
+                getEnvironment().setVar("leftIsBase","leftIsBase");
+                if (leftType.equals("Double") && sRight.indexOf(".") == -1) {
+                    ret = right + "d";
+                }else
+                    ret = right+"";
             } else {
-                ret = getTypeByQlfName(clsFieldName, left.substring(index + 1));
+                ret = fixBaseType(right+"", leftType, rightType);
+
+                if (ret == null) {
+                    String IsCorrMove = getEnvironment().getVar("IsCorrMove") + "";
+                    if ("IsCorrMove".equals(IsCorrMove))
+                        ret = "Util.copySameField(" + right + "," + left + ")";
+                    else {
+                        if(isBaseType(leftType)){
+                            ret = "Util.copyCastTo"+leftType+"(" + right+ ")";
+                        }else
+                            ret = "Util.copyCast(" + right + "," + left + ")";
+                    }
+                }
             }
         }
+        return ret;
+    }
+
+    private String removeDim(String left){
+        String ret = "";
+        String[] parts = left.split("\\[");
+        for(String part:parts){
+            int index = part.indexOf("]");
+            if(index != -1)
+                part = index == part.length() - 1 ? "":part.substring(index + 1);
+            ret += part;
+        }
+        return ret;
+    }
+
+    private String fixBaseType(String sRight, String leftType, String rightType) {
+        String ret = null;
+        if (isBaseType(leftType) ) {
+            getEnvironment().setVar("leftIsBase","leftIsBase");
+            if(isBaseType(rightType) || "CobolConstant".equals(rightType)){
+                sRight = sRight.replace("\"", "");
+                if (leftType.equals("Integer")) {
+                    if( isInteger(sRight))
+                        ret = sRight;
+                    else if(sRight.equals("CobolConstant.ZEROS") || sRight.equals("CobolConstant.ZERO") ||
+                            sRight.equals("CobolConstant.ZEROES") || sRight.equals("CobolConstant.ZEROE")){
+                        ret = "0";
+                    }
+                } else if (leftType.equals("Double") ) {
+                    if(isDouble(sRight))
+                        ret = sRight + "d";
+                    else if(sRight.equals("CobolConstant.ZEROS") || sRight.equals("CobolConstant.ZERO") ||
+                            sRight.equals("CobolConstant.ZEROES") || sRight.equals("CobolConstant.ZEROE")){
+                        ret = "0d";
+                    }
+                } else if (leftType.equals("String")) {
+                    if(sRight.equals("CobolConstant.ZEROS") || sRight.equals("CobolConstant.ZERO") ||
+                            sRight.equals("CobolConstant.ZEROES") || sRight.equals("CobolConstant.ZEROE")){
+                        ret = "Util.copyInitString(\"0\")";
+                    }else if(sRight.equals("CobolConstant.SPACE") || sRight.equals("CobolConstant.SPACES")){
+                        ret = "Util.copyInitString(\" \")";
+                    }else
+                        ret = sRight + "+\"\"";
+                }
+            }
+        }
+        return ret;
+    }
+
+    private String fixSubvalue(String left, Object right) {
+        getEnvironment().setVar("leftIsBase","leftIsBase");
+        String ret;
+        left = left.substring("Util.subvalue(".length(), left.length() - 1);
+        int idx = left.indexOf(",");
+        String var = left.substring(0, idx);
+        String rang = left.substring(idx + 1);
+        ret = "Util.copyObject(" + right + "," + var + "," + rang + ")";
+        getEnvironment().setVar("setName",var);
         return ret;
     }
 
