@@ -1,7 +1,5 @@
 package free.cobol2java.context;
 
-import free.cobol2java.java.CobolConstant;
-
 /**
  * @author lidong@date 2024-09-29@version 1.0
  */
@@ -69,7 +67,7 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
     default String value_fixBase(String propType, Object value){
         String sRight = value +"";
         String rightType = getRightType(sRight);
-        String ret = fixBaseType(sRight,propType,rightType);
+        String ret = fixBaseType(sRight,propType,rightType, false);
         return ret;
     }
     default String value_fix(String left, Object right) {
@@ -83,8 +81,11 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
             String leftType = name_getFullFieldType(removeDim(left));
             sRight = removeDim(sRight);
             String rightType = getRightType(sRight);
-            if (rightType == null)
+            boolean rightIsAField = false;
+            if (rightType == null) {
                 rightType = name_getFullFieldType(sRight);
+                rightIsAField = true;
+            }
 
             if (leftType.equals(rightType)) {
                 getEnvironment().setVar("leftIsBase","leftIsBase");
@@ -93,7 +94,7 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
                 }else
                     ret = right+"";
             } else {
-                ret = fixBaseType(right+"", leftType, rightType);
+                ret = fixBaseType(right+"", leftType, rightType,rightIsAField);
 
                 if (ret == null) {
                     String IsCorrMove = getEnvironment().getVar("IsCorrMove") + "";
@@ -135,7 +136,7 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
         return ret;
     }
 
-    private String fixBaseType(String sRight, String leftType, String rightType) {
+    private String fixBaseType(String sRight, String leftType, String rightType, boolean rightIsAField) {
         String ret = null;
 
         if (isBaseType(leftType) ) {
@@ -147,6 +148,8 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
                         ret = Integer.parseInt(sRight)+"";
                     else if(isZero(sRight)||isSpace(sRight)){
                         ret = "0";
+                    }else if(rightIsAField){
+                        ret = "Util.copyCastToInteger("+sRight+")";
                     }else
                         ret = "Util.copyCastToInteger(\""+sRight+"\")";
                 } else if (leftType.equals("Double") ) {
@@ -154,7 +157,10 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
                         ret = sRight + "d";
                     else if(isZero(sRight)||isSpace(sRight)){
                         ret = "0d";
-                    }
+                    }else if(rightIsAField){
+                        ret = "Util.copyCastToDouble("+sRight+")";
+                    }else
+                        ret = "Util.copyCastToDouble(\""+sRight+"\")";
                 } else if (leftType.equals("String")) {
                     boolean isAll = false;
                     if (sRight.equals("CobolConstant.ALL")){
@@ -166,7 +172,10 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
                     }else if(isSpace(sRight)){
                         ret = "Util.copyInitString("+isAll+", \" \")";
                     }else if(rightType.equals("String")){
-                        ret = "\"" + sRight + "\"";
+                        if(rightIsAField)
+                            ret = sRight;
+                        else
+                            ret = "\"" + sRight + "\"";
                         if(isAll)
                             ret = "Util.copyInitString("+isAll+"," +ret+")";
                     }else {

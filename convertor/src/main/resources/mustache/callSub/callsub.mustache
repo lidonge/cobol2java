@@ -1,7 +1,7 @@
 {{%statementType=obj_getVar("statementType");CALL = statementType == "CALL" ? "CALL" : null;""}}
 {{%curObj=obj_getCurObj();""}}
 {{#$CALL}}{{#$curObj}}
-    {{%givingName = null;""}}
+    {{%givingName = null;dynCall = null;""}}
     {{#givingPhrase}}
         {{#givingCall}}
             {{>call}}
@@ -14,21 +14,18 @@
     {{/onOverflowPhrase}}
     {{#programValueStmt.literal}}
         {{>literal}}
-        {{%calleeClass = name_toClass(str_replace(operand,"\"",""));""}}
+        {{%callFileName = operand;""}}
     {{/programValueStmt.literal}}
     {{#programValueStmt.call}}
-        {{%operand = obj_getVar("delegate.delegate.name");""}}
+        {{>call[operand]}}
+        {{%dynCall = operand;""}}
     {{/programValueStmt.call}}
     {{#onExceptionClause}}
         try{
     {{/onExceptionClause}}
-    {{%
-        //var_push(operand);
-        //println("convert call sub : " + operand);
-        calleeClass = cobol_precompile(operand);
-        //operand = var_pop();
-        //println("end convert call sub : " + operand);
-    ""}}
+    {{^$dynCall}}
+        {{%calleeClass = cobol_precompile(callFileName);""}}
+    {{/dynCall}}
     {{%parameters=null;""}}
     {{#usingPhrase.usingParameters}}
         {{>callSub.parameter(parameters)[parameters,param]}}
@@ -36,8 +33,13 @@
     {{#$givingName}}
         {{%givingName}} =
     {{/givingName}}
-        ServiceManager.getService({{%calleeClass}}.class).
-            procedure( {{%parameters == null ? "":parameters}});
+        {{#$dynCall}}
+            ServiceManager.getService({{%dynCall}}).procedure( {{%parameters == null ? "":parameters}});
+        {{/dynCall}}
+        {{^$dynCall}}
+            ServiceManager.getService({{%calleeClass}}.class).
+                procedure( {{%parameters == null ? "":parameters}});
+        {{/dynCall}}
         //new {{%calleeClass}}().procedure({{%parameters == null ? "":parameters}});
     {{#notOnExceptionClause}}
         {{>statements}}
