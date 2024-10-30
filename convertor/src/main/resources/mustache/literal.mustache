@@ -4,8 +4,15 @@
     numValue=obj_getVar("numericLiteral.value");
     booleanValue = obj_getVar("booleanLiteral.value");
     constValue=obj_getVar("figurativeConstant.figurativeConstantType");
+    IsConstantAll = constValue == "ALL" ? "IsConstantAll" :null;
     numValue= numValue == null ? obj_getVar("integerLiteral.value") : numValue;
     operand = strValue != null ? ("\""+str_replace(strValue,"'","") +"\""): numValue;
     operand = booleanValue != null ? booleanValue:operand;
     operand = constValue != null ? ("CobolConstant."+constValue): operand;
+    tempOperand = operand;
 ""}}
+{{%curObj=obj_getCurObj();""}}
+{{#$IsConstantAll}}{{#$curObj}}
+    {{#literal}}{{>literal[tempOperand]}}{{/literal}}
+    {{%constantAllValue = tempOperand;""}}
+{{/curObj}}{{/IsConstantAll}}

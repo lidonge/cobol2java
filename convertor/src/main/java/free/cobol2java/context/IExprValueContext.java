@@ -66,6 +66,12 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
         }
     }
 
+    default String value_fixBase(String propType, Object value){
+        String sRight = value +"";
+        String rightType = getRightType(sRight);
+        String ret = fixBaseType(sRight,propType,rightType);
+        return ret;
+    }
     default String value_fix(String left, Object right) {
         String ret = null;
         String sRight = right+"";
@@ -76,14 +82,7 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
         } else {
             String leftType = name_getFullFieldType(removeDim(left));
             sRight = removeDim(sRight);
-            boolean isRightLengthOf = sRight.startsWith("Util.lengthOf(");
-            boolean isConstant = sRight.startsWith("CobolConstant.");
-            boolean isSubvalue = sRight.startsWith("Util.subvalue(");
-            boolean isUndefined = sRight.startsWith("UNDEFINED_");
-            String rightType = isRightLengthOf ? "Integer":
-                    isConstant ? "CobolConstant" :
-                    isSubvalue ? "String":
-                    isUndefined ? "Object":getRightConstType(sRight);
+            String rightType = getRightType(sRight);
             if (rightType == null)
                 rightType = name_getFullFieldType(sRight);
 
@@ -112,6 +111,18 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
         return ret;
     }
 
+    private String getRightType(String sRight) {
+        boolean isRightLengthOf = sRight.startsWith("Util.lengthOf(");
+        boolean isConstant = sRight.startsWith("CobolConstant.");
+        boolean isSubvalue = sRight.startsWith("Util.subvalue(");
+        boolean isUndefined = sRight.startsWith("UNDEFINED_");
+        String rightType = isRightLengthOf ? "Integer":
+                isConstant ? "CobolConstant" :
+                isSubvalue ? "String":
+                isUndefined ? "Object":getRightConstType(sRight);
+        return rightType;
+    }
+
     private String removeDim(String left){
         String ret = "";
         String[] parts = left.split("\\[");
@@ -126,37 +137,56 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
 
     private String fixBaseType(String sRight, String leftType, String rightType) {
         String ret = null;
+
         if (isBaseType(leftType) ) {
             getEnvironment().setVar("leftIsBase","leftIsBase");
             if(isBaseType(rightType) || "CobolConstant".equals(rightType)){
                 sRight = sRight.replace("\"", "");
                 if (leftType.equals("Integer")) {
                     if( isInteger(sRight))
-                        ret = sRight;
-                    else if(sRight.equals("CobolConstant.ZEROS") || sRight.equals("CobolConstant.ZERO") ||
-                            sRight.equals("CobolConstant.ZEROES") || sRight.equals("CobolConstant.ZEROE")){
+                        ret = Integer.parseInt(sRight)+"";
+                    else if(isZero(sRight)||isSpace(sRight)){
                         ret = "0";
-                    }
+                    }else
+                        ret = "Util.copyCastToInteger(\""+sRight+"\")";
                 } else if (leftType.equals("Double") ) {
                     if(isDouble(sRight))
                         ret = sRight + "d";
-                    else if(sRight.equals("CobolConstant.ZEROS") || sRight.equals("CobolConstant.ZERO") ||
-                            sRight.equals("CobolConstant.ZEROES") || sRight.equals("CobolConstant.ZEROE")){
+                    else if(isZero(sRight)||isSpace(sRight)){
                         ret = "0d";
                     }
                 } else if (leftType.equals("String")) {
-                    if(sRight.equals("CobolConstant.ZEROS") || sRight.equals("CobolConstant.ZERO") ||
-                            sRight.equals("CobolConstant.ZEROES") || sRight.equals("CobolConstant.ZEROE")){
-                        ret = "Util.copyInitString(\"0\")";
-                    }else if(sRight.equals("CobolConstant.SPACE") || sRight.equals("CobolConstant.SPACES")){
-                        ret = "Util.copyInitString(\" \")";
-                    }else
+                    boolean isAll = false;
+                    if (sRight.equals("CobolConstant.ALL")){
+                        sRight = getEnvironment().getVar("constantAllValue")+"";
+                        isAll = true;
+                    }
+                    if(isZero(sRight)){
+                        ret = "Util.copyInitString("+isAll+",\"0\")";
+                    }else if(isSpace(sRight)){
+                        ret = "Util.copyInitString("+isAll+", \" \")";
+                    }else if(rightType.equals("String")){
+                        ret = "\"" + sRight + "\"";
+                        if(isAll)
+                            ret = "Util.copyInitString("+isAll+"," +ret+")";
+                    }else {
                         ret = sRight + "+\"\"";
+                    }
                 }
             }
         }
         return ret;
     }
+
+    private static boolean isSpace(String sRight) {
+        return sRight.equals("CobolConstant.SPACE") || sRight.equals("CobolConstant.SPACES");
+    }
+
+    private static boolean isZero(String sRight) {
+        return sRight.equals("CobolConstant.ZEROS") || sRight.equals("CobolConstant.ZERO") ||
+                sRight.equals("CobolConstant.ZEROES") || sRight.equals("CobolConstant.ZEROE");
+    }
+
 
     private String fixSubvalue(String left, Object right) {
         getEnvironment().setVar("leftIsBase","leftIsBase");

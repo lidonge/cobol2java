@@ -18,8 +18,7 @@
                     {{^$isConstInnerCls}}
                         {{%packageName = model_getPackage(clsName,"true");""}}
                         package {{%packageName}};
-                        import free.cobol2java.java.CobolConstant;
-                        import free.cobol2java.java.FieldInfo;
+                        import free.cobol2java.java.*;
                         //#importsMark#
                         {{%
                             imports=obj_newList();

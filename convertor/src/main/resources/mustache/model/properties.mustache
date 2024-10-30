@@ -41,6 +41,9 @@
             {{#fromValueStmt}}
                 {{>call}}
                 {{#literal}}{{>literal}}{{/literal}}
+                {{%
+                    operand = value_fixBase(propType,operand);
+                ""}}
                 {{#$dimStr}}
                     {{%array_initString(dimStr,operand)}}
                 {{/dimStr}}

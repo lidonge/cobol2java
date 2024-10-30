@@ -90,6 +90,7 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                 addFunction("dim_udfCall", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).dim_udfCall((String) args[0]));
                 addFunction("str_replace", args -> ((String) args[0]).replace((String) args[1], (String) args[2]));
                 addFunction("value_fix", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).value_fix((String) args[0], args[1]));
+                addFunction("value_fixBase", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).value_fixBase((String) args[0], args[1]));
                 addFunction("value_fixFullArraySet", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).value_fixFullArraySet(args[0]+"",args[1]+""));
                 addFunction("name_toField", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_toField((String) args[0]));
                 addFunction("name_toClass", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).name_toClass((String) args[0]));
