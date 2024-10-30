@@ -12,12 +12,9 @@
             {{%
                 //println("=====in progProperties.mustache ");
             ""}}
-            {{%isSubCopybook=obj_getVar("levelNumber") == 75 ? "isSubCopybook" :null;""}}
+            {{%isSubCopybook=obj_getVar("levelNumber") == 75 ? "isSubCopybook" :null;IgnoreDuplicate="IgnoreDuplicate";""}}
             {{>model.nopicture}}
-            {{%
-            //innerCls = name_toClass(obj_getVar("name"));
-            ""}}
-            {{%isSubCopybook = null;""}}
+            {{%isSubCopybook = null;IgnoreDuplicate=null;""}}
             {{>model.copy75}}
             {{%
                 innerCls = isSubCopybook != null ? subCopyBookClsName : innerCls;

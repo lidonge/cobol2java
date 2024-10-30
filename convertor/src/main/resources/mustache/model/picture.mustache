@@ -1,10 +1,18 @@
 {{%
-    sType=obj_getVar("pictureString");
-    propType=type_getType(sType);
-    orgName = IsFiller != null ? "FILLER" : obj_getVar("name");
-    theFieldName=name_toField(orgName);
-    theQlfName=name_putInnerField(theFieldName);
-    dim_putFieldDim(theFieldName,dimension == null? 0:dimension);
-    setFieldName = theQlfName == null ? theFieldName : theQlfName;
-    name_setFieldType(setFieldName,propType);
+    sType=isEnum != null ? "sType-IsEnum":obj_getVar("pictureString");
 ""}}
+{{#$sType}}
+    {{%
+        propType=type_getType(sType);
+        orgName = IsFiller != null ? "FILLER" : obj_getVar("name");
+        theFieldName=name_toField(orgName);
+        theQlfName=name_putInnerField(theFieldName);
+    ""}}
+{{/sType}}
+{{#$theQlfName}}
+    {{%
+        dim_putFieldDim(theFieldName,dimension == null? 0:dimension);
+        setFieldName = theQlfName == null ? theFieldName : theQlfName;
+        name_setFieldType(setFieldName,propType);
+    ""}}
+{{/theQlfName}}

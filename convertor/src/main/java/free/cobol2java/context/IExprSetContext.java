@@ -83,10 +83,13 @@ public interface IExprSetContext extends IExprPhysicalContext, IExprEnvContext, 
             }
 
         }
-//        if(oldQlfName != null && oldQlfName.equals(qualifiedName)) {
-//            getLogger(IExprSetContext.class).error("Error duplicate field {} defined!", fieldName);
-//            return null;
-//        }
+        if(!fieldName.equals("filler") && oldQlfName != null && oldQlfName.indexOf(qualifiedName)!= -1) {
+            String IgnoreDuplicate = getEnvironment().getVar("IgnoreDuplicate") +"";
+            if(IgnoreDuplicate.equals("null")) {
+                getLogger(IExprSetContext.class).error("Error duplicate field {} defined!", fieldName);
+                return null;
+            }
+        }
         createMultiQlfName(fieldName, javaFieldToQualifiedName, qualifiedName);
         makeQlfNameAllLevel(qualifiedName);
         return qualifiedName;
