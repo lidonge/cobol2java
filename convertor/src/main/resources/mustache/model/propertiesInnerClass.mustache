@@ -2,23 +2,14 @@
 {{%curObj=obj_getCurObj();""}}
 {{^$IsPointer}}{{#$curObj}}
     {{^pictureClause}}
-        {{%
-            //println("=====in propertiesInnerClass.mustache ");
-        ""}}
         {{%isSubCopybook=obj_getVar("levelNumber") == 75 ? "isSubCopybook" :null;""}}
         {{>model.nopicture}}
         {{>model.copy75}}
         {{%
-        //println("****props enter class:" + innerCls +",fieldName:" +fieldName);
-        //IsConstantCopybook != null?name_enterClass(innerCls):name_enterClass(fieldName);
-        ""}}
-        {{%
-            //println(isSubCopybook+",subCopyBookClsName:"+subCopyBookClsName+"=======innerCls:" +innerCls);
             innerCls = isSubCopybook != null ? subCopyBookClsName : innerCls;
             orgCls = innerCls;
             ignoreProp = innerClsLevel == 0 ? "ignoreProp" : null;
             modifier = isInnerClass != "isInnerClass" && IsConstantCopybook == null ? "public ":"";
-            //modifier = modifier +(IsConstantCopybook != null ? "static final " :"");
         ""}}
         {{^$ignoreProp}}
             {{^$IsConstantCopybook}}
@@ -31,27 +22,18 @@
                 packName = model_getPackage(innerCls,"false");
                 curImports = obj_getFromMap(importsMap,clsName);
                 imports = curImports == null ? imports : curImports;
-                //clsName == "Pksaacn1"?println((imports==null) +"add import "+packName+"."+innerCls):"";
                 imports != null && packName !=null ?obj_addToList(imports,packName+"."+innerCls):"";
             ""}}
         {{/ignoreProp}}
         {{%
             dimStr = null;
             clsName=innerCls;
-            var_push(clsName);var_push(isSubCopybook);var_push(innerClsLevel);var_push(childrenCount);var_push(orgCls);
             isInnerClass==null && IsConstantCopybook == null ? must_saveBuff():null;
         ""}}
         {{^$isSubCopybook}}{{#$curObj}}
-            {{>model.model}}
-            {{!-->model.copy75--}}
-            {{!--*dataDescriptionEntries--}}
+            {{>model.model(IsConstantCopybook,isInnerClass,innerClsLevel,importsMap,innerMap)}}
         {{/curObj}}{{/isSubCopybook}}
         {{%
-            orgCls = var_pop();
-            childrenCount = var_pop();
-            innerClsLevel = var_pop();
-            isSubCopybook = var_pop();
-            clsName = var_pop();
             //name_exitClass();
             clsContent = isInnerClass==null && IsConstantCopybook == null? must_popBuff():null;
             clsContent = orgCls == clsName ? clsContent : str_replace(clsContent+"", "class " +orgCls , "class " + clsName);

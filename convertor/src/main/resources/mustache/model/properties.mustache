@@ -2,62 +2,58 @@
 {{%valueClause=obj_getCurVar("valueClause");""}}
 {{%IsFiller=null;""}}
 {{#filler}} {{%IsFiller="IsFiller";"//====IsFiller"}}{{/filler}}
-{{%curObj=obj_getCurObj();""}}
-{{!--^$IsFiller--}}
-    {{#$curObj}}
-    {{%isEnum = obj_getVar("levelNumber") == 88 ? "isEnum" : null;""}}
-    {{>model.pointer}}
-    {{#pictureClause}}
-        {{>model.picture}}
-        @FieldInfo(cobolType = "{{%sType}}", {{#$usageClauseType}}usageType= "{{%usageClauseType}}", {{/usageClauseType}}levelNumber = {{%obj_getVar("levelNumber")}})
-        {{%
-            modifier = isInnerClass == "isInnerClass" ? "" :"public ";
-            modifier = modifier +(IsConstantCopybook != null ? "static final " :"")
-        }}
-        {{%propType}} {{#$dimStr}}[]{{/dimStr}} {{%theFieldName}}{{#$IsFiller}}_{{%fillerCount = fillerCount + 1}}{{/IsFiller}}
-        {{^$valueClause}}
-            {{#$dimStr}} = new {{%propType}}[{{%dimStr}}]{{/dimStr}};
-        {{/valueClause}}
-    {{/pictureClause}}
-    {{#$isEnum}}
-        {{>model.picture}}
-        {{%
-            name_setFieldType(setFieldName,referFieldName);
-            modifier = isInnerClass == "isInnerClass" ? "" :"public ";
-            modifier = modifier +"static final "
-        }}
-        {{%propType}}[] {{%theFieldName}}
-    {{/isEnum}}
-    {{#valueClause}}
-        =
-        {{#$isEnum}}
-            new {{%propType}}[]{
-        {{/isEnum}}
-        {{#valueIntervals}}
-            {{^-first}}
-                ,
-            {{/-first}}
-            {{#fromValueStmt}}
-                {{>call}}
-                {{#literal}}{{>literal}}{{/literal}}
-                {{#$dimStr}}
-                    {{%array_initString(dimStr,operand)}}
-                {{/dimStr}}
-                {{^$dimStr}}
-                    {{%operand}}
-                {{/dimStr}}
-            {{/fromValueStmt}}
-        {{/valueIntervals}}
-        {{#$isEnum}}
-            }
-        {{/isEnum}}
-        ;
+{{%isEnum = obj_getVar("levelNumber") == 88 ? "isEnum" : null;""}}
+{{>model.pointer}}
+{{#pictureClause}}
+    {{>model.picture}}
+    @FieldInfo(cobolType = "{{%sType}}", {{#$usageClauseType}}usageType= "{{%usageClauseType}}", {{/usageClauseType}}levelNumber = {{%obj_getVar("levelNumber")}})
+    {{%
+        modifier = isInnerClass == "isInnerClass" ? "" :"public ";
+        modifier = modifier +(IsConstantCopybook != null ? "static final " :"")
+    }}
+    {{%propType}} {{#$dimStr}}[]{{/dimStr}} {{%theFieldName}}{{#$IsFiller}}_{{%fillerCount = fillerCount + 1}}{{/IsFiller}}
+    {{^$valueClause}}
+        {{#$dimStr}} = new {{%propType}}[{{%dimStr}}]{{/dimStr}};
     {{/valueClause}}
-    {{#pictureClause}}{{#$curObj}}
-    {{#dataDescriptionEntries}}
-        {{%referFieldName=theFieldName;""}}
-        {{>model.properties}}
-    {{/dataDescriptionEntries}}
-    {{/curObj}}{{/pictureClause}}
-    {{/curObj}}
-{{!--/IsFiller--}}
+{{/pictureClause}}
+{{#$isEnum}}
+    {{>model.picture}}
+    {{%
+        name_setFieldType(setFieldName,referFieldName);
+        modifier = isInnerClass == "isInnerClass" ? "" :"public ";
+        modifier = modifier +"static final "
+    }}
+    {{%propType}}[] {{%theFieldName}}
+{{/isEnum}}
+{{#valueClause}}
+    =
+    {{#$isEnum}}
+        new {{%propType}}[]{
+    {{/isEnum}}
+    {{#valueIntervals}}
+        {{^-first}}
+            ,
+        {{/-first}}
+        {{#fromValueStmt}}
+            {{>call}}
+            {{#literal}}{{>literal}}{{/literal}}
+            {{#$dimStr}}
+                {{%array_initString(dimStr,operand)}}
+            {{/dimStr}}
+            {{^$dimStr}}
+                {{%operand}}
+            {{/dimStr}}
+        {{/fromValueStmt}}
+    {{/valueIntervals}}
+    {{#$isEnum}}
+        }
+    {{/isEnum}}
+    ;
+{{/valueClause}}
+{{%curObj=obj_getCurObj();""}}
+{{#pictureClause}}{{#$curObj}}
+{{#dataDescriptionEntries}}
+    {{%referFieldName=theFieldName;""}}
+    {{>model.properties}}
+{{/dataDescriptionEntries}}
+{{/curObj}}{{/pictureClause}}

@@ -1,5 +1,7 @@
 package free.cobol2java.context;
 
+import free.servpp.logger.ILogable;
+
 import java.util.Map;
 
 import static free.cobol2java.context.IExprBaseContext.isBaseType;
@@ -7,7 +9,7 @@ import static free.cobol2java.context.IExprBaseContext.isBaseType;
 /**
  * @author lidong@date 2024-09-29@version 1.0
  */
-public interface IExprSetContext extends IExprPhysicalContext, IExprEnvContext {
+public interface IExprSetContext extends IExprPhysicalContext, IExprEnvContext, ILogable {
 
     default String setQlfNameToCopyFieldName(String qlfName, String copyName) {
         createMultiQlfName(copyName,getCopyFieldNameToQlfName(),qlfName);
@@ -64,6 +66,9 @@ public interface IExprSetContext extends IExprPhysicalContext, IExprEnvContext {
     }
 
     default String name_putInnerField1(String fieldName, String isSubCopybook) {
+        Map<String, String> javaFieldToQualifiedName = getJavaFieldToQualifiedName();
+        String oldQlfName = javaFieldToQualifiedName.get(fieldName);
+
         String qualifiedName = fieldName;
         int levels = getClsLevel().size();
         if (levels != 0) {
@@ -78,7 +83,10 @@ public interface IExprSetContext extends IExprPhysicalContext, IExprEnvContext {
             }
 
         }
-        Map<String, String> javaFieldToQualifiedName = getJavaFieldToQualifiedName();
+//        if(oldQlfName != null && oldQlfName.equals(qualifiedName)) {
+//            getLogger(IExprSetContext.class).error("Error duplicate field {} defined!", fieldName);
+//            return null;
+//        }
         createMultiQlfName(fieldName, javaFieldToQualifiedName, qualifiedName);
         makeQlfNameAllLevel(qualifiedName);
         return qualifiedName;

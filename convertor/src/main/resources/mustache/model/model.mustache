@@ -1,14 +1,11 @@
+{{!--IsConstantCopybook,isInnerClas,innerClsLevel,importsMap--}}
 {{%IsFiller=null;""}}
 {{#filler}} {{%IsFiller="IsFiller";""}}{{/filler}}
-{{!--^$IsFiller--}}
-    {{^pictureClause}}
+{{^pictureClause}}
     {{%
         orgName = IsFiller != null ? "FILLER" : obj_getVar("name");
         clsName=name_toClass(orgName);
-        //println(obj_getVar("levelNumber")+"****model enter class:" + clsName);
-
         IsConstantCopybook != null? name_enterClass(clsName) : name_enterClass(name_toField(orgName));
-        //println("=====in model.mustache class is: "+orgName);
     ""}}
     {{%childrenCount=null;innerCls=clsName;fieldName=name_toField(orgName);""}}
     {{%isSubCopybook = null;""}}
@@ -64,5 +61,4 @@
         clsOrFieldName=name_exitClass();
         //clsName=="Pksaacn1"?println("end class:" +clsName+", imports:"+obj_getFromMap(importsMap,clsName)):"";
     ""}}
-    {{/pictureClause}}
-{{!--/IsFiller--}}
+{{/pictureClause}}
