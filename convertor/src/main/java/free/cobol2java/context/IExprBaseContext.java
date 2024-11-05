@@ -88,4 +88,12 @@ public interface IExprBaseContext extends IExprPhysicalContext{
         return getClsLevel().pop();
     }
 
+    default String name_curClsPath(String cur){
+        String ret = "";
+        for(String name:getClsLevel()){
+            ret = ret + name + ".";
+        }
+        ret += cur;
+        return ret;
+    }
 }

@@ -6,12 +6,27 @@
             {{#execSqlText}}//TODO execSqlText{{/execSqlText}}
             {{%IsFiller=null;""}}
             {{%curObj=obj_getCurObj();""}}
+            {{^-first}}
+                {{%must_saveBuff();""}}
+            {{/-first}}
             {{^execSqlText}}{{#$curObj}}
-                {{%isInnerClass=null;innerClsLevel = 0;""}}
+                {{%
+                    isInnerClass=null;
+                    innerClsLevel = 0;
+                    IsInCopyBook = "IsInCopyBook";
+                    var_push(IsConstantCopybook);
+                ""}}
                 {{>comment}}
                 {{>model.model}}
                 {{>model.unused}}
+                {{%IsConstantCopybook=var_pop();""}}
             {{/curObj}}{{/execSqlText}}
+            {{^-first}}
+                {{%
+                    clsContent = must_popBuff();
+                    obj_addToMap(innerMap,clsName,clsContent);
+                ""}}
+            {{/-first}}
         {{/rootDataDescriptionEntries}}
     {{/workingStorageSection}}
     {{%

@@ -128,51 +128,7 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
                 dclRet = "01 " + cobolName + ".";
             }
             Map<String, Object> copyBookCls = (Map<String, Object>) writer.getExprEvaluator().getEnvironment().getVar("innerMap");
-            List<String> keys = new ArrayList<>(copyBookCls.keySet());
-            for (String key : keys) {
-                String clsText = CodeFormator.formatCode(copyBookCls.get(key).toString());
-                if (clsText.trim().length() != 0) {
-                    copyBookCls.put(key,clsText);
-                    String oldClsText = copyBookMap.get(key);
-                    if (oldClsText != null) {
-                        String oldKey = key;
-                        if (compareClassContent(oldClsText, clsText)) {
-                            copyBookCls.remove(key);
-                            importClass(key, copyBookCls);
-                        } else {
-                            List<String> dupKeys = dupCopyBook.get(key);
-                            if(dupKeys == null){
-                                dupKeys = new ArrayList<>();
-                                dupCopyBook.put(key,dupKeys);
-                            }
-                            boolean isDupCls = false;
-                            for(String dupKey:dupKeys){
-                                oldClsText = copyBookMap.get(dupKey);
-                                if (compareClassContent(oldClsText, clsText)) {
-                                    copyBookCls.remove(key);
-                                    importClass(dupKey, copyBookCls);
-                                    isDupCls = true;
-                                    break;
-                                }
-                            }
-                            if(!isDupCls) {
-                                key = getUniqueClassName(key);
-                                dupKeys.add(key);
-                                String target = "\\b" + oldKey + "\\b";
-                                clsText = clsText.replaceAll(target, key);
-                                copyBookCls.remove(oldKey);
-                                copyBookCls.put(key, clsText);
-                                prog = prog.replaceAll(target, key);
-                                copyBookMap.put(name, prog);
-                                replaceAllCopy(copyBookCls, oldKey, key);
-                                getLogger().warn("Warning: Duplicate inner class {} of copybook:{}, change to new class {}.", oldKey, copyBook, key);
-                            }
-                        }
-                    }
-                } else {
-                    copyBookCls.remove(key);
-                }
-            }
+            removeDupCls(exprContext, copyBook, copyBookCls, prog, name);
             for (String key : copyBookCls.keySet()) {
                 String clsText = copyBookCls.get(key).toString();
                 copyBookMap.put(key, clsText);
@@ -182,6 +138,64 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
 //            getLogger().info("Copybook:{} Loaded. ",copyBook.getName());
         }
         return dclRet;
+    }
+
+    private void removeDupCls(ExprContext exprContext, File copyBook, Map<String, Object> copyBookCls, String mainContent, String mainClsName) {
+        List<String> keys = new ArrayList<>(copyBookCls.keySet());
+        for (String key : keys) {
+            String clsText = CodeFormator.formatCode(copyBookCls.get(key).toString());
+            if (clsText.trim().length() != 0) {
+                //String[] splitKey = key.split("\\.");
+                //key = splitKey[splitKey.length - 1];
+                copyBookCls.put(key,clsText);
+                String oldClsText = copyBookMap.get(key);
+                if (oldClsText != null) {
+                    String oldKey = key;
+                    if (compareClassContent(oldClsText, clsText)) {
+                        copyBookCls.remove(key);
+                        importClass(key, copyBookCls);
+                    } else {
+                        List<String> dupKeys = dupCopyBook.get(key);
+                        if(dupKeys == null){
+                            dupKeys = new ArrayList<>();
+                            dupCopyBook.put(key,dupKeys);
+                        }
+                        boolean isDupCls = false;
+                        for(String dupKey:dupKeys){
+                            oldClsText = copyBookMap.get(dupKey);
+                            if (compareClassContent(oldClsText, clsText)) {
+                                copyBookCls.remove(key);
+                                importClass(dupKey, copyBookCls);
+                                isDupCls = true;
+                                break;
+                            }
+                        }
+                        if(!isDupCls) {
+                            key = getUniqueClassName(key);
+                            dupKeys.add(key);
+                            String target = "\\b" + oldKey + "\\b";
+                            clsText = clsText.replaceAll(target, key);
+                            copyBookCls.remove(oldKey);
+                            copyBookCls.put(key, clsText);
+                            mainContent = mainContent.replaceAll(target, key);
+                            Map<String, IEvaluatorEnvironment.MyObject> imports = (Map<String, IEvaluatorEnvironment.MyObject>) exprContext.getEnvironment().getVar("importsMap");
+                            for(String clsName:imports.keySet()){
+                                List<IEvaluatorEnvironment.MyObject> importCls = (List<IEvaluatorEnvironment.MyObject>) imports.get(clsName).getValue();
+                                for(int i = 0;i<importCls.size();i++){
+                                    String imp = (String) importCls.get(i).getValue();
+                                    importCls.set(i,new IEvaluatorEnvironment.MyObject(imp.replaceAll(target,key)));
+                                }
+                            }
+                            copyBookMap.put(mainClsName, mainContent);
+                            replaceAllCopy(copyBookCls, oldKey, key);
+                            getLogger().warn("Warning: Duplicate inner class {} of copybook:{}, change to new class {}.", oldKey, copyBook, key);
+                        }
+                    }
+                }
+            } else {
+                copyBookCls.remove(key);
+            }
+        }
     }
 
     private static boolean compareClassContent(String oldContent, String contentClsText) {
@@ -242,7 +256,7 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
             if (!newCls.equals(key)) {
                 String clsText = copyBookCls.get(key).toString();
                 if (clsText.trim().length() != 0) {
-                    clsText = clsText.replaceAll(oldCls, newCls);
+                    clsText = clsText.replaceAll(target, newCls);
                     copyBookCls.put(key, clsText);
                 }
             }
@@ -251,12 +265,12 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
     }
 
     private String getUniqueClassName(String key) {
-        String clsExists = null;
         int index = 0;
-        while ((clsExists = copyBookMap.get(key)) != null) {
-            key = key + "_" + index++;
+        String ret = key;
+        while (copyBookMap.get(ret) != null) {
+            ret = key + "_" + index++;
         }
-        return key;
+        return ret;
     }
 
 

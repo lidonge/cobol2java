@@ -129,7 +129,7 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
             //copyContent = copyContent.replace("Object[] " + operandField, type + "[] " + operandField);
             copyBookMap.put(copyName, copyContent);
         }
-        return "";
+        return type;
     }
 
 //

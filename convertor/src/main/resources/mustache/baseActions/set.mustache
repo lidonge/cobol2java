@@ -19,7 +19,8 @@
                 {{#call}}{{>call}}{{/call}}
                 {{%
                     targetVar = obj_getFromList(tosList,index);
-                    obj_getFromList(tosIsAddr,index) ? expr_changeAddressType(targetVar,operand) : null;
+                    operandType=obj_getFromList(tosIsAddr,index) ? expr_changeAddressType(targetVar,operand) : null;
+                operand = operandType == null ? "Util.cast("+targetVar+","+operand+")": operand;
                 ""}}
                 {{%targetVar}}={{%operand}};
                 {{%index = index +1;""}}
