@@ -20,7 +20,7 @@
                 {{%
                     targetVar = obj_getFromList(tosList,index);
                     operandType=obj_getFromList(tosIsAddr,index) ? expr_changeAddressType(targetVar,operand) : null;
-                operand = operandType == null ? "Util.cast("+targetVar+","+operand+")": operand;
+                operand = operandType == null ? value_fix(targetVar+"",operand): operand;
                 ""}}
                 {{%targetVar}}={{%operand}};
                 {{%index = index +1;""}}
