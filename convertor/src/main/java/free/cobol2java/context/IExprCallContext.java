@@ -50,7 +50,7 @@ public interface IExprCallContext extends ILogable {
             if(!file.getName().endsWith(".c")) {
                 fullClsName = cobolConvertor.convertAFile(file);
             }else{
-                fullClsName = file.getName().replace(".","_");
+                fullClsName = cobolConvertor.convertACFile(file);
             }
         } else {
 //            getLogger().error("Error can not find given callsub file: {}", fileName);

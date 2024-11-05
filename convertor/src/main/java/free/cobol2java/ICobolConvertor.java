@@ -160,6 +160,12 @@ public interface ICobolConvertor extends ILogable {
     }
 
     default String convertAFile(File file) {
+        return convertAFile(file,false);
+    }
+    default String convertACFile(File file) {
+        return convertAFile(file,true);
+    }
+    private String convertAFile(File file, boolean isCFile) {
         String relativePath = file.getAbsolutePath().substring(getSourcePath().length() + 1);
         String relativeParent = new File(relativePath).getParent();
         relativeParent = relativeParent == null ? "" : relativeParent;
@@ -180,22 +186,33 @@ public interface ICobolConvertor extends ILogable {
             String packageName = rootPackageName +
                     (!relativeParent.equals("") ? "." + relativePackageName : "");
             // Call the convert function and get the result as a string
-            TopCompiler.enterCobol(fileName, file.toURI());
+            fullClsName = packageName + "." + className;
             try {
-                String convertedContent = convert(file, packageName);
+                IExprCallContext.saveFullClassNameOfCobolFile(fileName, fullClsName);
+                if(isCFile){
+                    String convertedContent = "package "+packageName+";\n" +
+                            "public class "+className+" {\n" +
+                            "}\n";
 
-                // Write the result to the target file
-                writeToFile(outputFilePath, convertedContent);
-                CopyBookManager.getDefaultManager().writeCopyBook();
-                fullClsName = packageName + "." + className;
-                IExprCallContext.saveFullClassNameOfCobolFile(fileName,fullClsName);
-                getLogger(ICobolConvertor.class).info("Compiled cbl {} cost : {} seconds.",fileName,
-                        (System.currentTimeMillis() - startTime)/1000);
+                    // Write the result to the target file
+                    writeToFile(outputFilePath, convertedContent);
+
+                }else {
+                    TopCompiler.enterCobol(fileName, file.toURI());
+                    String convertedContent = convert(file, packageName);
+
+                    // Write the result to the target file
+                    writeToFile(outputFilePath, convertedContent);
+                    CopyBookManager.getDefaultManager().writeCopyBook();
+                    getLogger(ICobolConvertor.class).info("Compiled cbl {} cost : {} seconds.", fileName,
+                            (System.currentTimeMillis() - startTime) / 1000);
+                }
             } catch (Throwable t) {
                 getLogger().error("Error while convert file {}", file.getName(), t);
                 return "ERRORCLS";
             } finally {
-                TopCompiler.exitCobol();
+                if(!isCFile)
+                    TopCompiler.exitCobol();
             }
         }
         return fullClsName;
