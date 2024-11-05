@@ -222,29 +222,7 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
         if (ret == null) {
             ret = name_getFieldClsType(fieldName);
             if (ret == null) {
-                int index = fieldName.lastIndexOf('.');
-                String shortName = fieldName;
-                if (index != -1) {
-                    shortName = fieldName.substring(index + 1);
-                }
-                IExprNameContext exprContext = getExprContext(shortName);
-                if (exprContext != null) {
-                    String qlfNameInCtx = exprContext.name_qlfName(shortName, null);
-                    //FIXME may choose in multiple name
-                    if(qlfNameInCtx.indexOf("|") != -1)
-                        qlfNameInCtx = fieldName;
-                    ret = exprContext.name_getFieldType(qlfNameInCtx);
-                    if(fullPath) {
-                        if(!IExprBaseContext.isBaseType(ret)) {
-                            String pack = exprContext.model_getPackage(
-                                    name_toClass(fieldName.substring(0, fieldName.indexOf("."))),
-                                    "false");
-                            if (pack != null) {
-                                ret = pack + "." + ret;
-                            }
-                        }
-                    }
-                }
+                ret = getClassTypeByQlfName(fieldName,fullPath);
             }
         }
         return ret;

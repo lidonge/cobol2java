@@ -18,7 +18,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -147,7 +150,7 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
             if (clsText.trim().length() != 0) {
                 //String[] splitKey = key.split("\\.");
                 //key = splitKey[splitKey.length - 1];
-                copyBookCls.put(key,clsText);
+                copyBookCls.put(key, clsText);
                 String oldClsText = copyBookMap.get(key);
                 if (oldClsText != null) {
                     String oldKey = key;
@@ -156,12 +159,12 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
                         importClass(key, copyBookCls);
                     } else {
                         List<String> dupKeys = dupCopyBook.get(key);
-                        if(dupKeys == null){
+                        if (dupKeys == null) {
                             dupKeys = new ArrayList<>();
-                            dupCopyBook.put(key,dupKeys);
+                            dupCopyBook.put(key, dupKeys);
                         }
                         boolean isDupCls = false;
-                        for(String dupKey:dupKeys){
+                        for (String dupKey : dupKeys) {
                             oldClsText = copyBookMap.get(dupKey);
                             if (compareClassContent(oldClsText, clsText)) {
                                 copyBookCls.remove(key);
@@ -170,20 +173,21 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
                                 break;
                             }
                         }
-                        if(!isDupCls) {
+                        if (!isDupCls) {
                             key = getUniqueClassName(key);
                             dupKeys.add(key);
                             String target = "\\b" + oldKey + "\\b";
                             clsText = clsText.replaceAll(target, key);
                             copyBookCls.remove(oldKey);
                             copyBookCls.put(key, clsText);
+                            changeClassTo(exprContext, oldKey, key);
                             mainContent = mainContent.replaceAll(target, key);
                             Map<String, IEvaluatorEnvironment.MyObject> imports = (Map<String, IEvaluatorEnvironment.MyObject>) exprContext.getEnvironment().getVar("importsMap");
-                            for(String clsName:imports.keySet()){
+                            for (String clsName : imports.keySet()) {
                                 List<IEvaluatorEnvironment.MyObject> importCls = (List<IEvaluatorEnvironment.MyObject>) imports.get(clsName).getValue();
-                                for(int i = 0;i<importCls.size();i++){
+                                for (int i = 0; i < importCls.size(); i++) {
                                     String imp = (String) importCls.get(i).getValue();
-                                    importCls.set(i,new IEvaluatorEnvironment.MyObject(imp.replaceAll(target,key)));
+                                    importCls.set(i, new IEvaluatorEnvironment.MyObject(imp.replaceAll(target, key)));
                                 }
                             }
                             copyBookMap.put(mainClsName, mainContent);
@@ -198,41 +202,90 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
         }
     }
 
+    private void changeClassTo(ExprContext exprContext, String oldKey, String key) {
+        Map<String, String> javaQlfFieldToSimpleType = exprContext.getJavaQlfFieldToSimpleType();
+        replaceCls(oldKey, key, javaQlfFieldToSimpleType, false);
+        Map<String, String> javaQlfFieldToFullType = exprContext.getJavaQlfFieldToFullType();
+        replaceCls(oldKey, key, javaQlfFieldToFullType, true);
+    }
+
+    private static void replaceCls(String oldKey, String key, Map<String, String> javaQlfFieldToType, boolean isFullType) {
+        String fullOldKey = "." + oldKey;
+        String fullKey = "." + key;
+        for (String name : javaQlfFieldToType.keySet()) {
+            String value = javaQlfFieldToType.get(name);
+            if (isFullType) {
+                if (value.endsWith(fullOldKey)) {
+                    javaQlfFieldToType.put(name, value.replace(fullOldKey, fullKey));
+                }
+            } else {
+                if (value.equals(oldKey)) {
+                    javaQlfFieldToType.put(name, key);
+                }
+            }
+        }
+    }
+
     private static boolean compareClassContent(String oldContent, String contentClsText) {
         contentClsText = contentClsText.substring(contentClsText.indexOf("{"));
         oldContent = oldContent.substring(oldContent.indexOf("{"));
-        contentClsText = removeLinesStartingWith(contentClsText,new String[]{"@FieldInfo","//"});
-        oldContent = removeLinesStartingWith(oldContent,new String[]{"@FieldInfo","//"});
+        contentClsText = removeLinesStartingWith(contentClsText, new String[]{"@FieldInfo", "//"});
+        oldContent = removeLinesStartingWith(oldContent, new String[]{"@FieldInfo", "//"});
+        contentClsText = removeInit(contentClsText);
+        oldContent = removeInit(oldContent);
         return oldContent.equals(contentClsText);
     }
-    private static String removeLinesStartingWith(String input, String[] prefixes) {
-        // 按行拆分输入字符串
+
+    private static String removeInit(String input) {
         String[] lines = input.split("\n");
 
-        // 使用 StringBuilder 构建结果
+        StringBuilder result = new StringBuilder();
+        boolean isInit = false;
+        for (String line : lines) {
+            int idx = line.indexOf(" = ");
+            boolean isOneLine = line.endsWith(";");
+            if (idx != -1) {
+                line = line.substring(0, idx);
+                if (isOneLine)
+                    line += ";";
+            }
+            if (isInit && isOneLine) {
+                isInit = false;
+            }
+            if (!isInit) {
+                result.append(line).append("\n");
+            }
+            if (idx != -1 && !isOneLine) {
+                isInit = true;
+            }
+        }
+
+        return result.toString().trim();
+    }
+
+    private static String removeLinesStartingWith(String input, String[] prefixes) {
+        String[] lines = input.split("\n");
+
         StringBuilder result = new StringBuilder();
 
-        // 遍历每一行
         for (String line : lines) {
             boolean shouldRemove = false;
 
-            // 检查当前行是否以任意前缀开头
             for (String prefix : prefixes) {
                 if (line.trim().startsWith(prefix)) {
-                    shouldRemove = true; // 如果匹配前缀，标记为要去除的行
+                    shouldRemove = true;
                     break;
                 }
             }
 
-            // 如果行不匹配任何前缀，则添加到结果中
             if (!shouldRemove) {
                 result.append(line).append("\n");
             }
         }
 
-        // 返回去除指定行后的字符串，去掉最后一个多余的换行符
         return result.toString().trim();
     }
+
     private void importClass(String oldKey, Map<String, Object> copyBookCls) {
         String oldPackage = classNameToPackageName.get(oldKey);
         List<String> imports = new ArrayList<>();

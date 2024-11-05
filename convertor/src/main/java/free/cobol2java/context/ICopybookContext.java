@@ -39,6 +39,53 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
     default IExprNameContext getExprContext(String fieldName) {
         return getExprContext(fieldName,null);
     }
+
+    default String getClassTypeByQlfName(String fieldName, boolean fullPath) {
+        String ret = getJavaQlfFieldToFullType().get(fieldName);
+        if(ret == null)
+            ret = getJavaQlfFieldToSimpleType().get(fieldName);
+        if(ret == null) {
+            String[] paths = fieldName.split("\\.");
+            String qlfCopyName = null;
+            for (int i = 0; i < paths.length; i++) {
+                String path = paths[i];
+                if (qlfCopyName == null)
+                    qlfCopyName = path;
+                else
+                    qlfCopyName += "." + path;
+                String copyFieldName = Character.isUpperCase(qlfCopyName.charAt(0)) ? qlfCopyName
+                        : getQlfNameToCopyFieldName().get(qlfCopyName);
+                if (copyFieldName == null)
+                    continue;
+                String copybookName = IExprBaseContext.capitalizeFirstLetter(copyFieldName);
+                IExprNameContext ctx = getCopybookContexts().get(copybookName);
+                String nextQlfName = createQlfName(copyFieldName,paths,i);
+                ret = ctx.getClassTypeByQlfName(nextQlfName,fullPath);
+                break;
+            }
+        }else{
+            if(fullPath) {
+                if(!IExprBaseContext.isBaseType(ret)) {
+                    String pack = model_getPackage(
+                            name_toClass(fieldName.substring(0, fieldName.indexOf("."))),
+                            "false");
+                    if (pack != null) {
+                        ret = pack + "." + ret;
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    private String createQlfName(String copyFieldName, String[] paths, int start){
+        String ret = copyFieldName;
+        for(int i=start+1;i<paths.length;i++){
+            ret += "."+paths[i];
+        }
+        return ret;
+    }
+
     default IExprNameContext getExprContext(String fieldName, List<String> copyPath) {
         IExprNameContext value = null;
         CobolCompiler cobolCompiler = TopCompiler.currentCompiler();
