@@ -14,9 +14,9 @@
         {{^$ignoreProp}}
             {{^$IsConstantCopybook}}
                 {{%
-                    isDupField = isSubCopybook == null && obj_getFromMap(innerMap,innerCls) != null;
-                    innerCls = isDupField ? innerCls + "1":innerCls;
-                    fieldName = isDupField ? fieldName + "1":fieldName;
+                    isDupCls = isSubCopybook == null && obj_getFromMap(innerMap,innerCls) != null;
+                    innerCls = isDupCls ? innerCls + "1":innerCls;
+                    fieldName = isDupCls && IsFiller != null ? fieldName + "1":fieldName;
                 ""}}
                 {{%modifier}} {{%innerCls)}}{{#$dimStr}}[]{{/dimStr}} {{%fieldName}}{{#$dimStr}} = new {{%innerCls}}[{{%dimStr}}]{{/dimStr}};
             {{/IsConstantCopybook}}
