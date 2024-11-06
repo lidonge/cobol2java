@@ -7,9 +7,17 @@ public class TallyingTarget {
     private String target;
     private BeforeAfter[] beforeAfters;
 
-    public TallyingTarget(String target,BeforeAfter... beforeAfters) {
+    public TallyingTarget(String target, BeforeAfter... beforeAfters) {
         this.target = target;
         this.beforeAfters = beforeAfters;
+    }
+    public TallyingTarget(CobolConstant constTarget, BeforeAfter... beforeAfters) {
+        this.target = convertConstant(constTarget);
+        this.beforeAfters = beforeAfters;
+    }
+
+    private String convertConstant(CobolConstant constTarget) {
+        return null;
     }
 
     public String getTarget() {

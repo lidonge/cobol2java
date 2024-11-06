@@ -32,12 +32,14 @@ public class BatchConvertor extends BaseConvertor {
             Cobol2javaConfig conf = new Cobol2javaConfig();
             batchConvertor.initConfig(conf.getManager());
         }
-        else if (args.length < 4) {
+        else if (args.length != 2 && !"-c".equals(args[0])) {
             System.out.println("Usage: java BatchConvertor");
-            System.out.println("Usage: java BatchConvertor <sourcePath> <targetPath> <copyDir:...CopyDir> <rootPackageName> <format> <encoding>?");
+            System.out.println("Usage: java BatchConvertor -c <config_file>");
             return;
-        }else
-            batchConvertor.initConfig(args);
+        }else {
+            Cobol2javaConfig conf = new Cobol2javaConfig(new File(args[1]));
+            batchConvertor.initConfig(conf.getManager());
+        }
 
         batchConvertor.initCopybookManager();
 

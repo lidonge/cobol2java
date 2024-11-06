@@ -19,7 +19,7 @@ public class Util {
         return "";
     }
 
-    public static <T> T subvalue(T wsNum1, Integer start, Integer len) {
+    public static String subvalue(Object obj, Integer start, Integer len) {
         return null;
     }
 
@@ -51,7 +51,7 @@ public class Util {
         return 0;
     }
 
-    public static <T> T copyObject(T src, Object target, Integer start, Integer length) {
+    public static <T> T copyObject(Object src, T target, Integer start, Integer length) {
         return null;
     }
 
@@ -59,14 +59,33 @@ public class Util {
         return null;
     }
 
-    public static <T> T cast(T castTo, Object sysCpuTm2) {
+    /**
+     * Cast from to castTo, return the result.
+     * @param castTo
+     * @param from
+     * @return
+     * @param <T>
+     */
+    public static <T> T cast(T castTo, Object from) {
         return null;
     }
 
+    /**
+     * Copy the same name property value from src to target
+     * @param src
+     * @param target
+     * @param <T>
+     */
     public static <T> void copySameField(T src, Object target) {
     }
 
-    public static String copyInitString(String str) {
+    /**
+     * Init a string by annotation
+     * FIXME
+     * @param str
+     * @return
+     */
+    public static String copyInitString(boolean isAll, String str) {
         return str;
     }
 }

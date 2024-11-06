@@ -9,6 +9,7 @@ import free.servpp.config.hocon.HoconConfigLoader;
 import free.servpp.config.hocon.HoconConfigTypeManager;
 import free.servpp.config.hocon.IConfigurableBuilder;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
@@ -20,6 +21,9 @@ public class Cobol2javaConfig {
     HoconConfigLoader loader;
     HoconConfigTypeManager manager;
     public Cobol2javaConfig() throws IOException {
+        this(null);
+    }
+    public Cobol2javaConfig(File confFile) throws IOException {
         HoconConfigLoader loader = new HoconConfigLoader(".conf", "", new IConfigurableBuilder() {
             @Override
             public IConfigurable build(String type, Config config) {
@@ -74,6 +78,10 @@ public class Cobol2javaConfig {
                 return null;
             }
         });
+        if(confFile == null)
+            loader.load();
+        else
+            loader.load(confFile);
         manager = loader.getManager();
     }
 

@@ -24,7 +24,9 @@
         try{
     {{/onExceptionClause}}
     {{^$dynCall}}
-        {{%calleeClass = cobol_precompile(callFileName);""}}
+        {{%
+        calleeClass = cobol_precompile(callFileName);
+        ""}}
     {{/dynCall}}
     {{%parameters=null;""}}
     {{#usingPhrase.usingParameters}}

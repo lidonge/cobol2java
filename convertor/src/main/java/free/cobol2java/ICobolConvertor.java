@@ -1,6 +1,7 @@
 package free.cobol2java;
 
 import com.typesafe.config.Config;
+import free.cobol2java.config.Cobol2javaConfig;
 import free.cobol2java.context.IExprCallContext;
 import free.cobol2java.copybook.CopyBookManager;
 import free.cobol2java.parser.TopCompiler;
@@ -63,15 +64,6 @@ public interface ICobolConvertor extends ILogable {
     void setCompileFiles(String[] cpFiles);
 
     String[] getCompileFiles();
-    default void initConfig(String[] args) {
-        setSourcePath(args[0]);
-        setTargetPath(args[1]);
-        findMatchingDirectories(getSourcePath(), args[2]);
-        setRootPackageName(args[3]);
-        setFormat(args[4]);
-        setEncoding(args.length == 6 ? args[5] : "utf-8");
-
-    }
 
 
     default void initConfig(HoconConfigTypeManager manager) {
