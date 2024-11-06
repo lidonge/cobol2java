@@ -2,6 +2,7 @@
 {{%IsFiller=null;""}}
 {{#filler}} {{%IsFiller="IsFiller";""}}{{/filler}}
 {{^pictureClause}}
+    {{>model.testCopy75}}
     {{%
         orgName = IsFiller != null ? "FILLER" : obj_getVar("name");
         clsName=name_toClass(orgName);
@@ -9,12 +10,11 @@
         IsConstantCopybook != null? name_enterClass(clsName) : name_enterClass(name_toField(orgName));
     ""}}
     {{%childrenCount=null;innerCls=clsName;fieldName=name_toField(orgName);""}}
-    {{%isSubCopybook = null;""}}
-    {{>model.testCopy75}}
     {{#dataDescriptionEntries}}
+        {{%IsSubExtCopybookFirst=null;""}}
         {{#-first}}
             {{%isConstInnerCls = innerClsLevel >=1 && IsConstantCopybook != null? "isConstInnerCls":null;""}}
-            {{^$isSubCopybook}}
+            {{^$isSubPureCopybook}}
                 {{^$isInnerClass}}
                     {{^$isConstInnerCls}}
                         {{%packageName = model_getPackage(clsName,"true");""}}
@@ -31,30 +31,33 @@
                 {{/isInnerClass}}
                 {{%isConstInnerCls != null? "public static ":""}}
                 {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel+1;fillerCount = 0;""}}
-                class {{%clsName}} {
-            {{/isSubCopybook}}
+                class {{%clsName}}{{#$isSubExtCopybook}}_Ext extends {{%clsName}}{{/isSubExtCopybook}} {
+            {{/isSubPureCopybook}}
             {{%childrenCount=1;""}}
+            {{%IsSubExtCopybookFirst = isSubExtCopybook != null ? "IsSubExtCopybookFirst":null;""}}
         {{/-first}}
-        {{>model.redefine[redefinedName]}}
-        {{%annotationNeed = "annotationNeed";""}}
-        {{>dimstr(annotationNeed)[dimStr,dimension]}}
-        {{>comment}}
-        {{%dimension != null ? dim_push(dimension) : dim_push(0);""}}
-        {{%var_push(isSubCopybook);""}}
-        {{%var_push(clsName);""}}
-        {{>model.properties}}
-        {{%curObj=obj_getCurObj();""}}
-        {{#$childrenCount}}{{#$curObj}}
-            {{>model.propertiesInnerClass}}
-        {{/curObj}}{{/childrenCount}}
-        {{%clsName=var_pop();""}}
-        {{%isSubCopybook=var_pop();""}}
-        {{%dim_pop();""}}
+        {{^$IsSubExtCopybookFirst}}
+            {{>model.redefine[redefinedName]}}
+            {{%annotationNeed = "annotationNeed";""}}
+            {{>dimstr(annotationNeed)[dimStr,dimension]}}
+            {{>comment}}
+            {{%dimension != null ? dim_push(dimension) : dim_push(0);""}}
+            {{%var_push(isSubPureCopybook);""}}
+            {{%var_push(clsName);""}}
+            {{>model.properties}}
+            {{%curObj=obj_getCurObj();""}}
+            {{#$childrenCount}}{{#$curObj}}
+                {{>model.propertiesInnerClass}}
+            {{/curObj}}{{/childrenCount}}
+            {{%clsName=var_pop();""}}
+            {{%isSubPureCopybook=var_pop();""}}
+            {{%dim_pop();""}}
+        {{/IsSubExtCopybookFirst}}
         {{#-last}}
             {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel - 1;""}}
-            {{^$isSubCopybook}}
+            {{^$isSubPureCopybook}}
                 }//End model;
-            {{/isSubCopybook}}
+            {{/isSubPureCopybook}}
         {{/-last}}
     {{/dataDescriptionEntries}}
     {{%

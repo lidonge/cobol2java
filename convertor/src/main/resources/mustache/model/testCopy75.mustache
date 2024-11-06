@@ -1,5 +1,3 @@
-{{#dataDescriptionEntries}}
-    {{#-first}}
-        {{%isSubCopybook=obj_getVar("levelNumber") == 75 ? "isSubCopybook" :null;""}}
-    {{/-first}}
-{{/dataDescriptionEntries}}
+{{%IsTestCopy75="IsTestCopy75";""}}
+{{>model.copy75}}
+{{%IsTestCopy75=null;""}}

@@ -22,7 +22,7 @@
                 imports = obj_getFromMap(importsMap,mainClassName);
                 packName !=null ?obj_addToList(imports,packName+"."+innerCls):"";
             ""}}
-            private {{%innerCls)}} {{%fieldName}};
+            private {{%innerCls)}}{{#$isSubExtCopybook}}_Ext{{/isSubExtCopybook}} {{%fieldName}};
         {{/execSqlText}}
     {{/pictureClause}}
 {{/curObj}}{{/IsPointer}}
