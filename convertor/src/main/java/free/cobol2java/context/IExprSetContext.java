@@ -29,7 +29,12 @@ public interface IExprSetContext extends IExprPhysicalContext, IExprEnvContext, 
      */
     default String name_setFieldType(String fieldName, String type) {
         if(!isBaseType(type)) {
-            String fullClsName = createFullClassName(type);
+            boolean IsInCopyBook ="IsInCopyBook".equals(getEnvironment().getVar("IsInCopyBook")+"");
+            boolean IsConstantCopybook = "IsConstantCopybook".equals(getEnvironment().getVar("IsConstantCopybook")+"");
+
+            String fullClsName = null;
+            if(IsConstantCopybook || !IsInCopyBook)
+                fullClsName = createFullClassName(type);
             if (fullClsName != null) {
                 getJavaQlfFieldToFullType().put(fieldName, fullClsName + "." + type);
             }
