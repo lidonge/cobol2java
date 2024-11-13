@@ -6,6 +6,7 @@
     {{%
         orgName = IsFiller != null ? "FILLER" : obj_getVar("name");
         clsName=name_toClass(orgName);
+    clsName = dclCopybookName == null ? clsName:dclCopybookName+clsName;
         IsConstantCopybook = IsInCopyBook != null && str_indexOf(clsName,"Const") != -1 ? "IsConstantCopybook": IsConstantCopybook;
         IsConstantCopybook != null? name_enterClass(clsName) : name_enterClass(name_toField(orgName));
     ""}}

@@ -86,7 +86,7 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
             getLogger().info("Loading copybook:{}", copyBook.getName());
             URL url = CopyBookManager.class.getResource(isDcl ? dclModelTemplate : modelTemplate);
             String sText = getString(url.toURI(), cobolConvertor.getEncoding());
-            sText = sText.replace("COPY-BOOK-NAME", name);
+            sText = sText.replace("COPY-BOOK-NAME", name.toUpperCase());
             sText += "\n" + copyText;
             CompilationUnit compilationUnit;
             try {
@@ -105,6 +105,8 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
             ExprContext exprContext = (ExprContext) writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT);
             exprContext.setCopyBookName(name);
             exprContext.setCopyBookPath(copyBook.getAbsolutePath());
+            if(isDcl)
+                exprContext.getEnvironment().setVar("dclCopybookName",name);
             exprContextMap.put(name, exprContext);
             String packageName = cobolConvertor.getRootPackageName() + ".models" +
                     getRelativePath(name).replace(File.separator, ".");
@@ -122,13 +124,13 @@ public class CopyBookManager implements ICobol2JavaBase, ILogable {
                 DataDescriptionEntry entry = compilationUnit.getProgramUnit().getDataDivision().
                         getWorkingStorageSection().getRootDataDescriptionEntries().get(0);
                 String cobolName = entry.getName();
-                String clsName = IExprBaseContext.toClassName(cobolName);
+                String clsName = name+IExprBaseContext.toClassName(cobolName);
                 copyBookMap.remove(name);
-                name = clsName;
                 copyBookMap.put(clsName, prog);
                 classNameToPackageName.put(clsName, packageName);
                 exprContextMap.put(clsName, exprContext);
-                dclRet = "01 " + cobolName + ".";
+                dclRet = "01 " + cobolName + ".\n             75 "+name.toUpperCase()+"-"+cobolName+".";
+                name = clsName;
             }
             Map<String, Object> copyBookCls = (Map<String, Object>) writer.getExprEvaluator().getEnvironment().getVar("innerMap");
             removeDupCls(exprContext, copyBook, copyBookCls, prog, name);

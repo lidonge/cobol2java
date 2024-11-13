@@ -88,7 +88,9 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
 
     protected String getCopyBookContent(final SqlInclude copySource) {
         final File copyBook = findCopyBook(copySource);
-        return getCopyBookContent("", copyBook, params, true);
+        String copyName = copySource.getIncludeFile();
+        copyName = copyName == null ?  "":copyName.substring(0,copyName.indexOf("."));
+        return getCopyBookContent(copyName, copyBook, params, true);
     }
 
     protected File findCopyBook(final SqlInclude copySource) {

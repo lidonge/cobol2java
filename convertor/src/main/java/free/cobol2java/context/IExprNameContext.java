@@ -204,6 +204,11 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
     }
 
     default String name_getFullFieldType(String fieldName) {
+        if(fieldName.startsWith("UNDEFINED_")){
+            return "UNDEFINED_FIELD";
+        }else if(fieldName.startsWith("CobolConstant.SQLCODE")){
+            return "String";
+        }
         String ret = getJavaQlfFieldToFullType().get(fieldName);
         if (ret == null) {
             ret = _getFieldType(fieldName,true);
