@@ -7,7 +7,7 @@
     {{#allLeadingPhrase}}
         {{%allLeadingsType=obj_getVar("allLeadingsType");""}}
         Inspector.LeadType.{{%allLeadingsType}},
-        {{>string.allLeadings}}
+        {{>string.allLeadings()}}
     {{/allLeadingPhrase}}
     {{#characters}}
         {{#-first}}

@@ -40,7 +40,17 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
         return getExprContext(fieldName,null);
     }
 
+    private String getFunctionType(String func){
+        if(func.startsWith("Function.upperCase")||func.startsWith("Function.lowerCase"))
+            return "String";
+        else if(func.startsWith("Function.mod"))
+            return "Integer";
+        return null;
+    }
     default String getClassTypeByQlfName(String fieldName, boolean fullPath) {
+        if(fieldName.startsWith("Function.")){
+            return getFunctionType(fieldName);
+        }
         String ret = getJavaQlfFieldToFullType().get(fieldName);
         if(ret == null)
             ret = getJavaQlfFieldToSimpleType().get(fieldName);

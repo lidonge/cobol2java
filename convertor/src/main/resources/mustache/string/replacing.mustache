@@ -2,7 +2,7 @@
 {{#allLeadings}}
     {{%replacingAllLeadingsType=obj_getVar("replacingAllLeadingsType");""}}
     Inspector.LeadType.{{%replacingAllLeadingsType}},new ReplaceStruct(
-    {{>string.allLeadings}})
+    {{>string.allLeadings(replacingAllLeadingsType)}})
 {{/allLeadings}}
 {{#characters}}
     {{#-first}}

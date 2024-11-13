@@ -5,8 +5,13 @@
     {{#patternDataItemValueStmt}}
         {{#call}}{{>call}}{{/call}}
         {{#literal}}{{>literal}}{{/literal}}
-        {{%tallyingTarget=operand;""}}
-        new TallyingTarget({{%tallyingTarget}}
+        {{#$replacingAllLeadingsType}}
+            {{%operand}}
+        {{/replacingAllLeadingsType}}
+        {{^$replacingAllLeadingsType}}
+            {{%tallyingTarget=operand;""}}
+            new TallyingTarget({{%tallyingTarget}}
+        {{/replacingAllLeadingsType}}
     {{/patternDataItemValueStmt}}
     {{#by}}
         {{#byValueStmt}}
@@ -33,6 +38,8 @@
         {{/hasBeforeAfter}}
     {{/beforeAfterPhrases}}
     {{#patternDataItemValueStmt}}
-        )
+        {{^$replacingAllLeadingsType}}
+            )
+        {{/replacingAllLeadingsType}}
     {{/patternDataItemValueStmt}}
 {{/allLeadings}}
