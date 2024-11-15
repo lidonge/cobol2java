@@ -33,13 +33,19 @@ public interface IExprDimensionContext extends IExprPhysicalContext, IExprEnvCon
         String[] names = theJavaQlfName.split("\\.");
         IExprDimensionContext context = this;
         String prevName = null;
+        String curQlfName = null;
         for(String name : names){
             Number dim = context.getJavaFieldNameToDim().get(name);
+            if(curQlfName == null)
+                curQlfName = prevName;
+            else
+                curQlfName += "." + prevName;
             if (dim != null) {
                 javaFieldNameToDim.put(name,dim);
             }else{
-                String copybookClsName = context.getJavaQlfFieldToSimpleType().get(prevName);
-                String copyFieldName = context.getQlfNameToCopyFieldName().get(prevName);
+                String copybookClsName = context.getJavaQlfFieldToSimpleType().get(curQlfName);
+
+                String copyFieldName = context.getQlfNameToCopyFieldName().get(curQlfName);
                 if(copyFieldName != null){
                     copybookClsName = toClassName(copyFieldName);
                 }

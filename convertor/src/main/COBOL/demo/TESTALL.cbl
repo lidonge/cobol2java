@@ -60,7 +60,8 @@
        DISPLAY 'ARRAY-1 ELEMENTS:' WS-ARRAY-1(1) WS-ARRAY-1(2) WS-ARRAY-1(3).
 
 * 二维数组操作
-       MOVE 1 TO WS-ARRAY-2(1,1).
+       MOVE 1 TO WS-ARRAY-2(1, 1).
+*FIXME        (1 ,2) |(1, 2) because NUMERICLITERAL
        MOVE 2 TO WS-ARRAY-2(1,2).
        MOVE 3 TO WS-ARRAY-2(1,3).
        MOVE 4 TO WS-ARRAY-2(2,1).

@@ -37,7 +37,7 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
         // qlfName include C and end with a fieldName of a copybook BOOK1 +
         // qlfName include B start with BOOK1(should be remove) and end with fieldName of BOOk2 +
         // qlfName start with BOOK2(should be remove) and end with A
-        ContextAndQlfName prev = new ContextAndQlfName(null,this);
+        ContextAndQlfName prev = new ContextAndQlfName(fieldName,this);
         for (int i = ofIds.length - 1; i > 0; i--) {
             String field = ofIds[i - 1];
             String ofField = ofIds[i];
@@ -59,9 +59,17 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
                 }
             }
             prev = caq;
+            if(prev.context == null){
+                break;
+            }
         }
         if (ret.indexOf("|") != -1) {
             getLogger(IExprNameContext.class).error("Error Ambiguous name {}:{}", fieldName, ret);
+        }else{
+            String[] parts= ret.split("\\.");
+            String qlfNameOfCopy = getCopyFieldNameToQlfName().get(parts[0]);
+            if(qlfNameOfCopy != null && qlfNameOfCopy.indexOf("|") == -1)
+                ret = qlfNameOfCopy + ret.substring(parts[0].length());
         }
         return ret;
     }
@@ -80,17 +88,27 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
             if (copyFieldName == null) {
                 //fieldB not a copybook
                 String multiQlfName = getJavaFieldToQualifiedName().get(fieldA);
-                qlfName = getQlfNameFromMultiNames(fieldB, multiQlfName);
+                if(multiQlfName != null)
+                    qlfName = getQlfNameFromMultiNames(fieldB, multiQlfName);
+                else{
+                    //fieldA not in main
+                    exprContext = getExprContext(fieldA);
+                    qlfName = exprContext.name_qlfName(fieldA, null);
+                }
             } else {
                 //fieldB is a copybook
-                String copyFieldQlfName = getJavaFieldToQualifiedName().get(copyFieldName);
+//                String copyFieldQlfName = getJavaFieldToQualifiedName().get(copyFieldName);
 //                String copybookName = getJavaQlfFieldToSimpleType().get(copyFieldQlfName);
                 String copybookName = name_toClass(copyFieldName);
                 exprContext = getCopybookContexts().get(copybookName);
                 String fieldAQlfNameInCopy = exprContext.getQlfNameInMain(fieldA);
-                //FIXME field defined in filler
-                qlfName = fieldBQlfName +
-                        (fieldAQlfNameInCopy.startsWith("UNDEFINED_") ? fieldAQlfNameInCopy: fieldAQlfNameInCopy.substring(fieldAQlfNameInCopy.indexOf(".")));
+                if(Character.isUpperCase(fieldAQlfNameInCopy.charAt(0))){//Constant
+                    qlfName = fieldAQlfNameInCopy;
+                }else {
+                    //FIXME field defined in filler
+                    qlfName = fieldBQlfName +
+                            (fieldAQlfNameInCopy.startsWith("UNDEFINED_") ? fieldAQlfNameInCopy : fieldAQlfNameInCopy.substring(fieldAQlfNameInCopy.indexOf(".")));
+                }
             }
         } else {
             //fieldB not defined in main, to find qlfName of fieldB in copybook
@@ -123,6 +141,10 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
                 String qlfNameInCopy = exprContext.getJavaFieldToQualifiedName().get(fieldA);
                 ret = changeCopyFieldNameToFieldName(qlfNameInCopy,copyPath);
             }
+        }
+        if (ret.indexOf("|") != -1) {
+            getLogger(IExprNameContext.class).error("Error Ambiguous name {}:{}", fieldA, ret);
+            ret = ret.substring(0,ret.indexOf("|"));
         }
         return ret;
     }

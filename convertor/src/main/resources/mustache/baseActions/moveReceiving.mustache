@@ -1,10 +1,20 @@
 {{#receivingAreaCalls}}
-    {{>call[operand]}}
-    {{%
-        setName=operand;
-        setValue=value_fix(setName,sendValue);
-        isUseCopy = str_indexOf(setValue,"Util.copy") != -1 ? "isUseCopy": null;
-    ""}}
+    {{%isReturnCode=null;""}}
+    {{>call[operand,isReturnCode]}}
+    {{#$isReturnCode}}
+        {{%
+            setValue="ServiceManager.setReturnCode(this,"+sendValue+")");
+            isUseCopy = "isUseCopy";
+            leftIsBase = null;
+        ""}}
+    {{/isReturnCode}}
+    {{^$isReturnCode}}
+        {{%
+            setName=operand;
+            setValue=value_fix(setName,sendValue);
+            isUseCopy = str_indexOf(setValue,"Util.copy") != -1 ? "isUseCopy": null;
+        ""}}
+    {{/isReturnCode}}
     {{#$isUseCopy}}
         {{#$leftIsBase}}
             {{%setName}}={{%setValue}};

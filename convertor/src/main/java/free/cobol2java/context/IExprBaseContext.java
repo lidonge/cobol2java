@@ -16,8 +16,12 @@ public interface IExprBaseContext extends IExprPhysicalContext{
             String sp = parts[i].toLowerCase();
             if(sp.matches("\\d+"))
                 ret += "_" + sp;
-            else
-                ret += IExprBaseContext.capitalizeFirstLetter(sp);
+            else {
+                if(sp.length() == 0)
+                    ret +="_";
+                else
+                    ret += IExprBaseContext.capitalizeFirstLetter(sp);
+            }
         }
 
         return digitalStart(ret);
@@ -31,8 +35,12 @@ public interface IExprBaseContext extends IExprPhysicalContext{
             String sp = parts[i].toLowerCase();
             if(sp.matches("\\d+"))
                 ret += "_" + sp;
-            else
-                ret += capitalizeFirstLetter(sp);
+            else {
+                if(sp.length() == 0)
+                    ret +="_";
+                else
+                    ret += capitalizeFirstLetter(sp);
+            }
         }
         return ret;
     }

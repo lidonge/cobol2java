@@ -44,7 +44,6 @@ public class BatchConvertor extends BaseConvertor {
         batchConvertor.initCopybookManager();
 
         batchConvertor.convertAll();
-        IExprCallContext.compileAllSub();
 //        batchConvertor.getLogger(BaseConvertor.class).info("Compile All cost:{}s", (System.currentTimeMillis()-startTime)/1000 );
         System.out.println("Compile All cost:"+ (System.currentTimeMillis()-startTime)/1000 +" seconds.");
     }
@@ -63,6 +62,7 @@ public class BatchConvertor extends BaseConvertor {
             if (!isMatchCompileFiles(relativePath))
                 continue;
             convertAFile(file);
+            IExprCallContext.compileAllSub();
         }
     }
 }

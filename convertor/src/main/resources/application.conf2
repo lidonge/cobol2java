@@ -1,0 +1,21 @@
+# Application configuration
+application {
+    name = "cobol2java"
+    version = "1.0"
+    dirs {
+        sourcePath = "/Users/lidong/gitspace/cobol2java/convertor/src/main/COBOL/demo"
+        targetPath = "/Users/lidong/test/cbodjava/src/main/java"
+        copyDir ="*"
+    }
+    rootPackageName = "free.test"
+    format = "TANDEM"
+    encoding = "utf-8"
+    copybookManage=true
+    suffixes = ".cbl;.sqb"
+    #compileFiles = "TESTACCEPT.cbl;IFCLAUSE.cbl"
+    compileFiles = "*.cbl"
+    logging {
+        level = "DEBUG"
+    }
+
+}

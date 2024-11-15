@@ -164,6 +164,10 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
 
         if (type != null) {
             String operandField = operand.substring(operand.lastIndexOf(".") + 1);
+            int idx = operandField.indexOf("[");
+            if(idx != -1){
+               operandField = operandField.substring(0,idx);
+            }
             IExprNameContext context = getExprContext(operandField);
             String copyName = context.getCopyBookName();
             Map<String, String> copyBookMap = CopyBookManager.getDefaultManager().getCopyBookMap();

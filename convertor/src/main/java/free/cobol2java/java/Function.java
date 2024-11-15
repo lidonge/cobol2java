@@ -14,4 +14,12 @@ public class Function {
     public static int mod(int a, int b){
         return a%b;
     }
+
+    public static Integer currentDate() {
+        return 0;
+    }
+
+    public static int random(Integer seed) {
+        return 0;
+    }
 }

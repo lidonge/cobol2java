@@ -9,6 +9,8 @@
         isFunction = callType == "FUNCTION_CALL" ? "isFunction" : null;
     ""}}
     {{#$isFunction}}
-        {{%funcCall = "Function."+ name_toField(obj_getVar("name")) +"("+arguments+")";""}}
+        {{%funcCall = "Function."+ name_toField(obj_getVar("name")) +"("+
+            (arguments == null ? "" : arguments )+
+        ")";""}}
     {{/isFunction}}
 {{/delegate}}

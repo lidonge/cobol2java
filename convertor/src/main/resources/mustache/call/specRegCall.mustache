@@ -1,4 +1,4 @@
-{{%specRegCall=null;identifierCall=null;isAddressOf=null;""}}
+{{%specRegCall=null;identifierCall=null;isAddressOf=null;isReturnCode=null;""}}
 {{#delegate}}
     {{%
         callType = obj_getVar("callType");
@@ -10,14 +10,17 @@
             regType = obj_getVar("type");
             isLengthOf = regType == "LENGTH_OF" ? "isLengthOf" :null;
             isAddressOf = regType == "ADDRESS_OF" ? "isAddressOf":null;
+            isReturnCode = regType == "RETURN_CODE" ? "isReturnCode":null;
         ""}}
         {{#identifierCall}}
             {{%
                 var_push(isAddressOf);
                 var_push(isLengthOf);
+                var_push(isReturnCode);
             ""}}
             {{>call}}
             {{%
+                isReturnCode = var_pop();
                 isLengthOf =var_pop();
                 isAddressOf = var_pop();
                 identifierCall=operand;

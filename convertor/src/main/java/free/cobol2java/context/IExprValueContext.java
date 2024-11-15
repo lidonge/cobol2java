@@ -73,7 +73,8 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
     default String value_fix(String left, Object right) {
         String ret = null;
         String sRight = right+"";
-
+        if(sRight.startsWith("Function."))
+                return sRight;
         getEnvironment().setVar("leftIsBase","null");
         if (left.startsWith("Util.subvalue(")) {
             ret = fixSubvalue(left, right);
