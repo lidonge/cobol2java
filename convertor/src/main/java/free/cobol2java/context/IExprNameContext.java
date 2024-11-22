@@ -6,6 +6,7 @@ import free.servpp.logger.ILogable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author lidong@date 2024-09-29@version 1.0
@@ -22,7 +23,9 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
 
     default String name_qlfName(String fieldName, String ofCopies) {
         String ret = null;
+
         boolean isInCopy = ofCopies != null && ofCopies.length() != 0 && !"null".equals(ofCopies);
+
         if (isInCopy) {
             ret = getQlfNameWithOfCopies(fieldName, ofCopies);
         }else {
@@ -45,7 +48,7 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
             ContextAndQlfName caq = prev.context.getQlfNameOf(field, ofField);
             String qlfName = caq.qlfName;
             if(qlfName.indexOf("|") != -1){
-                qlfName = getQlfNameFromMultiNames(ofField,qlfName);
+                qlfName = getQlfNameFromMultiNames(ofIds,qlfName);
             }
             if (ret == null) {
                 //nameCInMain
@@ -88,12 +91,31 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
             if (copyFieldName == null) {
                 //fieldB not a copybook
                 String multiQlfName = getJavaFieldToQualifiedName().get(fieldA);
-                if(multiQlfName != null)
+                if (multiQlfName != null)
                     qlfName = getQlfNameFromMultiNames(fieldB, multiQlfName);
-                else{
+                else {
                     //fieldA not in main
-                    exprContext = getExprContext(fieldA);
-                    qlfName = exprContext.name_qlfName(fieldA, null);
+                    String prefix = fieldB + ".";
+                    List<String> copybooks = new ArrayList<>();
+                    for (Map.Entry<String, String> entry : getQlfNameToCopyFieldName().entrySet()) {
+                        if (entry.getKey().startsWith(prefix)) {
+                            copybooks.add(entry.getValue());
+                        }
+                    }
+
+                    if(copybooks.size() != 0){
+                        for(String copybook:copybooks){
+                            String fieldName = IExprBaseContext.capitalizeFirstLetter(copybook);
+                            IExprNameContext exprContext1 = getCopybookContexts().get(fieldName);
+                            qlfName = exprContext1.name_qlfName(fieldA, null);
+                            if(qlfName != null && !qlfName.startsWith("UNDEFINED_"))
+                                break;
+                        }
+                    }else {
+                        exprContext = getExprContext(fieldA);
+                        qlfName = exprContext.name_qlfName(fieldA, null);
+                    }
+                    qlfName = prefix+qlfName;
                 }
             } else {
                 //fieldB is a copybook
@@ -102,12 +124,13 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
                 String copybookName = name_toClass(copyFieldName);
                 exprContext = getCopybookContexts().get(copybookName);
                 String fieldAQlfNameInCopy = exprContext.getQlfNameInMain(fieldA);
-                if(Character.isUpperCase(fieldAQlfNameInCopy.charAt(0))){//Constant
+                boolean undefined = fieldAQlfNameInCopy.startsWith("UNDEFINED_");
+                if(!undefined && Character.isUpperCase(fieldAQlfNameInCopy.charAt(0))){//Constant
                     qlfName = fieldAQlfNameInCopy;
                 }else {
                     //FIXME field defined in filler
                     qlfName = fieldBQlfName +
-                            (fieldAQlfNameInCopy.startsWith("UNDEFINED_") ? fieldAQlfNameInCopy : fieldAQlfNameInCopy.substring(fieldAQlfNameInCopy.indexOf(".")));
+                            (undefined ? fieldAQlfNameInCopy : fieldAQlfNameInCopy.substring(fieldAQlfNameInCopy.indexOf(".")));
                 }
             }
         } else {
@@ -173,6 +196,13 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
         return ret;
     }
 
+    private String getQlfNameFromMultiNames(String[] ofIds, String multiQlfName) {
+        String ret = multiQlfName;
+        for(String ofId:ofIds){
+            ret = getQlfNameFromMultiNames(ofId,ret);
+        }
+        return ret;
+    }
     private String getQlfNameFromMultiNames(String ofCopyField, String multiQlfName) {
         String ret = null;
         String[] qlfnames = multiQlfName.split("\\|");

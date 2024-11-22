@@ -22,7 +22,7 @@ public interface IExprDimensionContext extends IExprPhysicalContext, IExprEnvCon
             javaQlfName = theJavaQlfName;
         }else {
             String[] leafs = javaQlfName.split("\\|");
-            javaQlfName = findMaxMatchingPrefix(leafs);
+            javaQlfName = findMaxMatchingPrefix(leafs, theJavaQlfName);
             javaFieldNameToDim = getJavaFieldNameToDim();
         }
         ret = _addDimToQlfName(javaFieldNameToDim, javaQlfName, dims);
@@ -58,47 +58,25 @@ public interface IExprDimensionContext extends IExprPhysicalContext, IExprEnvCon
     }
 
     // Find the longest matching prefix of multiple strings separated by '.'
-    private static String findMaxMatchingPrefix(String[] strings) {
+    private static String findMaxMatchingPrefix(String[] strings, String ref) {
         // If the list is empty or null, return an empty string
         if (strings == null || strings.length == 0) {
             return "";
         }
+        String ret = ref;
 
-        // Split the first string to use it as a reference
-        String[] referenceParts = strings[0].split("\\.");
-
-        // StringBuilder to store the matching prefix
-        StringBuilder matchingPrefix = new StringBuilder();
-
-        // Iterate through each part of the reference string
-        for (int i = 0; i < referenceParts.length; i++) {
-            String currentPart = referenceParts[i];  // Get the current part
-            boolean allMatch = true;
-
-            // Compare the current part with the corresponding part in all other strings
-            for (String str : strings) {
-                String[] parts = str.split("\\.");  // Split each string by '.'
-
-                // If the current part doesn't exist or doesn't match, stop the comparison
-                if (i >= parts.length || !parts[i].equals(currentPart)) {
-                    allMatch = false;
-                    break;
+        int maxLen = 0;
+        for (int i = 0; i < strings.length; i++) {
+            String s = strings[i];
+            if(s.startsWith(ref)) {
+                if(s.length() > maxLen) {
+                    maxLen = s.length();
+                    ret = s;
                 }
-            }
-
-            // If all strings match for this part, append it to the result
-            if (allMatch) {
-                if (matchingPrefix.length() > 0) {
-                    matchingPrefix.append(".");  // Add a dot separator if it's not the first part
-                }
-                matchingPrefix.append(currentPart);
-            } else {
-                break;  // Stop when a mismatch is found
             }
         }
 
-        // Return the final matching prefix
-        return matchingPrefix.toString();
+        return ret;
     }
     private static String _addDimToQlfName(Map<String, Number> javaFieldNameToDim, String javaQlfName, String[] dims) {
         String ret = null;

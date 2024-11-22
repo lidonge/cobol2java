@@ -52,7 +52,8 @@ public interface ICobol2Java extends ICobol2JavaBase {
             StringBuffer sb = writer.getOutText();
             Map map = (Map) writer.getExprEvaluator().getEnvironment().getVar("importsMap");
             ExprContext exprContext = ((ExprContext) writer.getExprEvaluator().getEnvironment().getVar(LOCAL_CONTEXT));
-            List imports = (List) ((IEvaluatorEnvironment.MyObject)map.get(IExprBaseContext.toClassName(getProgName()))).getValue();
+            String progName = compilationUnit.getProgramUnit().getIdentificationDivision().getProgramIdParagraph().getName().replace("'","");
+            List imports = (List) ((IEvaluatorEnvironment.MyObject)map.get(IExprBaseContext.toClassName(progName))).getValue();
             String code = replaceImports(imports,sb.toString(),true);
             return CodeFormator.formatCode(code);
         } catch (Throwable e) {
