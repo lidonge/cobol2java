@@ -164,13 +164,15 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
         String[] lines = context().read().split("\n");
         boolean normalCopyBook = true;
         boolean sameNameCopy = false;
-        for (int i = lines.length - 1; i > 0; i--) {
+        boolean isEmpty = true;
+        for (int i = lines.length - 1; i >= 0; i--) {
             String line = lines[i].trim();
 
             if (line.isEmpty())
                 continue;
             if(line.startsWith("*"))
                 continue;
+            isEmpty = false;
             if (line.indexOf("PIC") != -1 || line.startsWith("LINKAGE") ||
                     line.startsWith("WORKING") || line.startsWith("COPY") || line.startsWith("75")) {
                 normalCopyBook = false;
@@ -184,6 +186,8 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
             }
             break;
         }
+        if(lines.length == 0 || isEmpty)
+            normalCopyBook = false;
         push();
 
         /*

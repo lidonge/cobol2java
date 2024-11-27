@@ -34,24 +34,39 @@ public interface IExprDimensionContext extends IExprPhysicalContext, IExprEnvCon
         IExprDimensionContext context = this;
         String prevName = null;
         String curQlfName = null;
+        String curQlfNameInCtx = null;
         for(String name : names){
             Number dim = context.getJavaFieldNameToDim().get(name);
             if(curQlfName == null)
                 curQlfName = prevName;
             else
                 curQlfName += "." + prevName;
+            if(curQlfNameInCtx == null)
+                curQlfNameInCtx = prevName;
+            else
+                curQlfNameInCtx += "." + prevName;
+
             if (dim != null) {
                 javaFieldNameToDim.put(name,dim);
             }else{
-                String copybookClsName = context.getJavaQlfFieldToSimpleType().get(curQlfName);
+                if(curQlfNameInCtx == null){
+                    javaFieldNameToDim.put(name, 0);
+                }else {
+                    if( Character.isUpperCase(curQlfNameInCtx.charAt(0))) {
+                        context = context.getCopybookContexts().get(curQlfNameInCtx);
+                    }else {
+                        String copybookClsName = context.getJavaQlfFieldToSimpleType().get(curQlfNameInCtx);
 
-                String copyFieldName = context.getQlfNameToCopyFieldName().get(curQlfName);
-                if(copyFieldName != null){
-                    copybookClsName = toClassName(copyFieldName);
+                        String copyFieldName = context.getQlfNameToCopyFieldName().get(curQlfNameInCtx);
+                        if (copyFieldName != null) {
+                            copybookClsName = toClassName(copyFieldName);
+                            curQlfNameInCtx = copyFieldName;
+                        }
+                        context = context.getCopybookContexts().get(copybookClsName);
+                    }
+                    dim = context.getJavaFieldNameToDim().get(name);
+                    javaFieldNameToDim.put(name, dim);
                 }
-                context = context.getCopybookContexts().get(copybookClsName);
-                dim = context.getJavaFieldNameToDim().get(name);
-                javaFieldNameToDim.put(name,dim);
             }
             prevName = name;
         }

@@ -3,6 +3,7 @@ package free.cobol2java.context;
 import free.cobol2java.copybook.CopyBookManager;
 import free.cobol2java.parser.CobolCompiler;
 import free.cobol2java.parser.TopCompiler;
+import free.servpp.logger.ILogable;
 import free.servpp.multiexpr.IEvaluatorEnvironment;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.Map;
 /**
  * @author lidong@date 2024-09-29@version 1.0
  */
-public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext {
+public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext, ILogable {
 
     default String model_replaceImports(List imports, String code){
         return replaceImports(imports, code,true);
@@ -110,12 +111,12 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
                             ctx.getQlfNameToCopyFieldName().get(fieldName) != null;
                 if (match) {
                     value = ctx;
-                    String copyFieldName = getCopyFieldNameToQlfName().get(IExprBaseContext.lowerFirstLetter(copyName));
+                    String copyFieldQlfName = getCopyFieldNameToQlfName().get(IExprBaseContext.lowerFirstLetter(copyName));
                     if(this.getCopyBookName() != null){
-                        copyFieldName = copyFieldName.substring(this.getCopyBookName().length()+1);
+                        copyFieldQlfName = copyFieldQlfName.substring(this.getCopyBookName().length()+1);
                     }
                     if(copyPath != null)
-                        copyPath.add(copyFieldName);
+                        copyPath.add(copyFieldQlfName);
                     break;
                 }
             }
@@ -131,11 +132,11 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
                 value = ctx.getExprContext(fieldName, copyPath);
                 if(value != null) {
                     if(copyPath != null) {
-                        String copyFieldName = getCopyFieldNameToQlfName().get(IExprBaseContext.lowerFirstLetter(copyName));
+                        String copyFieldQlfName = getCopyFieldNameToQlfName().get(IExprBaseContext.lowerFirstLetter(copyName));
                         if(this.getCopyBookName() != null){
-                            copyFieldName = copyFieldName.substring(this.getCopyBookName().length()+1);
+                            copyFieldQlfName = copyFieldQlfName.substring(this.getCopyBookName().length()+1);
                         }
-                        copyPath.add(copyFieldName);
+                        copyPath.add(copyFieldQlfName);
                     }
                     break;
                 }
@@ -169,6 +170,10 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
                operandField = operandField.substring(0,idx);
             }
             IExprNameContext context = getExprContext(operandField);
+            if(context == null){
+                getLogger().error("Error undefined field {} in copybooks.",operandField);
+                return "Object";
+            }
             String copyName = context.getCopyBookName();
             Map<String, String> copyBookMap = CopyBookManager.getDefaultManager().getCopyBookMap();
             String copyContent = copyBookMap.get(copyName);

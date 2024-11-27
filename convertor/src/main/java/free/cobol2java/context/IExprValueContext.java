@@ -88,6 +88,11 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
                 rightIsAField = true;
             }
 
+            if(leftType == null)
+                getLogger().error("Error can not detect left type of {}." ,left);
+            if(rightType == null)
+                getLogger().error("Error can not detect right type of {}.",sRight);
+
             if (leftType.equals(rightType)) {
                 getEnvironment().setVar("leftIsBase","leftIsBase");
                 if (leftType.equals("Double") && sRight.indexOf(".") == -1) {
