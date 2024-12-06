@@ -3,6 +3,7 @@ package free.cobol2java;
 import com.typesafe.config.Config;
 import free.cobol2java.config.Cobol2javaConfig;
 import free.cobol2java.context.IExprCallContext;
+import free.cobol2java.context.TypeReplacement;
 import free.cobol2java.copybook.CopyBookManager;
 import free.cobol2java.parser.TopCompiler;
 import free.servpp.config.IConfig;
@@ -86,6 +87,7 @@ public interface ICobolConvertor extends ILogable {
         compileFiles = compileFiles == null ? "*" : compileFiles;
         String[] cpFiles = compileFiles.split(";");
         setCompileFiles(cpFiles);
+        TypeReplacement.init(con);
     }
 
     private void findMatchingDirectories(String rootDir, String pattern) {
@@ -184,6 +186,7 @@ public interface ICobolConvertor extends ILogable {
                 if(isCFile){
                     String convertedContent = "package "+packageName+";\n" +
                             "public class "+className+" {\n" +
+                                "public void procedure(Object ... params){}"+
                             "}\n";
 
                     // Write the result to the target file

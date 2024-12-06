@@ -51,6 +51,7 @@ public interface IExprBaseContext extends IExprPhysicalContext{
             case "Integer":
             case "Double":
             case "String":
+            case "Object":
                 ret = true;
                 break;
         }

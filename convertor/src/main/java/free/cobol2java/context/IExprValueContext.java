@@ -5,7 +5,9 @@ package free.cobol2java.context;
  */
 public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
 
-
+    default String type_replace(String name, String orgType) {
+        return TypeReplacement.replace(name,orgType);
+    }
     default String type_getType(String cblType) {
         boolean bString = cblType.indexOf("X(") != -1 || cblType.indexOf("A(") != -1;
         if (bString)

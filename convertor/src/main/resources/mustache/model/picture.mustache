@@ -13,6 +13,8 @@
     {{%
         dim_putFieldDim(theFieldName,dimension == null? 0:dimension);
         setFieldName = theQlfName == null ? theFieldName : theQlfName;
+        thePropType = type_replace(theFieldName, propType);
+        propType = thePropType == null ? propType : thePropType;
         name_setFieldType(setFieldName,propType);
     ""}}
 {{/theQlfName}}

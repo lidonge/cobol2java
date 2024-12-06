@@ -36,7 +36,7 @@
         {{%givingName}} =
     {{/givingName}}
         {{#$dynCall}}
-            ServiceManager.getService({{%dynCall}}).procedure( {{%parameters == null ? "":parameters}});
+            ServiceManager.getService({{%dynCall}}).execute( {{%parameters == null ? "":parameters}});
         {{/dynCall}}
         {{^$dynCall}}
             ServiceManager.getService({{%calleeClass}}.class).
