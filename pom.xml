@@ -11,6 +11,7 @@
     <modules>
         <module>embeddedsql</module>
         <module>convertor</module>
+        <module>optimizjava</module>
     </modules>
 
     <properties>
