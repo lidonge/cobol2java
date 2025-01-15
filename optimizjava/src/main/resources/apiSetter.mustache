@@ -1,0 +1,56 @@
+package {{packageName}};
+import {{servicePath}}.{{serviceName}};
+import {{openApiModelPath}}.{{serviceName}}{{method}}Request;
+import {{openApiModelPath}}.{{serviceName}}{{method}}200Response;
+import {{apiPath}}.{{serviceName}}Params;
+public class {{setterName}}_Setter{
+    private {{serviceName}}Params params = new {{serviceName}}Params();
+    private {{serviceName}}Put200Response response = new {{serviceName}}Put200Response();
+    private {{serviceName}}PutRequest request;
+    public void procedure(){
+        free.cobol2java.java.ServiceManager.getService({{serviceName}}.class).procedure(params);
+    }
+    public {{setterName}}_Setter({{serviceName}}PutRequest request) {
+        this.request = request;
+    }
+
+    public {{serviceName}}Put200Response getResponse() {
+        return response;
+    }
+
+    public {{serviceName}}Params getParams() {
+        return params;
+    }
+    public void setRequest(){
+        {{#properties}}
+            {{%isOut = obj_getVar("isOut") ? "IS_OUT" : null;""}}
+            {{^$isOut}}
+                init{{shortQualifiedName}}();
+                params.{{qualifiedName}} = request.get{{apiFieldName}}();
+            {{/isOut}}
+        {{/properties}}
+    }
+    public void setResponse(){
+        {{#properties}}
+            {{%isIn = obj_getVar("isIn") || !obj_getVar("isOut") ? "IS_IN" : null;""}}
+            {{^$isIn}}
+                response.set{{apiFieldName}}(params.{{qualifiedName}});
+            {{/isIn}}
+        {{/properties}}
+    }
+{{#properties}}
+    {{%isOut = obj_getVar("isOut") ? "IS_OUT" : null;notHasName="notHasName";""}}
+    {{^$isOut}}
+        {{#nameAndClassList}}
+            {{#-first}}{{%notHasName = null;""}}{{/-first}}
+        {{/nameAndClassList}}
+        public void init{{shortQualifiedName}}(){
+        {{#nameAndClassList}}
+            {{^$notHasName}}
+            params.{{name}} = new {{className}}();
+            {{/notHasName}}
+        {{/nameAndClassList}}
+        }
+    {{/isOut}}
+{{/properties}}
+}
