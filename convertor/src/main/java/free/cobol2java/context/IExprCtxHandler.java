@@ -1,8 +1,9 @@
 package free.cobol2java.context;
 
 import io.proleap.cobol.CobolLexer;
-import io.proleap.cobol.CobolParser;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
@@ -13,10 +14,25 @@ import static io.proleap.cobol.CobolLexer.*;
 /**
  * @author lidong@date 2024-09-29@version 1.0
  */
-public interface IExprCtxHandler extends IExprEnvContext{
+public interface IExprCtxHandler extends IExprEnvContext {
     String LENGTHOF = "LENGTHOF";
     String FUNCTION = "FUNCTION";
+
     record PropOfField(String id, List<String> ofId) {
+    }
+
+    default String ctx_toText(ParseTree ctx) {
+        String ret = "";
+        for (int i = 0; i < ctx.getChildCount(); i++) {
+            String text = "";
+            if(ctx.getChild(i).getChildCount() != 0)
+                text = ctx_toText(ctx.getChild(i));
+            else
+                text = " " +ctx.getChild(i).getText();
+            ret +=  text;
+        }
+
+        return ret;
     }
 
     default String getCtxText(ParserRuleContext ctx, List<Object> ofIds) {
@@ -27,15 +43,15 @@ public interface IExprCtxHandler extends IExprEnvContext{
             if (i != 0)
                 ret += " ";
             String text = ctx.getChild(i).getText();
-            if(text.equals("("))
+            if (text.equals("("))
                 begTable = 0;
-            else if(text.equals(")"))
+            else if (text.equals(")"))
                 begTable = -1;
-            if(begTable != -1){
-                if(text.equals(","))
+            if (begTable != -1) {
+                if (text.equals(","))
                     continue;
-                if(begTable > 1)
-                    ret +=",";
+                if (begTable > 1)
+                    ret += ",";
                 begTable++;
             }
 
@@ -96,7 +112,7 @@ public interface IExprCtxHandler extends IExprEnvContext{
                             text = LENGTHOF + text;
                         }
                         ofIds.add(prevNode);
-                    }else{
+                    } else {
                         if (isFunction) {
                             isFunction = false;
                             text = FUNCTION + text;

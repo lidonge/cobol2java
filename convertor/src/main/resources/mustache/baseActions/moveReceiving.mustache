@@ -16,12 +16,7 @@
         ""}}
     {{/isReturnCode}}
     {{#$isUseCopy}}
-        {{#$leftIsBase}}
-            {{%setName}}={{%setValue}};
-        {{/leftIsBase}}
-        {{^$leftIsBase}}
-            {{%setValue}};
-        {{/leftIsBase}}
+        {{%setName}}={{%setValue}};
     {{/isUseCopy}}
     {{^$isUseCopy}}
         {{%shouldFixFullArraySet = value_fixFullArraySet(setName,setValue);""}}

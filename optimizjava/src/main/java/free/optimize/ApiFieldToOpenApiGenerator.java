@@ -143,6 +143,10 @@ public class ApiFieldToOpenApiGenerator {
 
     public static void saveAsYaml(OpenAPI openAPI, String filePath) throws IOException {
         String yamlText = Yaml.pretty().writeValueAsString(openAPI);
+        File path= new File(filePath).getParentFile();
+        if (!path.exists()) {
+            path.mkdirs();
+        }
         try (FileWriter writer = new FileWriter(new File(filePath))) {
             writer.write(yamlText);
         }

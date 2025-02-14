@@ -21,26 +21,25 @@ public class ServiceParameterRefactor {
 
     private static final String SERVICE_MANAGER_GET_SERVICE = "ServiceManager.getService(";
     private final Map<String, ApiBizParameter> apiBizParameterMap = new HashMap<>();
-    private final Map<String,CompilationUnit> allServices = new HashMap<>();
 
     /**
      * Main method to analyze and generate required parameter classes.
      *
      * @param classpath      The root classpath of the project.
      * @param fileAPath      Path to the file (A) being analyzed.
-     * @param classBName     Name of the class (B) whose properties are referenced.
+     * @param oldApiClass     Name of the class (B) whose properties are referenced.
      * @param fullClassName  Fully qualified name of class (B).
      * @param apiPath        Path to save the generated API classes.
      * @throws IOException If file operations fail.
      */
     public void analyzeAndGenerate(
-            String classpath, String fileAPath, String classBName, String fullClassName, String apiPath
+            String classpath, String fileAPath, String oldApiClass, String fullClassName, String apiPath
     ) throws IOException {
-        // Step 1: Extract properties of class B
+        // Step 1: Extract properties of oldApiClass
         List<String> properties = ClassPropertiesExtractor.getClassProperties(classpath, fullClassName);
 
-        // Step 2: Analyze references to properties of class B in file A
-        CompilationUnit mainUnit = analyzeClassPropertyReferences(classpath, fileAPath, classBName, properties);
+        // Step 2: Analyze references to properties of old ApiClass in file A， and recursive with service call
+        CompilationUnit mainUnit = analyzeClassPropertyReferences(classpath, fileAPath, oldApiClass, properties);
         String mainServiceName = fileAPath.substring(fileAPath.lastIndexOf(File.separator) + 1, fileAPath.indexOf("."));
 
         // Step 3: Process each referenced API parameter and generate parameter classes
@@ -71,7 +70,7 @@ public class ServiceParameterRefactor {
         }
 
         // Replace references in the original file (file A)
-        replaceClassReferences(mainUnit, classBName, mainServiceName+"Params");
+        replaceClassReferences(mainUnit, oldApiClass, mainServiceName+"Params");
 
         // Output the final updated file for debugging
         saveClassToFile(mainUnit,new File(fileAPath));
@@ -82,23 +81,23 @@ public class ServiceParameterRefactor {
      *
      * @param classpath   The root classpath of the project.
      * @param fileAPath   Path to the file being analyzed.
-     * @param classBName  Name of the class being analyzed.
+     * @param oldApiClass  Name of the old ApiClasseing analyzed.
      * @param properties  List of properties to analyze.
      * @return The CompilationUnit of the analyzed file.
      * @throws IOException If the file cannot be read.
      */
     private CompilationUnit analyzeClassPropertyReferences(
-            String classpath, String fileAPath, String classBName, List<String> properties
+            String classpath, String fileAPath, String oldApiClass, List<String> properties
     ) throws IOException {
         try (FileInputStream fis = new FileInputStream(fileAPath)) {
             CompilationUnit compilationUnit = StaticJavaParser.parse(fis);
             ApiBizParameter apiBizParameter = getOrCreateApiBizParameter(fileAPath);
 
-            String field = findMatchingField(compilationUnit, classBName);
+            String field = findMatchingField(compilationUnit, oldApiClass);
             if (field == null) return compilationUnit;
 
             for (ExpressionStmt stmt : compilationUnit.findAll(ExpressionStmt.class)) {
-                handleExpressionStatement(stmt, field, properties, classpath, fileAPath, classBName, apiBizParameter);
+                handleExpressionStatement(stmt, field, properties, classpath, fileAPath, oldApiClass, apiBizParameter);
             }
 
             return compilationUnit;
@@ -110,11 +109,11 @@ public class ServiceParameterRefactor {
      */
     private void handleExpressionStatement(
             ExpressionStmt stmt, String field, List<String> properties, String classpath,
-            String fileAPath, String classBName, ApiBizParameter apiBizParameter
+            String fileAPath, String oldApiClass, ApiBizParameter apiBizParameter
     ) {
         MethodAndParamIndex methodCall = getMethodCallWithField(stmt, field);
         if (methodCall != null) {
-            processMethodCall(methodCall, field, classpath, fileAPath, classBName, apiBizParameter,properties);
+            processMethodCall(methodCall, field, classpath, fileAPath, oldApiClass, apiBizParameter,properties);
         }
 
         for (FieldAccessExpr fieldAccess : stmt.findAll(FieldAccessExpr.class)) {
@@ -129,7 +128,7 @@ public class ServiceParameterRefactor {
      */
     private void processMethodCall(
             MethodAndParamIndex methodCall, String field, String classpath, String fileAPath,
-            String classBName, ApiBizParameter apiBizParameter,
+            String oldApiClass, ApiBizParameter apiBizParameter,
             List<String> properties) {
         String stmtContent = methodCall.expr.toString();
         if (!stmtContent.contains(SERVICE_MANAGER_GET_SERVICE)) return;
@@ -140,11 +139,11 @@ public class ServiceParameterRefactor {
         File subFilePath = new File(classpath, subClsName.replace(".", File.separator) + ".java");
         try {
             String subFilePathAbsolutePath = subFilePath.getAbsolutePath();
-            CompilationUnit subUnit = analyzeClassPropertyReferences(classpath, subFilePathAbsolutePath, classBName, properties);
+            CompilationUnit subUnit = analyzeClassPropertyReferences(classpath, subFilePathAbsolutePath, oldApiClass, properties);
             String subServiceName = subClsName.substring(subClsName.lastIndexOf(".") + 1);
 //            allServices.put(subServiceName,subUnit);
             String newParamClassName = subServiceName + "Params";
-            replaceClassReferences(subUnit, classBName, newParamClassName);
+            replaceClassReferences(subUnit, oldApiClass, newParamClassName);
             saveClassToFile(subUnit,subFilePath);
             MethodCallExpr replacement = new MethodCallExpr(new NameExpr(field), "get" + newParamClassName);
             methodCall.expr.setArgument(methodCall.paramIndex, replacement);
@@ -152,7 +151,8 @@ public class ServiceParameterRefactor {
             ApiBizParameter subParam = apiBizParameterMap.get(subFilePathAbsolutePath);
             if (subParam != null) {
                 apiBizParameter.addSubBiz(subFilePathAbsolutePath);
-                apiBizParameter.getParameters().addAll(subParam.getParameters());
+                for(String param:subParam.getParameters())
+                    apiBizParameter.addParameter(param);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -163,9 +163,23 @@ public class ServiceParameterRefactor {
      * Filters fields in the compilation unit based on the provided parameter list.
      */
     private void filterFieldsByParameters(CompilationUnit compilationUnit, List<String> parameters) {
-        for (FieldDeclaration field : compilationUnit.findAll(FieldDeclaration.class)) {
-            boolean keepField = field.getVariables().stream()
-                    .anyMatch(variable -> parameters.contains(variable.getNameAsString()));
+        // Retrieve all field declarations from the compilation unit
+        List<FieldDeclaration> fields = compilationUnit.findAll(FieldDeclaration.class);
+
+        // Iterate through each field declaration
+        for (FieldDeclaration field : fields) {
+            boolean keepField = false; // Flag to determine whether to keep this field
+
+            // Iterate through the variables in the field declaration
+            for (VariableDeclarator variable : field.getVariables()) {
+                // Check if the variable's name exists in the list of parameters
+                if (parameters.contains(variable.getNameAsString())) {
+                    keepField = true; // Mark the field to be kept
+                    break; // Exit the loop as we found a match
+                }
+            }
+
+            // If no variables in this field match the parameters, remove the field
             if (!keepField) {
                 field.remove();
             }
@@ -260,11 +274,15 @@ public class ServiceParameterRefactor {
     }
 
     private ApiBizParameter getOrCreateApiBizParameter(String bizName) {
-        return apiBizParameterMap.computeIfAbsent(bizName, k -> {
-            ApiBizParameter param = new ApiBizParameter();
-            param.setBizId(k);
-            return param;
-        });
+        // Check if the bizName exists in the map
+        ApiBizParameter param = apiBizParameterMap.get(bizName);
+        if (param == null) {
+            // Create a new ApiBizParameter if it doesn't exist
+            param = new ApiBizParameter();
+            param.setBizId(bizName);
+            apiBizParameterMap.put(bizName, param);
+        }
+        return param;
     }
 
     private MethodAndParamIndex getMethodCallWithField(ExpressionStmt stmt, String fieldName) {
@@ -297,14 +315,16 @@ public class ServiceParameterRefactor {
 
     public static void main(String[] args) {
         try {
-            String classpath = "/Users/lidong/test/cbodjava/src/main/java";
-            String fileAPath = "/Users/lidong/test/cbodjava/src/main/java/cbod/java/onbb/cbl/Gsa01060.java";
-            String classBName = "Cbapalst";
+            String classpath = "/Users/lidong/test/cbodjava/generated-sources/cbod/src/main/java";
+
+            String fileAPath = "/Users/lidong/test/cbodjava/generated-sources/cbod/src/main/java/cbod/java/onbb/cbl/Gsa01060.java";
+//            String fileAPath = "/Users/lidong/test/cbodjava/generated-sources/cbod/src/main/java/cbod/java/kbcf/cbl/Cshtra0.java";
+            String oldApiClass = "Cbapalst";
             String fullClassName = "cbod.java.models.ccbmain.copy.Cbapalst";
-            String apiPath = "/Users/lidong/test/cbodjava/src/main/java/cbod/java/models/ccbmain/copy";
+            String apiPath = "/Users/lidong/test/cbodjava/generated-sources/cbod/src/main/java/cbod/java/models/ccbmain/copy";
 
             ServiceParameterRefactor analyzer = new ServiceParameterRefactor();
-            analyzer.analyzeAndGenerate(classpath, fileAPath, classBName, fullClassName, apiPath);
+            analyzer.analyzeAndGenerate(classpath, fileAPath, oldApiClass, fullClassName, apiPath);
         } catch (IOException e) {
             e.printStackTrace();
         }

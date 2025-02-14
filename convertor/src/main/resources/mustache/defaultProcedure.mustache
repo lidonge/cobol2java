@@ -1,8 +1,8 @@
 {{>callSub.funcparam[func_parameters,func_parametersWithoutType,needDefaultParagraph]}}
-{{%isContinue="isContinue";""}}
+{{%isContinue="isContinue";noNeedComment="noNeedComment";""}}
 public void procedure({{%func_parameters}}){
     {{%mainClassName}}Handler handler = new {{%mainClassName}}Handler({{%func_parametersWithoutType}});
-    {{>statements()}}
+    {{>statements(noNeedComment)}}
     {{#paragraphs}}
         {{#$isContinue}}
             {{%theName= name_toField(obj_getVar("name"));""}}

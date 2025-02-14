@@ -19,8 +19,9 @@
                 {{#call}}{{>call}}{{/call}}
                 {{%
                     targetVar = obj_getFromList(tosList,index);
+                    targetIsAddr = obj_getFromList(tosIsAddr,index);
                     operandType=obj_getFromList(tosIsAddr,index) ? expr_changeAddressType(targetVar,operand) : null;
-                operand = operandType == null ? value_fix(targetVar+"",operand): operand;
+                operand = targetIsAddr == null ? value_fix(targetVar+"",operand): operand;
                 ""}}
                 {{%targetVar}}={{%operand}};
                 {{%index = index +1;""}}

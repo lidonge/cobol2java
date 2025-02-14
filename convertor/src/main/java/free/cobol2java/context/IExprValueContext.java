@@ -112,7 +112,7 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
                         if(isBaseType(leftType)){
                             ret = "Util.copyCastTo"+leftType+"(" + right+ ")";
                         }else
-                            ret = "Util.copyCast(" + right + "," + left + ")";
+                            ret = "Util.copyCaster().copyCast(" + right + "," + left + ")";
                     }
                 }
             }

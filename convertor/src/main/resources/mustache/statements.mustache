@@ -1,5 +1,8 @@
 {{#statements}}
     {{>comment}}
+    {{^$noNeedComment}}
+    //{{%ctx_toText(obj_getVar("ctx"))}}
+    {{/noNeedComment}}
     {{>baseActions.accept}}
     {{>baseActions.display}}
     {{>baseActions.init}}

@@ -7,6 +7,7 @@ import free.servpp.mustache.handler.MustacheListenerImpl;
 import free.servpp.mustache.handler.MustacheWriter;
 import free.servpp.mustache.model.Template;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
 import java.net.URI;
@@ -123,6 +124,7 @@ public class Cobol2JavaMustacheWriter extends MustacheWriter {
                 addFunction("cobol_precompile", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).cobol_precompile((String) args[0]));
                 addFunction("cobol_compile", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).cobol_compile((String) args[0]));
                 addFunction("cbl_getComment", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).cbl_getComment((Integer) args[0], (String) args[1], (List<String>) args[2]));
+                addFunction("ctx_toText", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).ctx_toText((ParseTree) args[0]));
                 addFunction("model_getPackage", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).model_getPackage( (String) args[0],(String) args[1]));
                 addFunction("model_replaceImports", args -> ((ExprContext) getVar(LOCAL_CONTEXT)).model_replaceImports( (List) args[0],args[1]+""));
 

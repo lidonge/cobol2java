@@ -30,7 +30,7 @@ public class UnusedPropertyRemover {
         // return;
 
         // Directory to scan for Java files
-        String dir = "/Users/lidong/test/cbodjava/src/main/java/cbod/java";
+        String dir = "/Users/lidong/test/cbodjava/generated-sources/cbod/src/main/java/cbod/java";
 
         // Filter for Java files that meet certain criteria
         JavaFileFilter fileFilter = new JavaFileFilter("public void procedure(");
@@ -48,7 +48,7 @@ public class UnusedPropertyRemover {
      * @throws IOException If the file cannot be read or written.
      */
     private static void handOne() throws IOException {
-        String path = "/Users/lidong/test/cbodjava/src/main/java/cbod/java/ccbmain/cbl/Gsystime1.java";
+        String path = "/Users/lidong/test/cbodjava/generated-sources/cbod/src/main/java/cbod/java/ccbmain/cbl/Gsystime1.java";
         handleAFile(new File(path));
     }
 

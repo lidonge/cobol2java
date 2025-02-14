@@ -30,6 +30,9 @@
                         public
                     {{/isConstInnerCls}}
                 {{/isInnerClass}}
+                {{#$isInnerClass}}
+                    public static
+                {{/isInnerClass}}
                 {{%isConstInnerCls != null? "public static ":""}}
                 {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel+1;fillerCount = 0;""}}
                 class {{%clsName}}{{#$isSubExtCopybook}}_Ext extends {{%clsName}}{{/isSubExtCopybook}} {

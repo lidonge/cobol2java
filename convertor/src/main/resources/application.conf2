@@ -12,10 +12,23 @@ application {
     encoding = "utf-8"
     copybookManage=true
     suffixes = ".cbl;.sqb"
-    #compileFiles = "TESTACCEPT.cbl;IFCLAUSE.cbl"
-    compileFiles = "*.cbl"
+    compileFiles = "TESTACCEPT.cbl"
+    #compileFiles = "*.cbl"
     logging {
         level = "DEBUG"
     }
-
+    typeReplacements{
+        dbiIoArea{
+            from = String
+            to = Object
+        }
+        kbParm{
+            from = String
+            to = Object
+        }
+        arlArea{
+            from = String
+            to = Object
+        }
+    }
 }
