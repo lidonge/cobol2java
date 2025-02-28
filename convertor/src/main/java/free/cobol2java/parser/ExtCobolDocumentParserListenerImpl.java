@@ -31,7 +31,6 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
     private final CobolParserParams params;
 
     private final BufferedTokenStream tokens;
-
     public ExtCobolDocumentParserListenerImpl(CobolParserParams params, BufferedTokenStream tokens) {
         super(params, tokens);
         this.params = params;
@@ -213,6 +212,11 @@ public class ExtCobolDocumentParserListenerImpl extends CobolDocumentParserListe
         }
 
         if (copyBookContent != null) {
+            int length = copyBookContent.split("\r?\n").length;
+            if(length > 1){
+                CobolCompiler cobolCompiler = TopCompiler.currentCompiler();
+                cobolCompiler.addCopybookLines(lines.length,length);
+            }
             context().write(copyBookContent + CobolPreprocessor.NEWLINE);
             context().replaceReplaceablesByReplacements(tokens);
         }

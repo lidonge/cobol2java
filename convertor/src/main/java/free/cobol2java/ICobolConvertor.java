@@ -6,6 +6,7 @@ import free.cobol2java.context.IExprCallContext;
 import free.cobol2java.context.TypeReplacement;
 import free.cobol2java.copybook.CopyBookManager;
 import free.cobol2java.parser.TopCompiler;
+import free.cobol2java.util.CobolFilePreprocess;
 import free.servpp.config.IConfig;
 import free.servpp.config.hocon.HoconConfigTypeManager;
 import free.servpp.logger.ILogable;
@@ -154,6 +155,7 @@ public interface ICobolConvertor extends ILogable {
     }
 
     default String convertAFile(File file) {
+//        CobolFilePreprocess.process(file.getAbsolutePath());
         return convertAFile(file,false);
     }
     default String convertACFile(File file) {

@@ -1,0 +1,6 @@
+1、16进制数字
+    IF A-BDE > X'7F'
+2、COPYBOOK扩展GSA01062
+01  PSAARL01.
+    COPY    PSAARL01.
+    05  ARL-ACCT-NO     PIC X(32).

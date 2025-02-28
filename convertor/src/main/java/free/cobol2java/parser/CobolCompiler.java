@@ -15,6 +15,10 @@ public class CobolCompiler {
     private Stack<String> copybookStack = new Stack<>();
     private Map<String, List<String>> copybookIncludes = new HashMap<>();
 
+    private List<Integer> beginCopes = new ArrayList<>();
+    private List<Integer> cpyLengths = new ArrayList<>();
+
+
     public CobolCompiler(String cobolName, URI file) {
         this.cobolName = cobolName;
         this.file = file;
@@ -63,5 +67,34 @@ public class CobolCompiler {
 
     public URI getFile() {
         return file;
+    }
+
+    public void addCopybookLines(int beginCope, int cpyLength) {
+        beginCopes.add(beginCope);
+        cpyLengths.add(cpyLength);
+    }
+
+    public List<Integer> getBeginCopes() {
+        return beginCopes;
+    }
+
+    public List<Integer> getCpyLengths() {
+        return cpyLengths;
+    }
+
+    public int caclRealLine(int line) {
+        int realLine = line;
+        int count = 0;
+        for (int i = 0; i < beginCopes.size(); i++) {
+            int beginCope = beginCopes.get(i);
+            int cpyLength = cpyLengths.get(i);
+            if (line > beginCope + cpyLength) {
+                realLine -=  cpyLength;
+            } else {
+                count = i;
+                break;
+            }
+        }
+        return realLine + count;
     }
 }

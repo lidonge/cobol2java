@@ -224,6 +224,9 @@ public class DependencyAnalyzer {
 
             for(String service:services) {
                 String id = service.substring(service.lastIndexOf(".") +1);
+                if(document.getElementById(id) != null)
+                    continue;
+
                 // 3. create new  <bean> element
                 Element newBean = document.createElement("bean");
                 newBean.setAttribute("id", id);
@@ -283,7 +286,7 @@ public class DependencyAnalyzer {
             StringBuffer sb = writer.getOutText();
             analyzer.writeToFile(new File(classpath,"/cbod/java/models/setters/gsa01060Put_Setter.java"),
                     CodeFormator.formatCode(sb.toString()));
-//            analyzer.addBeans(new File(yamlPath,"applicationContext.xml"));
+            analyzer.addBeans(new File(yamlPath,"applicationContext.xml"));
         } catch (IOException e) {
             e.printStackTrace();
         }

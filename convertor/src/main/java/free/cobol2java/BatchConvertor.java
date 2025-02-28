@@ -4,6 +4,7 @@ import free.cobol2java.config.Cobol2javaConfig;
 import free.cobol2java.config.CobolConfig;
 import free.cobol2java.context.IExprCallContext;
 import free.cobol2java.copybook.CopyBookManager;
+import free.cobol2java.util.CobolFilePreprocess;
 import free.servpp.multiexpr.ReflectTool;
 import free.servpp.mustache.CodeFormator;
 import io.proleap.cobol.asg.metamodel.impl.ProgramUnitElementImpl;

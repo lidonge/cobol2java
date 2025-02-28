@@ -21,6 +21,7 @@ public class ServiceParameterRefactor {
 
     private static final String SERVICE_MANAGER_GET_SERVICE = "ServiceManager.getService(";
     private final Map<String, ApiBizParameter> apiBizParameterMap = new HashMap<>();
+    private  BaseTool baseTool = new BaseTool();
 
     /**
      * Main method to analyze and generate required parameter classes.
@@ -35,6 +36,7 @@ public class ServiceParameterRefactor {
     public void analyzeAndGenerate(
             String classpath, String fileAPath, String oldApiClass, String fullClassName, String apiPath
     ) throws IOException {
+        baseTool.cacheAllClasses(new File(classpath));
         // Step 1: Extract properties of oldApiClass
         List<String> properties = ClassPropertiesExtractor.getClassProperties(classpath, fullClassName);
 
@@ -45,7 +47,7 @@ public class ServiceParameterRefactor {
         // Step 3: Process each referenced API parameter and generate parameter classes
         for (String key : apiBizParameterMap.keySet()) {
             ApiBizParameter apiBizParameter = apiBizParameterMap.get(key);
-            List<String> parameters = apiBizParameter.getParameters();
+            List<ApiBizParameter.Parameter> parameters = apiBizParameter.getParameters();
 
 //            if (parameters.isEmpty()) continue; // Skip if no parameters are found
 
@@ -117,8 +119,18 @@ public class ServiceParameterRefactor {
         }
 
         for (FieldAccessExpr fieldAccess : stmt.findAll(FieldAccessExpr.class)) {
-            if (properties.contains(fieldAccess.getNameAsString())) {
-                apiBizParameter.addParameter(fieldAccess.getNameAsString());
+            String fieldName = fieldAccess.getNameAsString();
+            if (properties.contains(fieldName)) {
+                CompilationUnit compilationUnit = stmt.findCompilationUnit().get();
+                AssignExpr assignExpr = stmt.findAll(AssignExpr.class).get(0);
+                String type = baseTool.resolveFieldType(assignExpr.getTarget(),compilationUnit);
+                if(type == null){
+                    type = baseTool.resolveFieldType(assignExpr.getValue(),compilationUnit);
+                }
+                if(type == null)
+                    type = "Object";
+                ApiBizParameter.Parameter parameter = new ApiBizParameter.Parameter(type, fieldName);
+                apiBizParameter.addParameter(parameter);
             }
         }
     }
@@ -151,7 +163,7 @@ public class ServiceParameterRefactor {
             ApiBizParameter subParam = apiBizParameterMap.get(subFilePathAbsolutePath);
             if (subParam != null) {
                 apiBizParameter.addSubBiz(subFilePathAbsolutePath);
-                for(String param:subParam.getParameters())
+                for(ApiBizParameter.Parameter param:subParam.getParameters())
                     apiBizParameter.addParameter(param);
             }
         } catch (IOException e) {
@@ -162,7 +174,7 @@ public class ServiceParameterRefactor {
     /**
      * Filters fields in the compilation unit based on the provided parameter list.
      */
-    private void filterFieldsByParameters(CompilationUnit compilationUnit, List<String> parameters) {
+    private void filterFieldsByParameters(CompilationUnit compilationUnit, List<ApiBizParameter.Parameter> parameters) {
         // Retrieve all field declarations from the compilation unit
         List<FieldDeclaration> fields = compilationUnit.findAll(FieldDeclaration.class);
 
@@ -173,8 +185,11 @@ public class ServiceParameterRefactor {
             // Iterate through the variables in the field declaration
             for (VariableDeclarator variable : field.getVariables()) {
                 // Check if the variable's name exists in the list of parameters
-                if (parameters.contains(variable.getNameAsString())) {
+                int idx = parameters.indexOf(new ApiBizParameter.Parameter("Object",variable.getNameAsString()));
+                if (idx != -1) {
                     keepField = true; // Mark the field to be kept
+                    String type = parameters.get(idx).getType();
+                    field.setAllTypes(new ClassOrInterfaceType(type));
                     break; // Exit the loop as we found a match
                 }
             }
@@ -206,10 +221,10 @@ public class ServiceParameterRefactor {
             ));
 
             ApiBizParameter subApi = getOrCreateApiBizParameter(subBiz);
-            for (String param : subApi.getParameters()) {
+            for (ApiBizParameter.Parameter param : subApi.getParameters()) {
                 body.addStatement(new AssignExpr(
-                        new NameExpr(variableName + "." + param),
-                        new NameExpr(param),
+                        new NameExpr(variableName + "." + param.getName()),
+                        new NameExpr(param.getName()),
                         AssignExpr.Operator.ASSIGN
                 ));
             }
