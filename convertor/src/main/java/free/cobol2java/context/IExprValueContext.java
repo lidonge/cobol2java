@@ -217,7 +217,7 @@ public interface IExprValueContext extends IExprEnvContext, IExprNameContext {
         return ret;
     }
 
-    private boolean isBaseType(String type) {
+    default boolean isBaseType(String type) {
         boolean ret = false;
         switch (type) {
             case "String":

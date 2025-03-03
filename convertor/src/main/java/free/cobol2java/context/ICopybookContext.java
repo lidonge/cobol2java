@@ -71,7 +71,11 @@ public interface ICopybookContext extends IExprBaseContext, IExprPhysicalContext
                 String copybookName = IExprBaseContext.capitalizeFirstLetter(copyFieldName);
                 IExprNameContext ctx = getCopybookContexts().get(copybookName);
                 String nextQlfName = createQlfName(copyFieldName,paths,i);
-                ret = ctx.getClassTypeByQlfName(nextQlfName,fullPath);
+                if(nextQlfName.startsWith("Util.")){
+                    ret = "String";
+                }else {
+                    ret = ctx.getClassTypeByQlfName(nextQlfName, fullPath);
+                }
                 break;
             }
         }else{

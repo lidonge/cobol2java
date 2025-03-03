@@ -3,6 +3,7 @@ package free.cobol2java.context;
 import java.util.HashMap;
 import java.util.Map;
 
+import static free.cobol2java.context.IExprBaseContext.isBaseType;
 import static free.cobol2java.context.IExprBaseContext.toClassName;
 
 /**
@@ -35,7 +36,8 @@ public interface IExprDimensionContext extends IExprPhysicalContext, IExprEnvCon
         String prevName = null;
         String curQlfName = null;
         String curQlfNameInCtx = null;
-        for(String name : names){
+        for(int i = 0;i< names.length;i++){
+            String name = names[i];
             Number dim = context.getJavaFieldNameToDim().get(name);
             if(curQlfName == null)
                 curQlfName = prevName;
@@ -46,7 +48,8 @@ public interface IExprDimensionContext extends IExprPhysicalContext, IExprEnvCon
             else
                 curQlfNameInCtx += "." + prevName;
 
-            if (dim != null) {
+            //should test if name both in main cbl and copybook
+            if (dim != null && !isBaseTypeFillerAndNotLeaf(name, i == names.length -1)){
                 javaFieldNameToDim.put(name,dim);
             }else{
                 if(curQlfNameInCtx == null){
@@ -70,6 +73,11 @@ public interface IExprDimensionContext extends IExprPhysicalContext, IExprEnvCon
             }
             prevName = name;
         }
+    }
+
+    private boolean isBaseTypeFillerAndNotLeaf(String name, boolean isLeaf){
+        String type = getJavaQlfFieldToSimpleType().get(name);
+        return name.startsWith("filler") && isBaseType(type) && !isLeaf;
     }
 
     // Find the longest matching prefix of multiple strings separated by '.'

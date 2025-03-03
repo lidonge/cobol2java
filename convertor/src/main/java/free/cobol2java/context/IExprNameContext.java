@@ -135,6 +135,13 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
                     getLogger().error("Error can not find copybook {} by field {} of {}." , copybookName, fieldA, fieldB);
                 }
                 String fieldAQlfNameInCopy = exprContext.getQlfNameInMain(fieldA, fieldB);
+                if( fieldAQlfNameInCopy == null){
+                    fieldAQlfNameInCopy = getQlfNameIfNotInCopybook(fieldA, fieldB);
+                    if(fieldAQlfNameInCopy == null) {
+                        fieldAQlfNameInCopy = "UNDEFINED_" + fieldA;
+                        getLogger(IExprNameContext.class).error("Error can not find field {} defined in copybook {}.", fieldA, this.getCopyBookName());
+                    }
+                }
                 boolean undefined = fieldAQlfNameInCopy.startsWith("UNDEFINED_");
                 if(!undefined && Character.isUpperCase(fieldAQlfNameInCopy.charAt(0))){//Constant
                     qlfName = fieldAQlfNameInCopy;
@@ -169,20 +176,30 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
             //get the qlfName of fieldA in its context.
             //FIXME the field defined in filler
             if(exprContext == null){
-                ret = "UNDEFINED_"+fieldA;
-                getLogger(IExprNameContext.class).error("Error can not find field {} defined in copybook {}.", fieldA,this.getCopyBookName());
+                ret = getQlfNameIfNotInCopybook(fieldA, fieldB);
             }else {
                 String qlfNameInCopy = exprContext.getJavaFieldToQualifiedName().get(fieldA);
                 ret = changeCopyFieldNameToFieldName(qlfNameInCopy,copyPath);
             }
         }
-        if (ret.indexOf("|") != -1) {
+        if (ret != null && ret.indexOf("|") != -1) {
             if(fieldB != null && !"null".equals(fieldB))
                 ret = getQlfNameFromMultiNames(fieldB,ret);
             if (ret.indexOf("|") != -1) {
                 getLogger(IExprNameContext.class).error("Error Ambiguous name {}:{}", fieldA, ret);
                 ret = ret.substring(0, ret.indexOf("|"));
             }
+        }
+        return ret;
+    }
+
+    private String getQlfNameIfNotInCopybook(String fieldA, String fieldB) {
+        String ret = null;
+        String qlfNameInCopy = getJavaFieldToQualifiedName().get(fieldA);
+        if(qlfNameInCopy != null ) {
+            if(qlfNameInCopy.indexOf("|") != -1)
+                qlfNameInCopy = getQlfNameFromMultiNames(fieldB, qlfNameInCopy);
+            ret = qlfNameInCopy;
         }
         return ret;
     }
