@@ -3,12 +3,14 @@
     DATA DIVISION.
        WORKING-STORAGE SECTION.
        01 DESC.
-            COPY  DESC.
+            03 STD1600.
+                COPY  DESC.
+                05  TD-PUB  PIC X(01).
        01 DESC1.
             COPY DESC1.
        01 TESTCONST.
             COPY TESTCONST.
     PROCEDURE DIVISION.
-       MOVE WS-NUM1 OF DESC TO WS-NUM1 OF DESC1.
+       MOVE TD-PUB OF STD1600 TO WS-NUM1 OF DESC1.
        DISPLAY "Number : " CPPP2.
     STOP RUN.

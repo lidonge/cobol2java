@@ -35,7 +35,7 @@
                 {{/isInnerClass}}
                 {{%isConstInnerCls != null? "public static ":""}}
                 {{%innerClsLevel = innerClsLevel == null ? null: innerClsLevel+1;fillerCount = 0;""}}
-                class {{%clsName}}{{#$isSubExtCopybook}}_Ext extends {{%clsName}}{{/isSubExtCopybook}} {
+                class {{%clsName}}{{#$isSubExtCopybook}}_Ext extends {{%name_toClass(obj_getVar("name"))}}{{/isSubExtCopybook}} {
             {{/isSubPureCopybook}}
             {{%childrenCount=1;""}}
             {{%IsSubExtCopybookFirst = isSubExtCopybook != null ? "IsSubExtCopybookFirst":null;""}}

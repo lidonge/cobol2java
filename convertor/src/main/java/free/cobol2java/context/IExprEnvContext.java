@@ -8,11 +8,12 @@ import free.servpp.multiexpr.IEvaluatorEnvironment;
 public interface IExprEnvContext {
     IEvaluatorEnvironment getEnvironment();
 
-    default void debugPoint() {
+    default Object debugPoint() {
         if (getEnvironment() != null) {
             String debug = (String) getEnvironment().getVar("DEBUG");
             if ("specRegCall".equals(debug))
                 debug = debug;
         }
+        return null;
     }
 }

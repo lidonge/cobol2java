@@ -17,8 +17,10 @@
                     isDupCls = isSubCopybook == null && obj_getFromMap(innerMap,innerCls) != null;
                     innerCls = isDupCls ? innerCls + "1":innerCls;
                     fieldName = isDupCls && IsFiller != null ? fieldName + "1":fieldName;
+                    realInnerClsName = isSubExtCopybook == null ? innerCls : name_toClass(orgName)+"_Ext";
+                //DEBUG=isSubExtCopybook + ":"+innerCls;debug();
                 ""}}
-                {{%modifier}} {{%innerCls)}}{{#$dimStr}}[]{{/dimStr}} {{%fieldName}}{{#$dimStr}} = new {{%innerCls}}[{{%dimStr}}]{{/dimStr}};
+                {{%modifier}} {{%realInnerClsName)}}{{#$dimStr}}[]{{/dimStr}} {{%fieldName}}{{#$dimStr}} = new {{%innerCls}}[{{%dimStr}}]{{/dimStr}};
             {{/IsConstantCopybook}}
             {{%
                 packName = model_getPackage(innerCls,"false");
@@ -32,9 +34,10 @@
             clsName=innerCls;
             isInnerClass==null && IsConstantCopybook == null ? must_saveBuff():null;
         ""}}
-        {{^$isSubCopybook}}{{#$curObj}}
+
+
             {{>model.model(IsConstantCopybook,isInnerClass,innerClsLevel,importsMap,innerMap)}}
-        {{/curObj}}{{/isSubCopybook}}
+
         {{%
             //name_exitClass();
             clsContent = isInnerClass==null && IsConstantCopybook == null? must_popBuff():null;

@@ -14,7 +14,7 @@ import java.util.Map;
 public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysicalContext,
         IExprBaseContext, ICopybookContext, IExprCtxHandler,
         IExprDimensionContext {
-    record ContextAndQlfName(String qlfName, IExprNameContext context) {
+    record ContextAndQlfName(String qlfName, IExprNameContext context, boolean isExtend) {
     }
 
     default boolean name_isConst(String name) {
@@ -40,12 +40,15 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
         // qlfName include C and end with a fieldName of a copybook BOOK1 +
         // qlfName include B start with BOOK1(should be remove) and end with fieldName of BOOk2 +
         // qlfName start with BOOK2(should be remove) and end with A
-        ContextAndQlfName prev = new ContextAndQlfName(fieldName,this);
+        ContextAndQlfName prev = new ContextAndQlfName(fieldName,this,false);
+        boolean isExtended = false;
+
         for (int i = ofIds.length - 1; i > 0; i--) {
             String field = ofIds[i - 1];
             String ofField = ofIds[i];
             //get name_Field_In_ofField(-ofField)
             ContextAndQlfName caq = prev.context.getQlfNameOf(field, ofField);
+            isExtended = caq.isExtend();
             String qlfName = caq.qlfName;
             if(qlfName.indexOf("|") != -1){
                 qlfName = getQlfNameFromMultiNames(ofIds,qlfName);
@@ -75,7 +78,7 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
         }else{
             String[] parts= ret.split("\\.");
             String qlfNameOfCopy = getCopyFieldNameToQlfName().get(parts[0]);
-            if(qlfNameOfCopy != null && qlfNameOfCopy.indexOf("|") == -1)
+            if(!isExtended && qlfNameOfCopy != null && qlfNameOfCopy.indexOf("|") == -1)
                 ret = qlfNameOfCopy + ret.substring(parts[0].length());
         }
         return ret;
@@ -88,6 +91,7 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
         //to find fieldA in the copybook that fieldB in.
         //First to find if fieldB is defined in main cbl
         String fieldBQlfName = getJavaFieldToQualifiedName().get(fieldB);
+        boolean isExtended = false;
         if (fieldBQlfName != null) {
             //found the qlfName of fieldB in main
             //Test if the fieldB is a copybook, FIXME should put with qlfName
@@ -135,11 +139,16 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
                     getLogger().error("Error can not find copybook {} by field {} of {}." , copybookName, fieldA, fieldB);
                 }
                 String fieldAQlfNameInCopy = exprContext.getQlfNameInMain(fieldA, fieldB);
+                boolean notInCopy = false;
                 if( fieldAQlfNameInCopy == null){
+                    //the field may is locale field in extended COPYBOOK
                     fieldAQlfNameInCopy = getQlfNameIfNotInCopybook(fieldA, fieldB);
                     if(fieldAQlfNameInCopy == null) {
                         fieldAQlfNameInCopy = "UNDEFINED_" + fieldA;
                         getLogger(IExprNameContext.class).error("Error can not find field {} defined in copybook {}.", fieldA, this.getCopyBookName());
+                    }else {
+                        notInCopy = true;
+                        isExtended = true;
                     }
                 }
                 boolean undefined = fieldAQlfNameInCopy.startsWith("UNDEFINED_");
@@ -147,8 +156,11 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
                     qlfName = fieldAQlfNameInCopy;
                 }else {
                     //FIXME field defined in filler
-                    qlfName = fieldBQlfName +
+                    if(!notInCopy)
+                        qlfName = fieldBQlfName +
                             (undefined ? fieldAQlfNameInCopy : fieldAQlfNameInCopy.substring(fieldAQlfNameInCopy.indexOf(".")));
+                    else
+                        qlfName = fieldAQlfNameInCopy;
                 }
             }
         } else {
@@ -159,7 +171,7 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
             String fieldAQlfNameInCopy = exprContext.getQlfNameInMain(fieldA, fieldB);
             qlfName = changeCopyFieldNameToFieldName(fieldAQlfNameInCopy,copyPath);
         }
-        return new ContextAndQlfName(qlfName,exprContext);
+        return new ContextAndQlfName(qlfName,exprContext,isExtended);
     }
 
     private String getQlfNameInMain(String fieldA, String fieldB) {
