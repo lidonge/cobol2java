@@ -8,7 +8,7 @@
 ""}}
 {{#$isQlfCall}}
     {{>call.qlfName}}
-    {{%qlfNameCall=qlfName;""}}
+    {{%qlfNameCall=qlfName == null ? javaName : qlfName;""}}
 {{/isQlfCall}}
 {{^$isQlfCall}}
     //TODO in qlfNameCall {{%callType}};

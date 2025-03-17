@@ -137,6 +137,7 @@ public interface IExprNameContext extends ILogable, IExprEnvContext, IExprPhysic
                 exprContext = getCopybookContexts().get(copybookName);
                 if(exprContext == null){
                     getLogger().error("Error can not find copybook {} by field {} of {}." , copybookName, fieldA, fieldB);
+                    return new ContextAndQlfName(fieldB+ "." + fieldA,exprContext,isExtended);
                 }
                 String fieldAQlfNameInCopy = exprContext.getQlfNameInMain(fieldA, fieldB);
                 boolean notInCopy = false;

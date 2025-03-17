@@ -15,9 +15,9 @@ public interface IExprConvertContext extends IExprNameContext, IExprRelContext {
         String javaFieldName = name_toField(fieldName);
         String ret = "";
         String qlfName = name_qlfName(javaFieldName, null);
-        if(qlfName.startsWith("UNDEFINED_")){
+        if(qlfName == null || qlfName.startsWith("UNDEFINED_")){
             getLogger().error("Error undefined field {}.", fieldName);
-            return qlfName;
+            return javaFieldName;
         }
         String refFieldName = getJavaQlfFieldToSimpleType().get(qlfName);
         if (refFieldName == null) {
